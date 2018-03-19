@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.4.rc%{rc_ver}%{?dist}
+Release:	0.5.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -84,6 +84,7 @@ Patch1:		0001-GCC-compatibility-Ignore-fstack-clash-protection.patch
 Patch2:		0001-Driver-Prefer-vendor-supplied-gcc-toolchain.patch
 # This was merged into the release_70 branch after 7.0.0-rc1
 Patch3:		0001-Merging-r338627.patch 
+Patch4:		0001-gtest-reorg.patch
 
 # Test suite Patches
 Patch100:	0001-Fix-CLAMR-build-with-newer-libstdc.patch
@@ -100,6 +101,7 @@ BuildRequires:	llvm-devel = %{version}
 # llvm-static is required, because clang-tablegen needs libLLVMTableGen, which
 # is not included in libLLVM.so.
 BuildRequires:  llvm-static = %{version}
+BuildRequires:	llvm-googletest = %{version}
 %endif
 
 BuildRequires:	libxml2-devel
@@ -239,6 +241,7 @@ suite can be run with any compiler, not just clang.
 %patch1 -p1 -b .fstack-clash-protection
 %patch2 -p1 -b .vendor-gcc
 %patch3 -p1 -b .hmap-path-fix
+%patch4 -p1 -b .gtest
 
 mv ../%{clang_tools_srcdir} tools/extra
 %endif
@@ -270,6 +273,7 @@ cd _build
 	-DLLVM_CONFIG:FILEPATH=/usr/bin/llvm-config-%{__isa_bits} \
 	-DCLANG_INCLUDE_TESTS:BOOL=ON \
 	-DLLVM_EXTERNAL_LIT=%{python2_sitelib}/lit/main.py \
+	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
 %if 0%{?__isa_bits} == 64
         -DLLVM_LIBDIR_SUFFIX=64 \
 %else
@@ -355,7 +359,7 @@ cp -R %{_builddir}/%{test_suite_srcdir}/* %{buildroot}%{_datadir}/llvm-test-suit
 # requires lit.py from LLVM utilities
 cd _build
 # FIXME: Fix failing ARM tests
-PATH=%{_libdir}/llvm:$PATH make check-clang || \
+PATH=%{_libdir}/llvm:$PATH make %{?_smp_mflags} check-clang || \
 %ifarch %{arm}
 :
 %else
@@ -433,6 +437,9 @@ false
 
 %endif
 %changelog
+* Tue Aug 28 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.5.rc1
+- Enable unit tests
+
 * Fri Aug 17 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.4.rc1
 - Move llvm-test-suite into a sub-package
 
