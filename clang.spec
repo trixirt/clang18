@@ -97,12 +97,12 @@ BuildRequires:	llvm%{maj_ver}.%{min_ver}-devel = %{version}
 BuildRequires:  llvm%{maj_ver}.%{min_ver}-static = %{version}
 %else
 BuildRequires:	llvm-devel = %{version}
+# llvm-static is required, because clang-tablegen needs libLLVMTableGen, which
+# is not included in libLLVM.so.
 BuildRequires:  llvm-static = %{version}
 %endif
 
 BuildRequires:	libxml2-devel
-# llvm-static is required, because clang-tablegen needs libLLVMTableGen, which
-# is not included in libLLVM.so.
 BuildRequires:  perl-generators
 BuildRequires:  ncurses-devel
 # According to https://fedoraproject.org/wiki/Packaging:Emacs a package
