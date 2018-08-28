@@ -3,7 +3,7 @@
 %global maj_ver 7
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 1
+%global rc_ver 2
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.5.rc%{rc_ver}%{?dist}
+Release:	0.6.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -82,13 +82,7 @@ Source100:	clang-config.h
 Patch0:		0001-lit.cfg-Add-hack-so-lit-can-find-not-and-FileCheck.patch
 Patch1:		0001-GCC-compatibility-Ignore-fstack-clash-protection.patch
 Patch2:		0001-Driver-Prefer-vendor-supplied-gcc-toolchain.patch
-# This was merged into the release_70 branch after 7.0.0-rc1
-Patch3:		0001-Merging-r338627.patch 
 Patch4:		0001-gtest-reorg.patch
-
-# Test suite Patches
-Patch100:	0001-Fix-CLAMR-build-with-newer-libstdc.patch
-Patch101:	0001-ABI-Testsuite-Force-the-old-c-11-ABI-in-mangling-tes.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -233,14 +227,11 @@ suite can be run with any compiler, not just clang.
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
 
 %setup -T -q -b 2 -n %{test_suite_srcdir}
-%patch100 -p1 -b .build-fix
-%patch101 -p1 -b .old-abi-fix
 
 %setup -q -n %{clang_srcdir}
 %patch0 -p1 -b .lit-search-path
 %patch1 -p1 -b .fstack-clash-protection
 %patch2 -p1 -b .vendor-gcc
-%patch3 -p1 -b .hmap-path-fix
 %patch4 -p1 -b .gtest
 
 mv ../%{clang_tools_srcdir} tools/extra
@@ -437,6 +428,9 @@ false
 
 %endif
 %changelog
+* Tue Aug 28 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.6.rc2
+- 7.0.0-rc2 Release
+
 * Tue Aug 28 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.5.rc1
 - Enable unit tests
 
