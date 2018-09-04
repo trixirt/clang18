@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.6.rc%{rc_ver}%{?dist}
+Release:	0.7.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -284,6 +284,7 @@ cd _build
 	-DSPHINX_WARNINGS_AS_ERRORS=OFF \
 	\
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
+	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}" \
 	-DLIB_SUFFIX=
 
 make %{?_smp_mflags}
@@ -428,6 +429,9 @@ false
 
 %endif
 %changelog
+* Sat Sep 01 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.7.rc2
+- Add Fedora specific version string
+
 * Tue Aug 28 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.6.rc2
 - 7.0.0-rc2 Release
 
