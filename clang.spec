@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.7.rc%{rc_ver}%{?dist}
+Release:	0.8.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -83,6 +83,7 @@ Patch0:		0001-lit.cfg-Add-hack-so-lit-can-find-not-and-FileCheck.patch
 Patch1:		0001-GCC-compatibility-Ignore-fstack-clash-protection.patch
 Patch2:		0001-Driver-Prefer-vendor-supplied-gcc-toolchain.patch
 Patch4:		0001-gtest-reorg.patch
+Patch5:		0001-Don-t-prefer-python2.7.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -111,10 +112,6 @@ BuildRequires:	emacs
 BuildRequires:  python3-lit
 %endif
 
-# make check-clang passes LLVM_EXTERNAL_LIT as an argument to
-# /usr/bin/python2, so we must have the python2 version of lit.
-# FIXME: We should find a way to not depend on python2-lit.
-BuildRequires:  python2-lit
 BuildRequires: python2-rpm-macros
 BuildRequires: python3-sphinx
 BuildRequires: libatomic
@@ -233,6 +230,7 @@ suite can be run with any compiler, not just clang.
 %patch1 -p1 -b .fstack-clash-protection
 %patch2 -p1 -b .vendor-gcc
 %patch4 -p1 -b .gtest
+%patch5 -p1 -b .no-python2
 
 mv ../%{clang_tools_srcdir} tools/extra
 %endif
@@ -263,7 +261,7 @@ cd _build
 %else
 	-DLLVM_CONFIG:FILEPATH=/usr/bin/llvm-config-%{__isa_bits} \
 	-DCLANG_INCLUDE_TESTS:BOOL=ON \
-	-DLLVM_EXTERNAL_LIT=%{python2_sitelib}/lit/main.py \
+	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
 %if 0%{?__isa_bits} == 64
         -DLLVM_LIBDIR_SUFFIX=64 \
@@ -429,6 +427,9 @@ false
 
 %endif
 %changelog
+* Thu Sep 06 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.8.rc2
+- Drop all uses of python2 from lit tests
+
 * Sat Sep 01 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.7.rc2
 - Add Fedora specific version string
 
