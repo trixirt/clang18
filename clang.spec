@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.8.rc%{rc_ver}%{?dist}
+Release:	0.9.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -84,6 +84,7 @@ Patch1:		0001-GCC-compatibility-Ignore-fstack-clash-protection.patch
 Patch2:		0001-Driver-Prefer-vendor-supplied-gcc-toolchain.patch
 Patch4:		0001-gtest-reorg.patch
 Patch5:		0001-Don-t-prefer-python2.7.patch
+Patch6:		0001-Convert-clang-format-diff.py-to-python3-using-2to3.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -116,6 +117,8 @@ BuildRequires: python2-rpm-macros
 BuildRequires: python3-sphinx
 BuildRequires: libatomic
 
+# We need python3-devel for pathfix.py.
+BuildRequires:	python3-devel
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -231,8 +234,13 @@ suite can be run with any compiler, not just clang.
 %patch2 -p1 -b .vendor-gcc
 %patch4 -p1 -b .gtest
 %patch5 -p1 -b .no-python2
+%patch6 -p1 -b .clang-format-diff-py3
 
 mv ../%{clang_tools_srcdir} tools/extra
+
+pathfix.py -i %{__python3} -pn \
+	tools/clang-format/*.py \
+	utils/hmaptool/hmaptool
 %endif
 
 %build
@@ -427,6 +435,9 @@ false
 
 %endif
 %changelog
+* Fri Sep 07 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.9.rc2
+- Drop python2 dependency from clang package
+
 * Thu Sep 06 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.8.rc2
 - Drop all uses of python2 from lit tests
 
