@@ -1,3 +1,4 @@
+#!/bin/bash
 
 set -ex
 tmpdir=`mktemp -d`
@@ -27,8 +28,11 @@ POSSIBLY_BAD="\
 	MultiSource/Benchmarks/McCat/ \
 	MultiSource/Applications/spiff/"
 
+#siod: llvm.org/PR38648
+BUGGY="\
+	MultiSource/Applications/siod"
 
-for f in $UNKNOWN $BAD $POSSIBLY_BAD; do
+for f in $UNKNOWN $BAD $POSSIBLY_BAD $BUGGY; do
 	test -d $test_suite_src/$f
 	rm -Rf $test_suite_src/$f
 	basedir=`dirname $f`

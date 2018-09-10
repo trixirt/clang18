@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.9.rc%{rc_ver}%{?dist}
+Release:	0.10.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -212,6 +212,7 @@ Requires: python3-lit = 0.7.0
 Requires: python2-lit = 0.7.0
 Requires: llvm
 Requires: tcl
+Requires: which
 
 %description -n llvm-test-suite
 C/C++ Compiler Test Suite that is mantained as an LLVM sub-project.  This test
@@ -435,6 +436,9 @@ false
 
 %endif
 %changelog
+* Mon Sep 10 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.10.rc2
+- Drop siod from llvm-test-suite
+
 * Fri Sep 07 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.9.rc2
 - Drop python2 dependency from clang package
 
