@@ -3,7 +3,7 @@
 %global maj_ver 7
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 2
+%global rc_ver 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.10.rc%{rc_ver}%{?dist}
+Release:	0.11.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -436,6 +436,9 @@ false
 
 %endif
 %changelog
+* Wed Sep 12 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.11.rc3
+- 7.0.0-rc3 Release
+
 * Mon Sep 10 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.10.rc2
 - Drop siod from llvm-test-suite
 
