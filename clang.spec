@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.12.rc%{rc_ver}%{?dist}
+Release:	0.13.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -436,6 +436,9 @@ false
 
 %endif
 %changelog
+* Thu Sep 13 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.13.rc3
+- Rebuild with new llvm-devel that disables rpath on install
+
 * Thu Sep 13 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.12.rc3
 - Fix clang++-7 symlink
 
