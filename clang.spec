@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.11.rc%{rc_ver}%{?dist}
+Release:	0.12.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -345,7 +345,7 @@ rm -Rvf %{buildroot}%{_pkgdocdir}
 rm -vf %{buildroot}%{_datadir}/clang/bash-autocomplete.sh
 
 # Add clang++-{version} sylink
-ln -s %{_bindir}/clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
+ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
 # Install test suite
 mkdir -p %{buildroot}%{_datadir}/llvm-test-suite/
@@ -436,6 +436,9 @@ false
 
 %endif
 %changelog
+* Thu Sep 13 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.12.rc3
+- Fix clang++-7 symlink
+
 * Wed Sep 12 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.11.rc3
 - 7.0.0-rc3 Release
 
