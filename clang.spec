@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.13.rc%{rc_ver}%{?dist}
+Release:	0.14.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -383,20 +383,20 @@ false
 %files libs
 %if !0%{?compat_build}
 %{_libdir}/*.so.*
-%{_libdir}/*.so
 %else
 %{pkg_libdir}/*.so.*
-%{pkg_libdir}/*.so
 %{pkg_libdir}/clang/%{version}
 %endif
 
 %files devel
 %if !0%{?compat_build}
+%{_libdir}/*.so
 %{_includedir}/clang/
 %{_includedir}/clang-c/
 %{_libdir}/cmake/*
 %dir %{_datadir}/clang/
 %else
+%{pkg_libdir}/*.so
 %{pkg_includedir}/clang/
 %{pkg_includedir}/clang-c/
 %{pkg_libdir}/cmake/
@@ -436,6 +436,9 @@ false
 
 %endif
 %changelog
+* Thu Sep 13 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.14.rc3
+- Move unversioned shared objects to devel package
+
 * Thu Sep 13 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.13.rc3
 - Rebuild with new llvm-devel that disables rpath on install
 
