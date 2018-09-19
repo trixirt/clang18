@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.14.rc%{rc_ver}%{?dist}
+Release:	0.15.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -85,6 +85,7 @@ Patch2:		0001-Driver-Prefer-vendor-supplied-gcc-toolchain.patch
 Patch4:		0001-gtest-reorg.patch
 Patch5:		0001-Don-t-prefer-python2.7.patch
 Patch6:		0001-Convert-clang-format-diff.py-to-python3-using-2to3.patch
+Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -229,6 +230,15 @@ suite can be run with any compiler, not just clang.
 
 %setup -T -q -b 2 -n %{test_suite_srcdir}
 
+pathfix.py -i %{__python2} -pn \
+	ParseMultipleResults \
+	utils/*.py \
+	CollectDebugInfoUsingLLDB.py \
+	CompareDebugInfo.py \
+	tools/get-report-time \
+	FindMissingLineNo.py \
+	MicroBenchmarks/libs/benchmark-1.3.0/tools/compare_bench.py
+
 %setup -q -n %{clang_srcdir}
 %patch0 -p1 -b .lit-search-path
 %patch1 -p1 -b .fstack-clash-protection
@@ -236,12 +246,14 @@ suite can be run with any compiler, not just clang.
 %patch4 -p1 -b .gtest
 %patch5 -p1 -b .no-python2
 %patch6 -p1 -b .clang-format-diff-py3
+%patch7 -p1 -b .scan-view-py3
 
 mv ../%{clang_tools_srcdir} tools/extra
 
 pathfix.py -i %{__python3} -pn \
 	tools/clang-format/*.py \
-	utils/hmaptool/hmaptool
+	utils/hmaptool/hmaptool \
+	tools/scan-view/bin/scan-view
 %endif
 
 %build
@@ -436,6 +448,9 @@ false
 
 %endif
 %changelog
+* Wed Sep 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.15.rc3
+- Remove ambiguous python shebangs
+
 * Thu Sep 13 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.14.rc3
 - Move unversioned shared objects to devel package
 
