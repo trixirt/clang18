@@ -59,7 +59,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.15.rc%{rc_ver}%{?dist}
+Release:	0.16.rc%{rc_ver}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -382,7 +382,6 @@ false
 
 %if !0%{?compat_build}
 %files
-%{_libdir}/clang/
 %{clang_binaries}
 %{_bindir}/c-index-test
 %{_mandir}/man1/clang.1.gz
@@ -394,6 +393,7 @@ false
 
 %files libs
 %if !0%{?compat_build}
+%{_libdir}/clang/
 %{_libdir}/*.so.*
 %else
 %{pkg_libdir}/*.so.*
@@ -448,6 +448,9 @@ false
 
 %endif
 %changelog
+* Wed Sep 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.16.rc3
+- Move builtin headers into clang-libs sub-package
+
 * Wed Sep 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.15.rc3
 - Remove ambiguous python shebangs
 
