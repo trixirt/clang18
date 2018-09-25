@@ -3,7 +3,6 @@
 %global maj_ver 7
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -59,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.16.rc%{rc_ver}%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -448,6 +447,9 @@ false
 
 %endif
 %changelog
+* Mon Sep 24 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-1
+- 7.0.0 Release
+
 * Wed Sep 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-0.16.rc3
 - Move builtin headers into clang-libs sub-package
 
