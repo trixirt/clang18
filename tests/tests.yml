@@ -15,7 +15,7 @@
           run: echo "int main(){}" | clang -x c -
       - llvm-test-suite:
           dir: ./
-          run: cd $(mktemp -d) && cmake -G Ninja /usr/share/llvm-test-suite/ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang && ninja check
+          run: cd $(mktemp -d) && cmake -G Ninja /usr/share/llvm-test-suite/ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DTEST_SUITE_LIT_FLAGS="-svj1" && ninja -j 1 check
       - llvm-abi-test-suite:
           dir: ./
-          run: cd /usr/share/llvm-test-suite/ABI-Testsuite/ && python2 linux-x86.py clang test -v --path /usr/lib64/llvm/
+          run: cd /usr/share/llvm-test-suite/ABI-Testsuite/ && python2 linux-x86.py clang test -v --path /usr/lib64/llvm/ -j 1
