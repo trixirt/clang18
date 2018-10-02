@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -227,6 +227,12 @@ suite can be run with any compiler, not just clang.
 %else
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
 
+pathfix.py -i %{__python3} -pn \
+	clang-tidy/tool/*.py
+
+pathfix.py -i %{__python2} -pn \
+	include-fixer/find-all-symbols/tool/run-find-all-symbols.py
+
 %setup -T -q -b 2 -n %{test_suite_srcdir}
 
 pathfix.py -i %{__python2} -pn \
@@ -239,6 +245,7 @@ pathfix.py -i %{__python2} -pn \
 	MicroBenchmarks/libs/benchmark-1.3.0/tools/compare_bench.py
 
 %setup -q -n %{clang_srcdir}
+
 %patch0 -p1 -b .lit-search-path
 %patch1 -p1 -b .fstack-clash-protection
 %patch2 -p1 -b .vendor-gcc
@@ -251,6 +258,7 @@ mv ../%{clang_tools_srcdir} tools/extra
 
 pathfix.py -i %{__python3} -pn \
 	tools/clang-format/*.py \
+	tools/clang-format/git-clang-format \
 	utils/hmaptool/hmaptool \
 	tools/scan-view/bin/scan-view
 %endif
@@ -324,8 +332,6 @@ mv  %{buildroot}/%{install_includedir}/clang-c %{buildroot}/%{pkg_includedir}/
 
 %else
 
-sed -i -e 's~#!/usr/bin/env python~#!%{_bindir}/python2~' %{buildroot}%{_bindir}/git-clang-format
-
 # install clang python bindings
 mkdir -p %{buildroot}%{python2_sitelib}/clang/
 install -p -m644 bindings/python/clang/* %{buildroot}%{python2_sitelib}/clang/
@@ -338,11 +344,6 @@ install -m 0644 %{SOURCE100} %{buildroot}%{_includedir}/clang/Config/config.h
 mkdir -p %{buildroot}%{_emacs_sitestartdir}
 for f in clang-format.el clang-rename.el clang-include-fixer.el; do
 mv %{buildroot}{%{_datadir}/clang,%{_emacs_sitestartdir}}/$f
-done
-
-#Fix python shebang
-for f in clang-tidy-diff.py clang-format-diff.py  run-clang-tidy.py run-find-all-symbols.py; do
-	sed -i -e '1{\@^#!/usr/bin/env python@d}' %{buildroot}%{_datadir}/clang/$f
 done
 
 # remove editor integrations (bbedit, sublime, emacs, vim)
@@ -447,6 +448,9 @@ false
 
 %endif
 %changelog
+* Tue Oct 02 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-2
+- Use correct shebang substitution for python scripts
+
 * Mon Sep 24 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-1
 - 7.0.0 Release
 
