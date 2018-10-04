@@ -8,7 +8,6 @@
       - llvm-test-suite
       - ninja-build
       - gcc-x86_64-linux-gnu
-      - which
     tests:
       - rhbz#482491:
           dir: ./
