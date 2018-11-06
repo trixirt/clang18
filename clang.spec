@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -75,8 +75,6 @@ Source1:	http://llvm.org/releases/%{version}/%{clang_tools_srcdir}.tar.xz
 # ./pkg_test_suite.sh %%{test_suite_srcdir}.tar.xz
 Source2:	%{test_suite_srcdir}.tar.xz
 %endif
-
-Source100:	clang-config.h
 
 Patch0:		0001-lit.cfg-Add-hack-so-lit-can-find-not-and-FileCheck.patch
 Patch1:		0001-GCC-compatibility-Ignore-fstack-clash-protection.patch
@@ -119,6 +117,9 @@ BuildRequires: libatomic
 
 # We need python3-devel for pathfix.py.
 BuildRequires:	python3-devel
+
+# Needed for %%multilib_fix_c_header
+BuildRequires:  multilib-rpm-config
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -337,8 +338,7 @@ mkdir -p %{buildroot}%{python2_sitelib}/clang/
 install -p -m644 bindings/python/clang/* %{buildroot}%{python2_sitelib}/clang/
 
 # multilib fix
-mv -v %{buildroot}%{_includedir}/clang/Config/config{,-%{__isa_bits}}.h
-install -m 0644 %{SOURCE100} %{buildroot}%{_includedir}/clang/Config/config.h
+%multilib_fix_c_header --file %{_includedir}/clang/Config/config.h
 
 # Move emacs integration files to the correct directory
 mkdir -p %{buildroot}%{_emacs_sitestartdir}
@@ -448,6 +448,9 @@ false
 
 %endif
 %changelog
+* Mon Nov 05 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-3
+- User helper macro to fixup config.h for multilib
+
 * Tue Oct 02 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-2
 - Use correct shebang substitution for python scripts
 
