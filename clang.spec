@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -166,9 +166,6 @@ Summary:	A source code analysis framework
 License:	NCSA and MIT
 BuildArch:	noarch
 Requires:	%{name} = %{version}-%{release}
-# not picked up automatically since files are currently not installed in
-# standard Python hierarchies yet
-Requires:	python2
 
 %description analyzer
 The Clang Static Analyzer consists of both a source code analysis
@@ -283,6 +280,7 @@ cd _build
 %cmake .. \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+	-DPYTHON_EXECUTABLE=%{__python3} \
 %if 0%{?compat_build}
 	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver}.%{min_ver}-%{__isa_bits} \
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
@@ -448,6 +446,9 @@ false
 
 %endif
 %changelog
+* Mon Nov 19 2018 sergesanspaille <sguelton@redhat.com> - 7.0.0-4
+- Avoid Python2 + Python3 dependency for clang-analyzer
+
 * Mon Nov 05 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-3
 - User helper macro to fixup config.h for multilib
 
