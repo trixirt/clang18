@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -368,7 +368,7 @@ cp -R %{_builddir}/%{test_suite_srcdir}/* %{buildroot}%{_datadir}/llvm-test-suit
 # requires lit.py from LLVM utilities
 cd _build
 # FIXME: Fix failing ARM tests
-PATH=%{_libdir}/llvm:$PATH make %{?_smp_mflags} check-clang || \
+PATH=%{_libdir}/llvm:$PATH make %{?_smp_mflags} check-all || \
 %ifarch %{arm}
 :
 %else
@@ -446,6 +446,9 @@ false
 
 %endif
 %changelog
+* Mon Nov 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-5
+- Run 'make check-all' instead of 'make check-clang'
+
 * Mon Nov 19 2018 sergesanspaille <sguelton@redhat.com> - 7.0.0-4
 - Avoid Python2 + Python3 dependency for clang-analyzer
 
