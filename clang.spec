@@ -54,7 +54,6 @@
 
 %global clang_srcdir cfe-%{version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{version}%{?rc_ver:rc%{rc_ver}}.src
-%global test_suite_srcdir test-suite-%{version}%{?rc_ver:rc%{rc_ver}}.src.fedora
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
@@ -66,14 +65,6 @@ URL:		http://llvm.org
 Source0:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_srcdir}.tar.xz
 %if !0%{?compat_build}
 Source1:	http://llvm.org/releases/%{version}/%{clang_tools_srcdir}.tar.xz
-
-# The LLVM Test Suite contains progrms with "BAD" or unknown licenses which should
-# be removed.  Some of the unknown licenses may be OK, but until they are reviewed,
-# we will remove them.
-# Use the pkg_test_suite.sh script to generate the test-suite tarball:
-# wget http://llvm.org/releases/%%{version}/%%{test_suite_srcdir}.tar.xz
-# ./pkg_test_suite.sh %%{test_suite_srcdir}.tar.xz
-Source2:	%{test_suite_srcdir}.tar.xz
 %endif
 
 Patch0:		0001-lit.cfg-Add-hack-so-lit-can-find-not-and-FileCheck.patch
@@ -200,22 +191,6 @@ Requires: python2
 %description -n python2-clang
 %{summary}.
 
-%package -n llvm-test-suite
-Summary: C/C++ Compiler Test Suite
-License: NCSA, MIT, GPL, Python
-Requires: cmake
-Requires: libstdc++-static
-Requires: python3-lit = 0.7.0
-# ABI-Testsuite requires python2-lit
-Requires: python2-lit = 0.7.0
-Requires: llvm
-Requires: tcl
-Requires: which
-
-%description -n llvm-test-suite
-C/C++ Compiler Test Suite that is mantained as an LLVM sub-project.  This test
-suite can be run with any compiler, not just clang.
-
 %endif
 
 
@@ -230,17 +205,6 @@ pathfix.py -i %{__python3} -pn \
 
 pathfix.py -i %{__python2} -pn \
 	include-fixer/find-all-symbols/tool/run-find-all-symbols.py
-
-%setup -T -q -b 2 -n %{test_suite_srcdir}
-
-pathfix.py -i %{__python2} -pn \
-	ParseMultipleResults \
-	utils/*.py \
-	CollectDebugInfoUsingLLDB.py \
-	CompareDebugInfo.py \
-	tools/get-report-time \
-	FindMissingLineNo.py \
-	MicroBenchmarks/libs/benchmark-1.3.0/tools/compare_bench.py
 
 %setup -q -n %{clang_srcdir}
 
@@ -357,10 +321,6 @@ rm -vf %{buildroot}%{_datadir}/clang/bash-autocomplete.sh
 # Add clang++-{version} sylink
 ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
-# Install test suite
-mkdir -p %{buildroot}%{_datadir}/llvm-test-suite/
-cp -R %{_builddir}/%{test_suite_srcdir}/* %{buildroot}%{_datadir}/llvm-test-suite
-
 %endif
 
 %check
@@ -441,11 +401,11 @@ false
 %files -n python2-clang
 %{python2_sitelib}/clang/
 
-%files -n llvm-test-suite
-%{_datadir}/llvm-test-suite/
-
 %endif
 %changelog
+* Wed Nov 21 2018 sguelton@redhat.com - 7.0.0-5
+- Prune unneeded reference to llvm-test-suite sub-package
+
 * Mon Nov 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-5
 - Run 'make check-all' instead of 'make check-clang'
 
