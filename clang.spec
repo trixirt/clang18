@@ -2,7 +2,8 @@
 
 %global maj_ver 7
 %global min_ver 0
-%global patch_ver 0
+%global patch_ver 1
+#%%global rc_ver 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -57,14 +58,14 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	10%{?dist}
+Release:	1%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
 URL:		http://llvm.org
 Source0:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_srcdir}.tar.xz
 %if !0%{?compat_build}
-Source1:	http://llvm.org/releases/%{version}/%{clang_tools_srcdir}.tar.xz
+Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
 %endif
 
 Patch0:		0001-lit.cfg-Add-hack-so-lit-can-find-not-and-FileCheck.patch
@@ -75,7 +76,7 @@ Patch6:		0001-Convert-clang-format-diff.py-to-python3-using-2to3.patch
 Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
 
 # clang-tools-extra patches
-Patch100: 0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
+Patch100:	0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -145,7 +146,7 @@ Recommends: libomp%{_isa} = %{version}
 Runtime library for clang.
 
 %package devel
-Summary: Development header files for clang.
+Summary: Development header files for clang
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # The clang CMake files reference tools from clang-tools-extra.
 Requires: %{name}-tools-extra%{?_isa} = %{version}-%{release}
@@ -167,9 +168,9 @@ programs. The standalone tool is invoked from the command-line, and is
 intended to run in tandem with a build of a project or code base.
 
 %package tools-extra
-Summary: Extra tools for clang
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
-Requires: emacs-filesystem
+Summary:	Extra tools for clang
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+Requires:	emacs-filesystem
 
 %description tools-extra
 A set of extra tools built using Clang's tooling API.
@@ -178,18 +179,18 @@ A set of extra tools built using Clang's tooling API.
 # and we don't want to force users to install all those dependenices if they
 # just want clang.
 %package -n git-clang-format
-Summary: clang-format integration for git
-Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: git
-Requires: python2
+Summary:	Integration of clang-format for git
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	git
+Requires:	python2
 
 %description -n git-clang-format
 clang-format integration for git.
 
 %package -n python2-clang
-Summary: Python2 bindings for clang
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
-Requires: python2
+Summary:	Python2 bindings for clang
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+Requires:	python2
 %description -n python2-clang
 %{summary}.
 
@@ -327,6 +328,8 @@ ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++.1.gz
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang-%{maj_ver}.1.gz
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++-%{maj_ver}.1.gz
 
+# Fix permission
+chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
 
 %endif
 
@@ -413,6 +416,10 @@ false
 
 %endif
 %changelog
+
+* Tue Dec 18 2018 sguelton@redhat.com - 7.0.1-1
+- 7.0.1
+
 * Tue Dec 18 2018 sguelton@redhat.com - 7.0.0-10
 - Install proper manpage symlinks for clang/clang++ versions
 
