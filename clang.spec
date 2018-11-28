@@ -57,7 +57,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -403,7 +403,7 @@ false
 
 %endif
 %changelog
-* Wed Nov 21 2018 sguelton@redhat.com - 7.0.0-5
+* Wed Nov 21 2018 sguelton@redhat.com - 7.0.0-6
 - Prune unneeded reference to llvm-test-suite sub-package
 
 * Mon Nov 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-5
