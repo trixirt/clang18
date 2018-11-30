@@ -1,0 +1,61 @@
+From 6430ef09aecb30bce588c2d7f35b2294d219c835 Mon Sep 17 00:00:00 2001
+From: Tom Stellard <tstellar@redhat.com>
+Date: Mon, 26 Nov 2018 19:18:12 -0800
+Subject: [PATCH] Convert run-find-all-symbols.py to python3 using 2to3
+
+---
+ include-fixer/find-all-symbols/tool/run-find-all-symbols.py | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include-fixer/find-all-symbols/tool/run-find-all-symbols.py b/include-fixer/find-all-symbols/tool/run-find-all-symbols.py
+index 461d959..89a6cf5 100755
+--- a/include-fixer/find-all-symbols/tool/run-find-all-symbols.py
++++ b/include-fixer/find-all-symbols/tool/run-find-all-symbols.py
+@@ -27,7 +27,7 @@ import argparse
+ import json
+ import multiprocessing
+ import os
+-import Queue
++import queue
+ import shutil
+ import subprocess
+ import sys
+@@ -40,7 +40,7 @@ def find_compilation_database(path):
+   result = './'
+   while not os.path.isfile(os.path.join(result, path)):
+     if os.path.realpath(result) == '/':
+-      print 'Error: could not find compilation database.'
++      print('Error: could not find compilation database.')
+       sys.exit(1)
+     result += '../'
+   return os.path.realpath(result)
+@@ -50,7 +50,7 @@ def MergeSymbols(directory, args):
+   """Merge all symbol files (yaml) in a given directaory into a single file."""
+   invocation = [args.binary, '-merge-dir='+directory, args.saving_path]
+   subprocess.call(invocation)
+-  print 'Merge is finished. Saving results in ' + args.saving_path
++  print('Merge is finished. Saving results in ' + args.saving_path)
+ 
+ 
+ def run_find_all_symbols(args, tmpdir, build_path, queue):
+@@ -96,7 +96,7 @@ def main():
+ 
+   try:
+     # Spin up a bunch of tidy-launching threads.
+-    queue = Queue.Queue(max_task)
++    queue = queue.Queue(max_task)
+     for _ in range(max_task):
+       t = threading.Thread(target=run_find_all_symbols,
+                            args=(args, tmpdir, build_path, queue))
+@@ -116,7 +116,7 @@ def main():
+   except KeyboardInterrupt:
+     # This is a sad hack. Unfortunately subprocess goes
+     # bonkers with ctrl-c and we start forking merrily.
+-    print '\nCtrl-C detected, goodbye.'
++    print('\nCtrl-C detected, goodbye.')
+     os.kill(0, 9)
+ 
+ 
+-- 
+1.8.3.1
+

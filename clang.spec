@@ -57,7 +57,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -74,6 +74,9 @@ Patch4:		0001-gtest-reorg.patch
 Patch5:		0001-Don-t-prefer-python2.7.patch
 Patch6:		0001-Convert-clang-format-diff.py-to-python3-using-2to3.patch
 Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
+
+# clang-tools-extra patches
+Patch100: 0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -200,10 +203,10 @@ Requires: python2
 %else
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
 
-pathfix.py -i %{__python3} -pn \
-	clang-tidy/tool/*.py
+%patch100 -p1 -b .find-all-symbols-py3
 
-pathfix.py -i %{__python2} -pn \
+pathfix.py -i %{__python3} -pn \
+	clang-tidy/tool/*.py \
 	include-fixer/find-all-symbols/tool/run-find-all-symbols.py
 
 %setup -q -n %{clang_srcdir}
@@ -403,6 +406,9 @@ false
 
 %endif
 %changelog
+* Fri Nov 30 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-7
+- Drop python2 dependency from clang-tools-extra 
+
 * Wed Nov 21 2018 sguelton@redhat.com - 7.0.0-6
 - Prune unneeded reference to llvm-test-suite sub-package
 
