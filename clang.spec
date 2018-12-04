@@ -57,7 +57,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -78,23 +78,23 @@ Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
 # clang-tools-extra patches
 Patch100: 0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
 
-BuildRequires:  gcc
-BuildRequires:  gcc-c++
+BuildRequires:	gcc
+BuildRequires:	gcc-c++
 BuildRequires:	cmake
 %if 0%{?compat_build}
 BuildRequires:	llvm%{maj_ver}.%{min_ver}-devel = %{version}
-BuildRequires:  llvm%{maj_ver}.%{min_ver}-static = %{version}
+BuildRequires:	llvm%{maj_ver}.%{min_ver}-static = %{version}
 %else
 BuildRequires:	llvm-devel = %{version}
 # llvm-static is required, because clang-tablegen needs libLLVMTableGen, which
 # is not included in libLLVM.so.
-BuildRequires:  llvm-static = %{version}
+BuildRequires:	llvm-static = %{version}
 BuildRequires:	llvm-googletest = %{version}
 %endif
 
 BuildRequires:	libxml2-devel
-BuildRequires:  perl-generators
-BuildRequires:  ncurses-devel
+BuildRequires:	perl-generators
+BuildRequires:	ncurses-devel
 # According to https://fedoraproject.org/wiki/Packaging:Emacs a package
 # should BuildRequires: emacs if it packages emacs integration files.
 BuildRequires:	emacs
@@ -102,18 +102,18 @@ BuildRequires:	emacs
 # These build dependencies are required for the test suite.
 %if %with python3
 # The testsuite uses /usr/bin/lit which is part of the python3-lit package.
-BuildRequires:  python3-lit
+BuildRequires:	python3-lit
 %endif
 
-BuildRequires: python2-rpm-macros
-BuildRequires: python3-sphinx
-BuildRequires: libatomic
+BuildRequires:	python2-rpm-macros
+BuildRequires:	python3-sphinx
+BuildRequires:	libatomic
 
 # We need python3-devel for pathfix.py.
 BuildRequires:	python3-devel
 
 # Needed for %%multilib_fix_c_header
-BuildRequires:  multilib-rpm-config
+BuildRequires:	multilib-rpm-config
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -123,9 +123,9 @@ Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 Requires:	libstdc++-devel
 Requires:	gcc-c++
 
-Requires: emacs-filesystem
+Requires:	emacs-filesystem
 
-Provides: clang(major) = %{maj_ver}
+Provides:	clang(major) = %{maj_ver}
 
 %description
 clang: noun
@@ -258,9 +258,9 @@ cd _build
 	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
 %if 0%{?__isa_bits} == 64
-        -DLLVM_LIBDIR_SUFFIX=64 \
+	-DLLVM_LIBDIR_SUFFIX=64 \
 %else
-        -DLLVM_LIBDIR_SUFFIX= \
+	-DLLVM_LIBDIR_SUFFIX= \
 %endif
 %endif
 	\
@@ -406,6 +406,9 @@ false
 
 %endif
 %changelog
+* Tue Dec 04 2018 sguelton@redhat.com - 7.0.0-8
+- Ensure rpmlint passes on specfile
+
 * Fri Nov 30 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-7
 - Drop python2 dependency from clang-tools-extra 
 
