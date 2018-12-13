@@ -57,7 +57,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -322,6 +322,12 @@ rm -vf %{buildroot}%{_datadir}/clang/bash-autocomplete.sh
 # Add clang++-{version} sylink
 ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
+# Create Manpage symlinks
+ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++.1.gz
+ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang-%{maj_ver}.1.gz
+ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++-%{maj_ver}.1.gz
+
+
 %endif
 
 %check
@@ -344,6 +350,9 @@ false
 %{clang_binaries}
 %{_bindir}/c-index-test
 %{_mandir}/man1/clang.1.gz
+%{_mandir}/man1/clang++.1.gz
+%{_mandir}/man1/clang-%{maj_ver}.1.gz
+%{_mandir}/man1/clang++-%{maj_ver}.1.gz
 %{_mandir}/man1/diagtool.1.gz
 %{_emacs_sitestartdir}/clang-format.el
 %{_datadir}/clang/clang-format.py*
@@ -404,6 +413,9 @@ false
 
 %endif
 %changelog
+* Tue Dec 18 2018 sguelton@redhat.com - 7.0.0-10
+- Install proper manpage symlinks for clang/clang++ versions
+
 * Fri Dec 14 2018 sguelton@redhat.com - 7.0.0-9
 - No longer Ignore -fstack-clash-protection option
 
