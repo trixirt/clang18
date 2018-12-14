@@ -57,7 +57,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -68,7 +68,6 @@ Source1:	http://llvm.org/releases/%{version}/%{clang_tools_srcdir}.tar.xz
 %endif
 
 Patch0:		0001-lit.cfg-Add-hack-so-lit-can-find-not-and-FileCheck.patch
-Patch1:		0001-GCC-compatibility-Ignore-fstack-clash-protection.patch
 Patch2:		0001-Driver-Prefer-vendor-supplied-gcc-toolchain.patch
 Patch4:		0001-gtest-reorg.patch
 Patch5:		0001-Don-t-prefer-python2.7.patch
@@ -212,7 +211,6 @@ pathfix.py -i %{__python3} -pn \
 %setup -q -n %{clang_srcdir}
 
 %patch0 -p1 -b .lit-search-path
-%patch1 -p1 -b .fstack-clash-protection
 %patch2 -p1 -b .vendor-gcc
 %patch4 -p1 -b .gtest
 %patch5 -p1 -b .no-python2
@@ -406,6 +404,9 @@ false
 
 %endif
 %changelog
+* Fri Dec 14 2018 sguelton@redhat.com - 7.0.0-9
+- No longer Ignore -fstack-clash-protection option
+
 * Tue Dec 04 2018 sguelton@redhat.com - 7.0.0-8
 - Ensure rpmlint passes on specfile
 
