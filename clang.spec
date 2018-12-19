@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	1%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	2%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -74,6 +74,8 @@ Patch4:		0001-gtest-reorg.patch
 Patch5:		0001-Don-t-prefer-python2.7.patch
 Patch6:		0001-Convert-clang-format-diff.py-to-python3-using-2to3.patch
 Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
+#rhbz#1657544
+Patch8:		0001-CodeGen-Handle-mixed-width-ops-in-mixed-sign-mul-wit.patch
 
 # clang-tools-extra patches
 Patch100:	0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
@@ -217,6 +219,7 @@ pathfix.py -i %{__python3} -pn \
 %patch5 -p1 -b .no-python2
 %patch6 -p1 -b .clang-format-diff-py3
 %patch7 -p1 -b .scan-view-py3
+%patch8 -p1 -b .mul-overflow-fix
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -416,6 +419,8 @@ false
 
 %endif
 %changelog
+* Wed Dec 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.1-2
+- Fix for rhbz#1657544
 
 * Tue Dec 18 2018 sguelton@redhat.com - 7.0.1-1
 - 7.0.1

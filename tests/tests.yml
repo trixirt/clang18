@@ -18,3 +18,6 @@
       - llvm-abi-test-suite:
           dir: ./
           run: cd /usr/share/llvm-test-suite/ABI-Testsuite/ && python2 linux-x86.py clang test -v --path /usr/lib64/llvm/ -j 1
+      - rhbz#1657544:
+          dir: ./from_chars
+          run: clang++ from_chars.cpp && ./a.out 100 | grep 100
