@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	2%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	2%{?rc_ver:.rc%{rc_ver}}%{?dist}.1
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -419,6 +419,9 @@ false
 
 %endif
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 7.0.1-2.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Wed Dec 19 2018 Tom Stellard <tstellar@redhat.com> - 7.0.1-2
 - Fix for rhbz#1657544
 
