@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	5%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	6%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -422,6 +422,9 @@ false
 
 %endif
 %changelog
+* Tue Feb 05 2019 sguelton@redhat.com - 7.0.1-6
+- Update patch for Python3 port of scan-view
+
 * Tue Feb 05 2019 sguelton@redhat.com - 7.0.1-5
 - Working CI test suite
 

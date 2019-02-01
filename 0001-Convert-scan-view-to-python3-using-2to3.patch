@@ -1,17 +1,7 @@
-From c760f8d703af0c67774681b5a259d5dd3a1e5a77 Mon Sep 17 00:00:00 2001
-From: Tom Stellard <tstellar@redhat.com>
-Date: Wed, 19 Sep 2018 08:53:10 -0700
-Subject: [PATCH] Convert scan-view to python3 using 2to3
-
----
- tools/scan-view/bin/scan-view | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/tools/scan-view/bin/scan-view b/tools/scan-view/bin/scan-view
-index 1b6e8ba..ca3dac5 100755
---- a/tools/scan-view/bin/scan-view
-+++ b/tools/scan-view/bin/scan-view
-@@ -7,9 +7,9 @@ import sys
+diff -r -u cfe-7.0.1.src.orig/tools/scan-view/bin/scan-view cfe-7.0.1.src/tools/scan-view/bin/scan-view
+--- cfe-7.0.1.src.orig/tools/scan-view/bin/scan-view	2019-01-25 06:33:02.331385931 +0000
++++ cfe-7.0.1.src/tools/scan-view/bin/scan-view	2019-01-25 06:34:16.207696772 +0000
+@@ -7,9 +7,9 @@
  import imp
  import os
  import posixpath
@@ -23,7 +13,7 @@ index 1b6e8ba..ca3dac5 100755
  import webbrowser
  
  # How long to wait for server to start.
-@@ -27,7 +27,7 @@ kMaxPortsToTry = 100
+@@ -27,7 +27,7 @@
  
  def url_is_up(url):
      try:
@@ -32,7 +22,7 @@ index 1b6e8ba..ca3dac5 100755
      except IOError:
          return False
      o.close()
-@@ -35,7 +35,7 @@ def url_is_up(url):
+@@ -35,7 +35,7 @@
  
  
  def start_browser(port, options):
@@ -41,7 +31,7 @@ index 1b6e8ba..ca3dac5 100755
      import webbrowser
  
      url = 'http://%s:%d' % (options.host, port)
-@@ -52,10 +52,10 @@ def start_browser(port, options):
+@@ -52,10 +52,10 @@
              sys.stderr.flush()
          time.sleep(kSleepTimeout)
      else:
@@ -54,7 +44,7 @@ index 1b6e8ba..ca3dac5 100755
      webbrowser.open(url)
  
  
-@@ -69,9 +69,9 @@ def run(port, options, root):
+@@ -69,9 +69,9 @@
  
      import ScanView
      try:
@@ -67,7 +57,7 @@ index 1b6e8ba..ca3dac5 100755
          httpd = ScanView.create_server((options.host, port),
                                         options, root)
          httpd.serve_forever()
-@@ -80,9 +80,9 @@ def run(port, options, root):
+@@ -80,9 +80,9 @@
  
  
  def port_is_open(port):
@@ -79,7 +69,7 @@ index 1b6e8ba..ca3dac5 100755
      except:
          return False
      t.server_close()
-@@ -135,7 +135,7 @@ def main():
+@@ -135,7 +135,7 @@
      # Kick off thread to wait for server and start web browser, if
      # requested.
      if args.startBrowser:
@@ -88,6 +78,334 @@ index 1b6e8ba..ca3dac5 100755
  
      run(port, args, args.root)
  
--- 
-1.8.3.1
-
+diff -r -u cfe-7.0.1.src.orig/tools/scan-view/share/Reporter.py cfe-7.0.1.src/tools/scan-view/share/Reporter.py
+--- cfe-7.0.1.src.orig/tools/scan-view/share/Reporter.py	2019-01-25 06:33:02.331385931 +0000
++++ cfe-7.0.1.src/tools/scan-view/share/Reporter.py	2019-01-25 06:34:16.262697004 +0000
+@@ -80,7 +80,7 @@
+         return 'Email'
+ 
+     def getParameters(self):
+-        return map(lambda x:TextParameter(x),['To', 'From', 'SMTP Server', 'SMTP Port'])
++        return [TextParameter(x) for x in ['To', 'From', 'SMTP Server', 'SMTP Port']]
+ 
+     # Lifted from python email module examples.
+     def attachFile(self, outer, path):
+@@ -148,7 +148,7 @@
+         return 'Bugzilla'
+     
+     def getParameters(self):
+-        return map(lambda x:TextParameter(x),['URL','Product'])
++        return [TextParameter(x) for x in ['URL','Product']]
+ 
+     def fileReport(self, report, parameters):
+         raise NotImplementedError
+@@ -211,7 +211,7 @@
+ 
+         script = os.path.join(os.path.dirname(__file__),'../share/scan-view/FileRadar.scpt')
+         args = ['osascript', script, component, componentVersion, classification, personID, report.title,
+-                report.description, diagnosis, config] + map(os.path.abspath, report.files)
++                report.description, diagnosis, config] + list(map(os.path.abspath, report.files))
+ #        print >>sys.stderr, args
+         try:
+           p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+diff -r -u cfe-7.0.1.src.orig/tools/scan-view/share/ScanView.py cfe-7.0.1.src/tools/scan-view/share/ScanView.py
+--- cfe-7.0.1.src.orig/tools/scan-view/share/ScanView.py	2019-01-25 06:33:02.331385931 +0000
++++ cfe-7.0.1.src/tools/scan-view/share/ScanView.py	2019-01-25 06:34:16.423697681 +0000
+@@ -1,10 +1,10 @@
+-import BaseHTTPServer
+-import SimpleHTTPServer
++import http.server
++import http.server
+ import os
+ import sys
+-import urllib, urlparse
++import urllib.request, urllib.parse, urllib.error, urllib.parse
+ import posixpath
+-import StringIO
++import io
+ import re
+ import shutil
+ import threading
+@@ -13,7 +13,8 @@
+ import itertools
+ 
+ import Reporter
+-import ConfigParser
++import configparser
++import importlib
+ 
+ ###
+ # Various patterns matched or replaced by server.
+@@ -96,25 +97,25 @@
+         result = None
+         try:
+             if self.server.options.debug:
+-                print >>sys.stderr, "%s: SERVER: submitting bug."%(sys.argv[0],)
++                print("%s: SERVER: submitting bug."%(sys.argv[0],), file=sys.stderr)
+             self.status = self.reporter.fileReport(self.report, self.parameters)
+             self.success = True
+             time.sleep(3)
+             if self.server.options.debug:
+-                print >>sys.stderr, "%s: SERVER: submission complete."%(sys.argv[0],)
+-        except Reporter.ReportFailure,e:
++                print("%s: SERVER: submission complete."%(sys.argv[0],), file=sys.stderr)
++        except Reporter.ReportFailure as e:
+             self.status = e.value
+-        except Exception,e:
+-            s = StringIO.StringIO()
++        except Exception as e:
++            s = io.StringIO()
+             import traceback
+-            print >>s,'<b>Unhandled Exception</b><br><pre>'
++            print('<b>Unhandled Exception</b><br><pre>', file=s)
+             traceback.print_exc(e,file=s)
+-            print >>s,'</pre>'
++            print('</pre>', file=s)
+             self.status = s.getvalue()
+ 
+-class ScanViewServer(BaseHTTPServer.HTTPServer):
++class ScanViewServer(http.server.HTTPServer):
+     def __init__(self, address, handler, root, reporters, options):
+-        BaseHTTPServer.HTTPServer.__init__(self, address, handler)
++        http.server.HTTPServer.__init__(self, address, handler)
+         self.root = root
+         self.reporters = reporters
+         self.options = options        
+@@ -123,7 +124,7 @@
+         self.load_config()
+ 
+     def load_config(self):
+-        self.config = ConfigParser.RawConfigParser()
++        self.config = configparser.RawConfigParser()
+ 
+         # Add defaults
+         self.config.add_section('ScanView')
+@@ -155,44 +156,44 @@
+     def halt(self):
+         self.halted = True
+         if self.options.debug:
+-            print >>sys.stderr, "%s: SERVER: halting." % (sys.argv[0],)
++            print("%s: SERVER: halting." % (sys.argv[0],), file=sys.stderr)
+ 
+     def serve_forever(self):
+         while not self.halted:
+             if self.options.debug > 1:
+-                print >>sys.stderr, "%s: SERVER: waiting..." % (sys.argv[0],)
++                print("%s: SERVER: waiting..." % (sys.argv[0],), file=sys.stderr)
+             try:
+                 self.handle_request()
+-            except OSError,e:
+-                print 'OSError',e.errno
++            except OSError as e:
++                print('OSError',e.errno)
+ 
+     def finish_request(self, request, client_address):
+         if self.options.autoReload:
+             import ScanView
+-            self.RequestHandlerClass = reload(ScanView).ScanViewRequestHandler
+-        BaseHTTPServer.HTTPServer.finish_request(self, request, client_address)
++            self.RequestHandlerClass = importlib.reload(ScanView).ScanViewRequestHandler
++        http.server.HTTPServer.finish_request(self, request, client_address)
+ 
+     def handle_error(self, request, client_address):
+         # Ignore socket errors
+         info = sys.exc_info()
+         if info and isinstance(info[1], socket.error):
+             if self.options.debug > 1:
+-                print >>sys.stderr, "%s: SERVER: ignored socket error." % (sys.argv[0],)
++                print("%s: SERVER: ignored socket error." % (sys.argv[0],), file=sys.stderr)
+             return
+-        BaseHTTPServer.HTTPServer.handle_error(self, request, client_address)
++        http.server.HTTPServer.handle_error(self, request, client_address)
+ 
+ # Borrowed from Quixote, with simplifications.
+ def parse_query(qs, fields=None):
+     if fields is None:
+         fields = {}
+-    for chunk in filter(None, qs.split('&')):
++    for chunk in [_f for _f in qs.split('&') if _f]:
+         if '=' not in chunk:
+             name = chunk
+             value = ''
+         else:
+             name, value = chunk.split('=', 1)
+-        name = urllib.unquote(name.replace('+', ' '))
+-        value = urllib.unquote(value.replace('+', ' '))
++        name = urllib.parse.unquote(name.replace('+', ' '))
++        value = urllib.parse.unquote(value.replace('+', ' '))
+         item = fields.get(name)
+         if item is None:
+             fields[name] = [value]
+@@ -200,20 +201,20 @@
+             item.append(value)
+     return fields
+ 
+-class ScanViewRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
++class ScanViewRequestHandler(http.server.SimpleHTTPRequestHandler):
+     server_version = "ScanViewServer/" + __version__
+     dynamic_mtime = time.time()
+ 
+     def do_HEAD(self):
+         try:
+-            SimpleHTTPServer.SimpleHTTPRequestHandler.do_HEAD(self)
+-        except Exception,e:
++            http.server.SimpleHTTPRequestHandler.do_HEAD(self)
++        except Exception as e:
+             self.handle_exception(e)
+             
+     def do_GET(self):
+         try:
+-            SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+-        except Exception,e:
++            http.server.SimpleHTTPRequestHandler.do_GET(self)
++        except Exception as e:
+             self.handle_exception(e)
+             
+     def do_POST(self):
+@@ -230,7 +231,7 @@
+             if f:
+                 self.copyfile(f, self.wfile)
+                 f.close()
+-        except Exception,e:
++        except Exception as e:
+             self.handle_exception(e)            
+ 
+     def log_message(self, format, *args):
+@@ -263,8 +264,8 @@
+ 
+     def handle_exception(self, exc):
+         import traceback
+-        s = StringIO.StringIO()
+-        print >>s, "INTERNAL ERROR\n"
++        s = io.StringIO()
++        print("INTERNAL ERROR\n", file=s)
+         traceback.print_exc(exc, s)
+         f = self.send_string(s.getvalue(), 'text/plain')
+         if f:
+@@ -410,8 +411,8 @@
+ 
+         import startfile
+         if self.server.options.debug:
+-            print >>sys.stderr, '%s: SERVER: opening "%s"'%(sys.argv[0],
+-                                                            file)
++            print('%s: SERVER: opening "%s"'%(sys.argv[0],
++                                                            file), file=sys.stderr)
+ 
+         status = startfile.open(file)
+         if status:
+@@ -428,7 +429,7 @@
+             data = self.load_crashes()
+             # Don't allow empty reports.
+             if not data:
+-                raise ValueError, 'No crashes detected!'
++                raise ValueError('No crashes detected!')
+             c = Context()
+             c.title = 'clang static analyzer failures'
+ 
+@@ -472,7 +473,7 @@
+             # Check that this is a valid report.            
+             path = posixpath.join(self.server.root, 'report-%s.html' % report)
+             if not posixpath.exists(path):
+-                raise ValueError, 'Invalid report ID'
++                raise ValueError('Invalid report ID')
+             keys = self.load_report(report)
+             c = Context()
+             c.title = keys.get('DESC','clang error (unrecognized')
+@@ -501,7 +502,7 @@
+         # report is None is used for crashes
+         try:
+             c = self.get_report_context(report)
+-        except ValueError, e:
++        except ValueError as e:
+             return self.send_error(400, e.message)
+ 
+         title = c.title
+@@ -544,7 +545,7 @@
+ """%(r.getName(),display,r.getName(),options))
+         reporterSelections = '\n'.join(reporterSelections)
+         reporterOptionsDivs = '\n'.join(reporterOptions)
+-        reportersArray = '[%s]'%(','.join([`r.getName()` for r in self.server.reporters]))
++        reportersArray = '[%s]'%(','.join([repr(r.getName()) for r in self.server.reporters]))
+ 
+         if c.files:
+             fieldSize = min(5, len(c.files))
+@@ -647,9 +648,9 @@
+             fields = {}
+         self.fields = fields
+ 
+-        o = urlparse.urlparse(self.path)
++        o = urllib.parse.urlparse(self.path)
+         self.fields = parse_query(o.query, fields)
+-        path = posixpath.normpath(urllib.unquote(o.path))
++        path = posixpath.normpath(urllib.parse.unquote(o.path))
+ 
+         # Split the components and strip the root prefix.
+         components = path.split('/')[1:]
+@@ -690,8 +691,8 @@
+         path = posixpath.join(self.server.root, relpath)
+ 
+         if self.server.options.debug > 1:
+-            print >>sys.stderr, '%s: SERVER: sending path "%s"'%(sys.argv[0],
+-                                                                 path)
++            print('%s: SERVER: sending path "%s"'%(sys.argv[0],
++                                                                 path), file=sys.stderr)
+         return self.send_path(path)
+ 
+     def send_404(self):
+@@ -735,7 +736,7 @@
+                 mtime = self.dynamic_mtime
+             self.send_header("Last-Modified", self.date_time_string(mtime))
+             self.end_headers()
+-        return StringIO.StringIO(s)
++        return io.StringIO(s)
+ 
+     def send_patched_file(self, path, ctype):
+         # Allow a very limited set of variables. This is pretty gross.
+diff -r -u cfe-7.0.1.src.orig/tools/scan-view/share/startfile.py cfe-7.0.1.src/tools/scan-view/share/startfile.py
+--- cfe-7.0.1.src.orig/tools/scan-view/share/startfile.py	2019-01-25 06:33:02.331385931 +0000
++++ cfe-7.0.1.src/tools/scan-view/share/startfile.py	2019-01-25 06:34:16.457697824 +0000
+@@ -70,7 +70,7 @@
+         return not returncode
+ 
+     def open(self, filename):
+-        if isinstance(filename, basestring):
++        if isinstance(filename, str):
+             cmdline = self.args + [filename]
+         else:
+             # assume it is a sequence
+@@ -110,7 +110,7 @@
+ # Platform support for Unix
+ else:
+ 
+-    import commands
++    import subprocess
+ 
+     # @WARNING: use the private API of the webbrowser module
+     from webbrowser import _iscommand
+@@ -125,7 +125,7 @@
+         def detect_kde_version(self):
+             kde_version = None
+             try:
+-                info = commands.getoutput('kde-config --version')
++                info = subprocess.getoutput('kde-config --version')
+ 
+                 for line in info.splitlines():
+                     if line.startswith('KDE'):
+@@ -158,7 +158,7 @@
+             desktop_environment = 'gnome'
+         else:
+             try:
+-                info = commands.getoutput('xprop -root _DT_SAVE_MODE')
++                info = subprocess.getoutput('xprop -root _DT_SAVE_MODE')
+                 if ' = "xfce4"' in info:
+                     desktop_environment = 'xfce'
+             except (OSError, RuntimeError):
+@@ -189,7 +189,7 @@
+             return _controllers[controller_name].open
+ 
+         except KeyError:
+-            if _controllers.has_key('xdg-open'):
++            if 'xdg-open' in _controllers:
+                 return _controllers['xdg-open'].open
+             else:
+                 return webbrowser.open

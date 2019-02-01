@@ -15,3 +15,4 @@
       - llvm-test-suite
       - llvm-abi-test-suite
       - rhbz_1657544
+      - rhbz_1647130
