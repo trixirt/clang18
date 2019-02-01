@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	2%{?rc_ver:.rc%{rc_ver}}%{?dist}.1
+Release:	3%{?rc_ver:.rc%{rc_ver}}%{?dist}.1
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -76,6 +76,7 @@ Patch6:		0001-Convert-clang-format-diff.py-to-python3-using-2to3.patch
 Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
 #rhbz#1657544
 Patch8:		0001-CodeGen-Handle-mixed-width-ops-in-mixed-sign-mul-wit.patch
+Patch9:		0001-Fix-uninitialized-value-in-ABIArgInfo.patch
 
 # clang-tools-extra patches
 Patch100:	0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
@@ -220,6 +221,7 @@ pathfix.py -i %{__python3} -pn \
 %patch6 -p1 -b .clang-format-diff-py3
 %patch7 -p1 -b .scan-view-py3
 %patch8 -p1 -b .mul-overflow-fix
+%patch9 -p1 -b .abi-arginfo
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -419,6 +421,9 @@ false
 
 %endif
 %changelog
+* Fri Feb 01 2019 sguelton@redhat.com - 7.0.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 7.0.1-2.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
