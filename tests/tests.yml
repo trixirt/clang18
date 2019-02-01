@@ -12,12 +12,6 @@
       - rhbz#482491:
           dir: ./
           run: echo "int main(){}" | clang -x c -
-      - llvm-test-suite:
-          dir: ./
-          run: cd $(mktemp -d) && cmake -G Ninja /usr/share/llvm-test-suite/ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DTEST_SUITE_LIT_FLAGS="-svj1" && ninja -j 1 check
-      - llvm-abi-test-suite:
-          dir: ./
-          run: cd /usr/share/llvm-test-suite/ABI-Testsuite/ && python2 linux-x86.py clang test -v --path /usr/lib64/llvm/ -j 1
-      - rhbz#1657544:
-          dir: ./from_chars
-          run: clang++ from_chars.cpp && ./a.out 100 | grep 100
+      - llvm-test-suite
+      - llvm-abi-test-suite
+      - rhbz_1657544

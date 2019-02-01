@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	4%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	5%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -422,6 +422,9 @@ false
 
 %endif
 %changelog
+* Tue Feb 05 2019 sguelton@redhat.com - 7.0.1-5
+- Working CI test suite
+
 * Mon Feb 04 2019 sguelton@redhat.com - 7.0.1-4
 - Workaround gcc-9 bug when compiling bitfields
 
