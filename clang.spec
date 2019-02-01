@@ -1,9 +1,9 @@
 %global compat_build 0
 
-%global maj_ver 7
+%global maj_ver 8
 %global min_ver 0
-%global patch_ver 1
-#%%global rc_ver 3
+%global patch_ver 0
+%global rc_ver 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -24,8 +24,8 @@
 	%{_bindir}/clang-check \
 	%{_bindir}/clang-cl \
 	%{_bindir}/clang-cpp \
+	%{_bindir}/clang-extdef-mapping \
 	%{_bindir}/clang-format \
-	%{_bindir}/clang-func-mapping \
 	%{_bindir}/clang-import-test \
 	%{_bindir}/clang-offload-bundler \
 	%{_bindir}/diagtool \
@@ -45,6 +45,7 @@
 %global pkg_libdir %{install_libdir}
 %else
 %global pkg_name clang
+%global install_prefix /usr
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -52,6 +53,8 @@
 %else
 %bcond_with python3
 %endif
+
+%global build_install_prefix %{buildroot}%{install_prefix}
 
 %global clang_srcdir cfe-%{version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{version}%{?rc_ver:rc%{rc_ver}}.src
@@ -68,23 +71,14 @@ Source0:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}
 Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
 %endif
 
-Patch0:		0001-lit.cfg-Add-hack-so-lit-can-find-not-and-FileCheck.patch
-Patch2:		0001-Driver-Prefer-vendor-supplied-gcc-toolchain.patch
-Patch4:		0001-gtest-reorg.patch
-Patch5:		0001-Don-t-prefer-python2.7.patch
-Patch6:		0001-Convert-clang-format-diff.py-to-python3-using-2to3.patch
-Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
-#rhbz#1657544
-Patch8:		0001-CodeGen-Handle-mixed-width-ops-in-mixed-sign-mul-wit.patch
+Patch4:		0002-gtest-reorg.patch
 Patch9:		0001-Fix-uninitialized-value-in-ABIArgInfo.patch
 Patch10:	0001-Workaround-GCC-9-bug-when-handling-bitfields.patch
-
-# clang-tools-extra patches
-Patch100:	0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
 BuildRequires:	cmake
+BuildRequires:	ninja-build
 %if 0%{?compat_build}
 BuildRequires:	llvm%{maj_ver}.%{min_ver}-devel = %{version}
 BuildRequires:	llvm%{maj_ver}.%{min_ver}-static = %{version}
@@ -109,7 +103,6 @@ BuildRequires:	emacs
 BuildRequires:	python3-lit
 %endif
 
-BuildRequires:	python2-rpm-macros
 BuildRequires:	python3-sphinx
 BuildRequires:	libatomic
 
@@ -179,24 +172,26 @@ Requires:	emacs-filesystem
 %description tools-extra
 A set of extra tools built using Clang's tooling API.
 
-# Put git-clang-format in its own package, because it Requires git and python2
+# Put git-clang-format in its own package, because it Requires git
 # and we don't want to force users to install all those dependenices if they
 # just want clang.
 %package -n git-clang-format
 Summary:	Integration of clang-format for git
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	git
-Requires:	python2
+Requires:	python3
 
 %description -n git-clang-format
 clang-format integration for git.
 
-%package -n python2-clang
-Summary:	Python2 bindings for clang
-Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-Requires:	python2
-%description -n python2-clang
+ 
+%package -n python3-clang
+Summary:       Python3 bindings for clang
+Requires:      %{name}-libs%{?_isa} = %{version}-%{release}
+Requires:      python3
+%description -n python3-clang
 %{summary}.
+
 
 %endif
 
@@ -207,7 +202,6 @@ Requires:	python2
 %else
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
 
-%patch100 -p1 -b .find-all-symbols-py3
 
 pathfix.py -i %{__python3} -pn \
 	clang-tidy/tool/*.py \
@@ -215,14 +209,9 @@ pathfix.py -i %{__python3} -pn \
 
 %setup -q -n %{clang_srcdir}
 
-%patch0 -p1 -b .lit-search-path
-%patch2 -p1 -b .vendor-gcc
 %patch4 -p1 -b .gtest
-%patch5 -p1 -b .no-python2
-%patch6 -p1 -b .clang-format-diff-py3
-%patch7 -p1 -b .scan-view-py3
-%patch8 -p1 -b .mul-overflow-fix
 %patch9 -p1 -b .abi-arginfo
+%patch10 -p1 -b .bitfields
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -249,7 +238,7 @@ cd _build
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
 
-%cmake .. \
+%cmake .. -G Ninja \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 	-DPYTHON_EXECUTABLE=%{__python3} \
@@ -258,7 +247,7 @@ cd _build
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
 %else
-	-DLLVM_CONFIG:FILEPATH=/usr/bin/llvm-config-%{__isa_bits} \
+	-DLLVM_TOOLS_BINARY_DIR=%{_libdir}/llvm \
 	-DCLANG_INCLUDE_TESTS:BOOL=ON \
 	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
@@ -281,13 +270,12 @@ cd _build
 	-DSPHINX_WARNINGS_AS_ERRORS=OFF \
 	\
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
-	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}" \
-	-DLIB_SUFFIX=
+	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}"
 
-make %{?_smp_mflags}
+ninja -v
 
 %install
-make install DESTDIR=%{buildroot} -C _build
+DESTDIR=%{buildroot} ninja install -C _build
 
 %if 0%{?compat_build}
 
@@ -304,8 +292,9 @@ mv  %{buildroot}/%{install_includedir}/clang-c %{buildroot}/%{pkg_includedir}/
 %else
 
 # install clang python bindings
-mkdir -p %{buildroot}%{python2_sitelib}/clang/
-install -p -m644 bindings/python/clang/* %{buildroot}%{python2_sitelib}/clang/
+mkdir -p %{buildroot}%{python3_sitelib}/clang/
+install -p -m644 bindings/python/clang/* %{buildroot}%{python3_sitelib}/clang/
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/clang
 
 # multilib fix
 %multilib_fix_c_header --file %{_includedir}/clang/Config/config.h
@@ -327,6 +316,9 @@ rm -Rvf %{buildroot}%{_pkgdocdir}
 rm -vf %{buildroot}%{_datadir}/clang/bash-autocomplete.sh
 
 # Add clang++-{version} sylink
+ln -s clang %{buildroot}%{_bindir}/clang++
+ln -s clang %{buildroot}%{_bindir}/clang-cl
+ln -s clang %{buildroot}%{_bindir}/clang-cpp
 ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
 # Create Manpage symlinks
@@ -342,9 +334,8 @@ chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
 %check
 %if !0%{?compat_build}
 # requires lit.py from LLVM utilities
-cd _build
 # FIXME: Fix failing ARM tests
-PATH=%{_libdir}/llvm:$PATH make %{?_smp_mflags} check-all || \
+PATH=%{_libdir}/llvm:$PATH ninja check-all -C _build || \
 %ifarch %{arm}
 :
 %else
@@ -417,11 +408,15 @@ false
 %files -n git-clang-format
 %{_bindir}/git-clang-format
 
-%files -n python2-clang
-%{python2_sitelib}/clang/
+%files -n python3-clang
+%{python3_sitelib}/clang/
+
 
 %endif
 %changelog
+* Sat Feb 09 2019 sguelton@redhat.com - 8.0.0-1.rc1
+- 8.0.0 Release candidate 1
+
 * Tue Feb 05 2019 sguelton@redhat.com - 7.0.1-6
 - Update patch for Python3 port of scan-view
 
