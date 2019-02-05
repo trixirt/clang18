@@ -58,7 +58,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	3%{?rc_ver:.rc%{rc_ver}}%{?dist}.1
+Release:	4%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -77,6 +77,7 @@ Patch7:		0001-Convert-scan-view-to-python3-using-2to3.patch
 #rhbz#1657544
 Patch8:		0001-CodeGen-Handle-mixed-width-ops-in-mixed-sign-mul-wit.patch
 Patch9:		0001-Fix-uninitialized-value-in-ABIArgInfo.patch
+Patch10:	0001-Workaround-GCC-9-bug-when-handling-bitfields.patch
 
 # clang-tools-extra patches
 Patch100:	0001-Convert-run-find-all-symbols.py-to-python3-using-2to.patch
@@ -421,8 +422,11 @@ false
 
 %endif
 %changelog
+* Mon Feb 04 2019 sguelton@redhat.com - 7.0.1-4
+- Workaround gcc-9 bug when compiling bitfields
+
 * Fri Feb 01 2019 sguelton@redhat.com - 7.0.1-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+- Fix uninitialized error detected by gcc-9
 
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 7.0.1-2.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
