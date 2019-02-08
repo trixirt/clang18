@@ -8,6 +8,17 @@
       - llvm-test-suite
       - ninja-build
       - gcc-x86_64-linux-gnu
+      # FIXME: It would be nice if we could only install dependencies for a
+      # single test rather than installing dependencies for all tests.  This
+      # will help us catch bugs with implicit package dependencies e.g.
+      # package A depends on package B but does not have an explicit Requires.
+      # These are required for the llvm-toolchain test:
+      - clang
+      - lld
+      - compiler-rt
+      - libcxx-devel
+      - glibc-devel
+      - gcc
     tests:
       - rhbz#482491:
           dir: ./
@@ -16,3 +27,4 @@
       - llvm-abi-test-suite
       - rhbz_1657544
       - rhbz_1647130
+      - llvm-toolchain
