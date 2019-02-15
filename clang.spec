@@ -387,7 +387,6 @@ false
 %files analyzer
 %{_bindir}/scan-view
 %{_bindir}/scan-build
-%{_bindir}/scan-build
 %{_libexecdir}/ccc-analyzer
 %{_libexecdir}/c++-analyzer
 %{_datadir}/scan-view/
