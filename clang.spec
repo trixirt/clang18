@@ -3,7 +3,7 @@
 %global maj_ver 8
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 1
+%global rc_ver 2
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -414,6 +414,9 @@ false
 
 %endif
 %changelog
+* Thu Feb 21 2019 sguelton@redhat.com - 8.0.0-1.rc2
+- 8.0.0 Release candidate 2
+
 * Sat Feb 09 2019 sguelton@redhat.com - 8.0.0-1.rc1
 - 8.0.0 Release candidate 1
 
