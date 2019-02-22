@@ -61,7 +61,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	6%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	0.2%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -414,10 +414,10 @@ false
 
 %endif
 %changelog
-* Thu Feb 21 2019 sguelton@redhat.com - 8.0.0-1.rc2
+* Thu Feb 21 2019 sguelton@redhat.com - 8.0.0-0.2.rc2
 - 8.0.0 Release candidate 2
 
-* Sat Feb 09 2019 sguelton@redhat.com - 8.0.0-1.rc1
+* Sat Feb 09 2019 sguelton@redhat.com - 8.0.0-0.1.rc1
 - 8.0.0 Release candidate 1
 
 * Tue Feb 05 2019 sguelton@redhat.com - 7.0.1-6
