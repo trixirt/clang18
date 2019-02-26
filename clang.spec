@@ -145,9 +145,11 @@ Runtime library for clang.
 
 %package devel
 Summary: Development header files for clang
+%if !0%{?compat_build}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # The clang CMake files reference tools from clang-tools-extra.
 Requires: %{name}-tools-extra%{?_isa} = %{version}-%{release}
+%endif
 
 %description devel
 Development header files for clang.
