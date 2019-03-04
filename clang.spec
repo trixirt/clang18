@@ -3,7 +3,7 @@
 %global maj_ver 8
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 2
+%global rc_ver 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -61,7 +61,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.3%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	0.4%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -326,6 +326,14 @@ ln -s clang %{buildroot}%{_bindir}/clang-cl
 ln -s clang %{buildroot}%{_bindir}/clang-cpp
 ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
+# Also install clang in /usr/lib64/llvm for compatibility with llvm-config --bindir
+pushd %{buildroot}%{_libdir}/llvm
+for tool in %{clang_binaries}
+do
+	ln -s ../../${tool}
+done
+popd
+
 # Create Manpage symlinks
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++.1.gz
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang-%{maj_ver}.1.gz
@@ -379,6 +387,7 @@ false
 %{_includedir}/clang/
 %{_includedir}/clang-c/
 %{_libdir}/cmake/*
+%{_libdir}/llvm/*
 %dir %{_datadir}/clang/
 %else
 %{pkg_libdir}/*.so
@@ -418,6 +427,9 @@ false
 
 %endif
 %changelog
+* Mon Mar 4 2019 sguelton@redhat.com - 8.0.0-0.4.rc3
+- 8.0.0 Release candidate 3
+
 * Mon Feb 25 2019 tstellar@redhat.com - 8.0.0-0.3.rc2
 - Fix compiling with -stdlib=libc++
 
