@@ -61,7 +61,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	0.4%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	0.5%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -85,6 +85,7 @@ BuildRequires:	llvm%{maj_ver}.%{min_ver}-devel = %{version}
 BuildRequires:	llvm%{maj_ver}.%{min_ver}-static = %{version}
 %else
 BuildRequires:	llvm-devel = %{version}
+BuildRequires:	llvm-test = %{version}
 # llvm-static is required, because clang-tablegen needs libLLVMTableGen, which
 # is not included in libLLVM.so.
 BuildRequires:	llvm-static = %{version}
@@ -112,6 +113,7 @@ BuildRequires:	python3-devel
 
 # Needed for %%multilib_fix_c_header
 BuildRequires:	multilib-rpm-config
+BuildRequires: chrpath
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -247,12 +249,13 @@ cd _build
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 	-DPYTHON_EXECUTABLE=%{__python3} \
+	-DCMAKE_SKIP_RPATH:BOOL=ON \
+	-DCMAKE_INSTALL_RPATH:BOOL=OFF \
 %if 0%{?compat_build}
 	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver}.%{min_ver}-%{__isa_bits} \
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
 %else
-	-DLLVM_TOOLS_BINARY_DIR=%{_libdir}/llvm \
 	-DCLANG_INCLUDE_TESTS:BOOL=ON \
 	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
@@ -263,6 +266,7 @@ cd _build
 %endif
 %endif
 	\
+	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen \
 	-DCLANG_ENABLE_ARCMT:BOOL=ON \
 	-DCLANG_ENABLE_STATIC_ANALYZER:BOOL=ON \
 	-DCLANG_INCLUDE_DOCS:BOOL=ON \
@@ -320,24 +324,14 @@ rm -Rvf %{buildroot}%{_pkgdocdir}
 # TODO: What are the Fedora guidelines for packaging bash autocomplete files?
 rm -vf %{buildroot}%{_datadir}/clang/bash-autocomplete.sh
 
-# Add clang++-{version} sylink
-ln -s clang %{buildroot}%{_bindir}/clang++
-ln -s clang %{buildroot}%{_bindir}/clang-cl
-ln -s clang %{buildroot}%{_bindir}/clang-cpp
-ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
-
-# Also install clang in /usr/lib64/llvm for compatibility with llvm-config --bindir
-pushd %{buildroot}%{_libdir}/llvm
-for tool in %{clang_binaries}
-do
-	ln -s ../../${tool}
-done
-popd
-
 # Create Manpage symlinks
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++.1.gz
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang-%{maj_ver}.1.gz
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++-%{maj_ver}.1.gz
+
+# Add clang++-{version} sylink
+ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
+
 
 # Fix permission
 chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
@@ -348,7 +342,7 @@ chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
 %if !0%{?compat_build}
 # requires lit.py from LLVM utilities
 # FIXME: Fix failing ARM tests, s390x i686 and ppc64le tests
-PATH=%{_libdir}/llvm:$PATH ninja check-all -C _build || \
+LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 %ifarch s390x i686 ppc64le %{arm}
 :
 %else
@@ -387,7 +381,6 @@ false
 %{_includedir}/clang/
 %{_includedir}/clang-c/
 %{_libdir}/cmake/*
-%{_libdir}/llvm/*
 %dir %{_datadir}/clang/
 %else
 %{pkg_libdir}/*.so
@@ -427,6 +420,9 @@ false
 
 %endif
 %changelog
+* Mon Mar 4 2019 sguelton@redhat.com - 8.0.0-0.5.rc3
+- Cleanup specfile after llvm dependency update
+
 * Mon Mar 4 2019 sguelton@redhat.com - 8.0.0-0.4.rc3
 - 8.0.0 Release candidate 3
 
