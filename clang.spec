@@ -61,7 +61,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	1%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	2%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -73,7 +73,6 @@ Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}
 
 Patch4:		0002-gtest-reorg.patch
 Patch9:		0001-Fix-uninitialized-value-in-ABIArgInfo.patch
-Patch10:	0001-Workaround-GCC-9-bug-when-handling-bitfields.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 
 BuildRequires:	gcc
@@ -216,7 +215,6 @@ pathfix.py -i %{__python3} -pn \
 
 %patch4 -p1 -b .gtest
 %patch9 -p1 -b .abi-arginfo
-%patch10 -p1 -b .bitfields
 %patch11 -p1 -b .libcxx-fix
 
 mv ../%{clang_tools_srcdir} tools/extra
@@ -420,6 +418,9 @@ false
 
 %endif
 %changelog
+* Fri Apr 12 2019 sguelton@redhat.com - 8.0.0-2
+- Remove useless patch thanks to GCC upgrade
+
 * Wed Mar 20 2019 sguelton@redhat.com - 8.0.0-1
 - 8.0.0 final
 
