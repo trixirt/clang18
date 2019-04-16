@@ -327,7 +327,7 @@ ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++.1.gz
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang-%{maj_ver}.1.gz
 ln -s clang.1.gz %{buildroot}%{_mandir}/man1/clang++-%{maj_ver}.1.gz
 
-# Add clang++-{version} sylink
+# Add clang++-{version} symlink
 ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
 
