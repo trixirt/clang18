@@ -61,7 +61,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	2%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	3%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -74,6 +74,9 @@ Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}
 Patch4:		0002-gtest-reorg.patch
 Patch9:		0001-Fix-uninitialized-value-in-ABIArgInfo.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
+Patch12:	0001-Fix-isInSystemMacro-to-handle-pasted-macros.patch
+Patch13:	0002-Format-isInSystemMacro-after-D55782.patch
+Patch14:	0003-Fix-isInSystemMacro-in-presence-of-macro-and-pasted-.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -216,6 +219,9 @@ pathfix.py -i %{__python3} -pn \
 %patch4 -p1 -b .gtest
 %patch9 -p1 -b .abi-arginfo
 %patch11 -p1 -b .libcxx-fix
+%patch12 -p1 -b .double-promotion-0
+%patch13 -p1 -b .double-promotion-1
+%patch14 -p1 -b .double-promotion-2
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -418,6 +424,9 @@ false
 
 %endif
 %changelog
+* Thu May 16 2019 sguelton@redhat.com - 8.0.0-3
+- Fix for rhbz#1674031
+
 * Fri Apr 12 2019 sguelton@redhat.com - 8.0.0-2
 - Remove useless patch thanks to GCC upgrade
 
