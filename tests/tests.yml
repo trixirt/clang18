@@ -19,12 +19,15 @@
       - libcxx-devel
       - glibc-devel
       - gcc
+    repositories:
+    - repo: "https://src.fedoraproject.org/tests/llvm-test-suite.git"
+      dest: "llvm-test-suite"
     tests:
       - rhbz#482491:
           dir: ./
           run: echo "int main(){}" | clang -x c -
-      - llvm-test-suite
-      - llvm-abi-test-suite
+      - llvm-test-suite/test-suite
+      - llvm-test-suite/abi-test-suite
       - rhbz_1657544
       - rhbz_1647130
       - llvm-toolchain
