@@ -61,7 +61,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	3%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	3%{?rc_ver:.rc%{rc_ver}}%{?dist}.1
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -424,6 +424,9 @@ false
 
 %endif
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 8.0.0-3.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Thu May 16 2019 sguelton@redhat.com - 8.0.0-3
 - Fix for rhbz#1674031
 
