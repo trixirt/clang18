@@ -4,6 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 4
+%global baserelease 4
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -61,7 +62,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	4%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	%{baserelease}%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -270,7 +271,11 @@ cd _build
 %endif
 %endif
 	\
+%if !0%{compat_build}
 	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen \
+%else
+	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen-%{maj_ver}.%{min_ver} \
+%endif
 	-DCLANG_ENABLE_ARCMT:BOOL=ON \
 	-DCLANG_ENABLE_STATIC_ANALYZER:BOOL=ON \
 	-DCLANG_INCLUDE_DOCS:BOOL=ON \
