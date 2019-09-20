@@ -3,8 +3,8 @@
 %global maj_ver 9
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 3
-%global baserelease 0.2
+#%%global rc_ver 3
+%global baserelease 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -441,6 +441,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Thu Sep 19 2019 Tom Stellard <tstellar@redhat.com> - 9.0.0-1
+- 9.0.0 Release
+
 * Wed Sep 11 2019 Tom Stellard <tstellar@redhat.com> - 9.0.0-0.2.rc3
 - Reduce debug info verbosity on ppc64le to avoid OOM errors in koji
 
