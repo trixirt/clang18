@@ -22,12 +22,14 @@
     repositories:
     - repo: "https://src.fedoraproject.org/tests/llvm-test-suite.git"
       dest: "llvm-test-suite"
+    - repo: "https://src.fedoraproject.org/tests/clang.git"
+      dest: "clang"
     tests:
       - rhbz#482491:
           dir: ./
           run: echo "int main(){}" | clang -x c -
       - llvm-test-suite/test-suite
       - llvm-test-suite/abi-test-suite
-      - rhbz_1657544
-      - rhbz_1647130
-      - llvm-toolchain
+      - clang/rhbz_1657544
+      - clang/rhbz_1647130
+      - clang/llvm-toolchain
