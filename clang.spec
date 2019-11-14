@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 3
-%global baserelease 2
+%global baserelease 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -160,6 +160,7 @@ Summary: Development header files for clang
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # The clang CMake files reference tools from clang-tools-extra.
 Requires: %{name}-tools-extra%{?_isa} = %{version}-%{release}
+Requires: %{name}-libs = %{version}-%{release}
 %endif
 
 %description devel
@@ -442,6 +443,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Wed Dec 11 2019 Tom Stellard <tstellar@redhat.com> - 9.0.0-3
+- Add explicit requires for clang-libs to fix rpmdiff errors
+
 * Tue Dec 10 2019 sguelton@redhat.com - 9.0.0-2
 - Activate -funwind-tables on all arches, see rhbz#1655546.
 
