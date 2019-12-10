@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 3
-%global baserelease 1
+%global baserelease 2
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -83,6 +83,7 @@ Patch4:		0002-gtest-reorg.patch
 Patch9:		0001-Fix-uninitialized-value-in-ABIArgInfo.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch12:	0001-Fix-Driver-modules.cpp-test-to-work-when-build-direc.patch
+Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -441,6 +442,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Tue Dec 10 2019 sguelton@redhat.com - 9.0.0-2
+- Activate -funwind-tables on all arches, see rhbz#1655546.
+
 * Thu Sep 19 2019 Tom Stellard <tstellar@redhat.com> - 9.0.0-1
 - 9.0.0 Release
 
