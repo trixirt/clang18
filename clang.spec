@@ -2,9 +2,9 @@
 
 %global maj_ver 9
 %global min_ver 0
-%global patch_ver 0
+%global patch_ver 1
 #%%global rc_ver 3
-%global baserelease 3
+%global baserelease 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -64,7 +64,7 @@
 %global _smp_mflags -j8
 %endif
 
-%global clang_srcdir cfe-%{version}%{?rc_ver:rc%{rc_ver}}.src
+%global clang_srcdir clang-%{version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{version}%{?rc_ver:rc%{rc_ver}}.src
 
 Name:		%pkg_name
@@ -80,9 +80,7 @@ Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}
 %endif
 
 Patch4:		0002-gtest-reorg.patch
-Patch9:		0001-Fix-uninitialized-value-in-ABIArgInfo.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
-Patch12:	0001-Fix-Driver-modules.cpp-test-to-work-when-build-direc.patch
 Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
 
 BuildRequires:	gcc
@@ -225,9 +223,7 @@ pathfix.py -i %{__python3} -pn \
 %setup -q -n %{clang_srcdir}
 
 %patch4 -p1 -b .gtest
-%patch9 -p2 -b .abi-arginfo
 %patch11 -p1 -b .libcxx-fix
-%patch12 -p2 -b .module-test-fix
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -443,6 +439,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Thu Dec 19 2019 Tom Stellard <tstellar@redhat.com> - 9.0.1-1
+- 9.0.1 Release
+
 * Wed Dec 11 2019 Tom Stellard <tstellar@redhat.com> - 9.0.0-3
 - Add explicit requires for clang-libs to fix rpmdiff errors
 
