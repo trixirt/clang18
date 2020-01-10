@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 1
 #%%global rc_ver 3
-%global baserelease 1
+%global baserelease 2
 
 %global clang_tools_binaries \
 	%{_bindir}/clangd \
@@ -82,6 +82,8 @@ Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}
 Patch4:		0002-gtest-reorg.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
+# Fix crash with kernel bpf self-tests
+Patch14:	0001-BPF-annotate-DIType-metadata-for-builtin-preseve_arr.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -224,6 +226,7 @@ pathfix.py -i %{__python3} -pn \
 
 %patch4 -p1 -b .gtest
 %patch11 -p1 -b .libcxx-fix
+%patch14 -p2 -b .bpf-fix
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -439,6 +442,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Fri Jan 10 2020 Tom Stellard <tstellar@redhat.com> - 9.0.1-2
+- Fix crash with kernel bpf self-tests
+
 * Thu Dec 19 2019 Tom Stellard <tstellar@redhat.com> - 9.0.1-1
 - 9.0.1 Release
 
