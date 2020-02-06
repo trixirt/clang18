@@ -1,38 +1,41 @@
 %global compat_build 0
 
-%global maj_ver 9
+%global maj_ver 10
 %global min_ver 0
-%global patch_ver 1
-#%%global rc_ver 3
-%global baserelease 3
+%global patch_ver 0
+%global rc_ver 1
+%global baserelease 0.1
 
 %global clang_tools_binaries \
-	%{_bindir}/clangd \
 	%{_bindir}/clang-apply-replacements \
 	%{_bindir}/clang-change-namespace \
+	%{_bindir}/clang-check \
 	%{_bindir}/clang-doc \
+	%{_bindir}/clang-extdef-mapping \
+	%{_bindir}/clang-format \
+	%{_bindir}/clang-import-test \
 	%{_bindir}/clang-include-fixer \
+	%{_bindir}/clang-move \
+	%{_bindir}/clang-offload-bundler \
+	%{_bindir}/clang-offload-wrapper \
 	%{_bindir}/clang-query \
 	%{_bindir}/clang-refactor \
-	%{_bindir}/clang-reorder-fields \
 	%{_bindir}/clang-rename \
-	%{_bindir}/clang-tidy
+	%{_bindir}/clang-reorder-fields \
+	%{_bindir}/clang-scan-deps \
+	%{_bindir}/clang-tidy \
+	%{_bindir}/clangd \
+	%{_bindir}/diagtool \
+	%{_bindir}/hmaptool \
+	%{_bindir}/pp-trace
 
 %global clang_binaries \
 	%{_bindir}/clang \
 	%{_bindir}/clang++ \
 	%{_bindir}/clang-%{maj_ver} \
 	%{_bindir}/clang++-%{maj_ver} \
-	%{_bindir}/clang-check \
 	%{_bindir}/clang-cl \
 	%{_bindir}/clang-cpp \
-	%{_bindir}/clang-extdef-mapping \
-	%{_bindir}/clang-format \
-	%{_bindir}/clang-import-test \
-	%{_bindir}/clang-offload-bundler \
-	%{_bindir}/clang-scan-deps \
-	%{_bindir}/diagtool \
-	%{_bindir}/hmaptool
 
 %if 0%{?compat_build}
 %global pkg_name clang%{maj_ver}.%{min_ver}
@@ -77,13 +80,14 @@ URL:		http://llvm.org
 Source0:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_srcdir}.tar.xz
 %if !0%{?compat_build}
 Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
+Source2:	https://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
 %endif
+Source3:	https://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_srcdir}.tar.xz.sig
+Source4:	https://prereleases.llvm.org/%{version}/hans-gpg-key.asc
 
 Patch4:		0002-gtest-reorg.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
-# Fix crash with kernel bpf self-tests
-Patch14:	0001-BPF-annotate-DIType-metadata-for-builtin-preseve_arr.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -226,7 +230,7 @@ pathfix.py -i %{__python3} -pn \
 
 %patch4 -p1 -b .gtest
 %patch11 -p1 -b .libcxx-fix
-%patch14 -p2 -b .bpf-fix
+%patch13 -p2 -b .unwind-all
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -264,8 +268,8 @@ cd _build
 	-DPYTHON_EXECUTABLE=%{__python3} \
 	-DCMAKE_INSTALL_RPATH:BOOL=";" \
 %ifarch s390 s390x %{arm} %ix86 ppc64le
-        -DCMAKE_C_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
-        -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
+	-DCMAKE_C_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
+	-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
 %endif
 %if 0%{?compat_build}
 	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver}.%{min_ver}-%{__isa_bits} \
@@ -341,6 +345,8 @@ rm -vf %{buildroot}%{_datadir}/clang/clang-format-sublime.py*
 
 # TODO: Package html docs
 rm -Rvf %{buildroot}%{_pkgdocdir}
+rm -Rvf %{buildroot}%{install_prefix}/share/clang/clang-doc-default-stylesheet.css
+rm -Rvf %{buildroot}%{install_prefix}/share/clang/index.js
 
 # TODO: What are the Fedora guidelines for packaging bash autocomplete files?
 rm -vf %{buildroot}%{_datadir}/clang/bash-autocomplete.sh
@@ -442,6 +448,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Fri Jan 31 2020 sguelton@redhat.com - 10.0.0-0.1.rc1
+- 10.0.0 rc1
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 9.0.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
