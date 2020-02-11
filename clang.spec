@@ -143,6 +143,9 @@ Requires:	emacs-filesystem
 
 Provides:	clang(major) = %{maj_ver}
 
+Conflicts:	compiler-rt < %{version}
+Conflicts:	compiler-rt > %{version}
+
 %description
 clang: noun
     1. A loud, resonant, metallic sound.
@@ -453,6 +456,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Tue Feb 11 2020 sguelton@redhat.com - 10.0.0-0.2.rc1
+- Explicitly conflicts with any different compiler-rt version, see rhbz#1800705
+
 * Fri Jan 31 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-0.1.rc1
 - Stop shipping individual component libraries
 - https://fedoraproject.org/wiki/Changes/Stop-Shipping-Individual-Component-Libraries-In-clang-lib-Package
