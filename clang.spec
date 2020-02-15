@@ -3,8 +3,8 @@
 %global maj_ver 10
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 1
-%global baserelease 0.2
+%global rc_ver 2
+%global baserelease 0.1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -456,6 +456,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Fri Feb 14 2020 sguelton@redhat.com - 10.0.0-0.1.rc2
+- 10.0.0 rc2
+
 * Tue Feb 11 2020 sguelton@redhat.com - 10.0.0-0.2.rc1
 - Explicitly conflicts with any different compiler-rt version, see rhbz#1800705
 
