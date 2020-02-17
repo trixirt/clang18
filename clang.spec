@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 2
-%global baserelease 0.1
+%global baserelease 0.3
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -456,6 +456,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Mon Feb 17 2020 sguelton@redhat.com - 10.0.0-0.3.rc2
+- Fix NVR
+
 * Fri Feb 14 2020 sguelton@redhat.com - 10.0.0-0.1.rc2
 - 10.0.0 rc2
 
