@@ -1,10 +1,10 @@
 %global compat_build 0
 
-%global maj_ver 10
+%global maj_ver 11
 %global min_ver 0
 %global patch_ver 0
-#%%global rc_ver 6
-%global baserelease 11
+%global rc_ver 1
+%global baserelease 0.1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -13,7 +13,6 @@
 	%{_bindir}/clang-doc \
 	%{_bindir}/clang-extdef-mapping \
 	%{_bindir}/clang-format \
-	%{_bindir}/clang-import-test \
 	%{_bindir}/clang-include-fixer \
 	%{_bindir}/clang-move \
 	%{_bindir}/clang-offload-bundler \
@@ -98,12 +97,9 @@ Source4:	https://prereleases.llvm.org/%{version}/hans-gpg-key.asc
 Patch4:		0002-gtest-reorg.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
-Patch14:	0001-clang-fix-undefined-behaviour-in-RawComment-getForma.patch
 
 # Not Upstream
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
-Patch16:	0001-Driver-Accept-multiple-config-options-if-filenames-a.patch
-Patch17:	0001-Add-cet.h-for-writing-CET-enabled-assembly-code.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -257,10 +253,7 @@ pathfix.py -i %{__python3} -pn \
 %patch4 -p1 -b .gtest
 %patch11 -p1 -b .libcxx-fix
 %patch13 -p2 -b .unwind-all
-%patch14 -p2 -b .clangd
 %patch15 -p2 -b .no-install-static
-%patch16 -p2 -b .config-multiple
-%patch17 -p2 -b .cet.h
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -408,6 +401,9 @@ popd
 
 %endif
 
+# Remove clang-tidy headers.  We don't ship the libraries for these.
+rm -Rvf %{buildroot}%{_includedir}/clang-tidy/
+
 %check
 %if !0%{?compat_build}
 # requires lit.py from LLVM utilities
@@ -491,6 +487,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
 
 %endif
 %changelog
+* Mon Aug 10 2020 Tom Stellard <tstellar@redhat.com> - 11.0.0-0.1.rc1
+- 11.0.0-rc1 Release
+
 * Tue Aug 04 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-11
 - Remove Requires: emacs-filesystem
 
