@@ -391,15 +391,10 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 %if !0%{?compat_build}
 %files
 %{clang_binaries}
-%{_bindir}/c-index-test
 %{_mandir}/man1/clang.1.gz
 %{_mandir}/man1/clang++.1.gz
 %{_mandir}/man1/clang-%{maj_ver}.1.gz
 %{_mandir}/man1/clang++-%{maj_ver}.1.gz
-%{_mandir}/man1/diagtool.1.gz
-%{_emacs_sitestartdir}/clang-format.el
-%{_datadir}/clang/clang-format.py*
-%{_datadir}/clang/clang-format-diff.py*
 %endif
 
 %files libs
@@ -437,10 +432,15 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %files tools-extra
 %{clang_tools_binaries}
+%{_bindir}/c-index-test
 %{_bindir}/find-all-symbols
 %{_bindir}/modularize
+%{_mandir}/man1/diagtool.1.gz
+%{_emacs_sitestartdir}/clang-format.el
 %{_emacs_sitestartdir}/clang-rename.el
 %{_emacs_sitestartdir}/clang-include-fixer.el
+%{_datadir}/clang/clang-format.py*
+%{_datadir}/clang/clang-format-diff.py*
 %{_datadir}/clang/clang-include-fixer.py*
 %{_datadir}/clang/clang-tidy-diff.py*
 %{_datadir}/clang/run-clang-tidy.py*
