@@ -209,7 +209,7 @@ Requires:	python3
 %description -n git-clang-format
 clang-format integration for git.
 
- 
+
 %package -n python3-clang
 Summary:       Python3 bindings for clang
 Requires:      %{name}-libs%{?_isa} = %{version}-%{release}
@@ -569,7 +569,7 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 - Ensure rpmlint passes on specfile
 
 * Fri Nov 30 2018 Tom Stellard <tstellar@redhat.com> - 7.0.0-7
-- Drop python2 dependency from clang-tools-extra 
+- Drop python2 dependency from clang-tools-extra
 
 * Wed Nov 21 2018 sguelton@redhat.com - 7.0.0-6
 - Prune unneeded reference to llvm-test-suite sub-package
