@@ -3,8 +3,8 @@
 %global maj_ver 10
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 3
-%global baserelease 0.6
+%global rc_ver 4
+%global baserelease 0.7
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -456,6 +456,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Sat Mar 14 2020 sguelton@redhat.com - 10.0.0-0.7.rc4
+- 10.0.0 rc4
+
 * Thu Mar 12 2020 sguelton@redhat.com - 10.0.0-0.6.rc3
 - Move a few files from clang to clang-tools-extra.
 
