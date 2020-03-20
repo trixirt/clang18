@@ -3,8 +3,8 @@
 %global maj_ver 10
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 4
-%global baserelease 0.7
+%global rc_ver 5
+%global baserelease 0.8
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -456,6 +456,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Fri Mar 20 2020 sguelton@redhat.com - 10.0.0-0.8.rc5
+- 10.0.0 rc5
+
 * Sat Mar 14 2020 sguelton@redhat.com - 10.0.0-0.7.rc4
 - 10.0.0 rc4
 
