@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 5
-%global baserelease 0.8
+%global baserelease 0.9
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -159,6 +159,9 @@ as libraries and designed to be loosely-coupled and extensible.
 %package libs
 Summary: Runtime library for clang
 Recommends: compiler-rt%{?_isa} = %{version}
+# libomp-devel is required, so clang can find the omp.h header when compiling
+# with -fopenmp.
+Recommends: libomp-devel%{_isa} = %{version}
 Recommends: libomp%{_isa} = %{version}
 
 %description libs
@@ -456,6 +459,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Fri Mar 20 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-0.9.rc5
+- Add dependency on libomp-devel
+
 * Fri Mar 20 2020 sguelton@redhat.com - 10.0.0-0.8.rc5
 - 10.0.0 rc5
 
