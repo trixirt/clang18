@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 5
-%global baserelease 0.9
+%global baserelease 0.10
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -205,7 +205,7 @@ A set of extra tools built using Clang's tooling API.
 # just want clang.
 %package -n git-clang-format
 Summary:	Integration of clang-format for git
-Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name}-tools-extra = %{version}-%{release}
 Requires:	git
 Requires:	python3
 
@@ -459,6 +459,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Sun Mar 22 2020 sguelton@redhat.com - 10.0.0-0.10.rc5
+- Update git-clang-format dependency, see rhbz#1815913
+
 * Fri Mar 20 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-0.9.rc5
 - Add dependency on libomp-devel
 
