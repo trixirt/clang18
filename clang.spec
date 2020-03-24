@@ -3,8 +3,8 @@
 %global maj_ver 10
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 5
-%global baserelease 0.10
+%global rc_ver 6
+%global baserelease 0.11
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -459,6 +459,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Tue Mar 24 2020 sguelton@redhat.com - 10.0.0-0.11.rc6
+- 10.0.0 rc6
+
 * Sun Mar 22 2020 sguelton@redhat.com - 10.0.0-0.10.rc5
 - Update git-clang-format dependency, see rhbz#1815913
 
