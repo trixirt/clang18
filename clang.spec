@@ -3,8 +3,8 @@
 %global maj_ver 10
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 6
-%global baserelease 0.11
+#%%global rc_ver 6
+%global baserelease 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -77,12 +77,22 @@ Summary:	A C language family front-end for LLVM
 
 License:	NCSA
 URL:		http://llvm.org
-Source0:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_srcdir}.tar.xz
-%if !0%{?compat_build}
-Source1:	http://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
-Source2:	https://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
+%if 0%{?rc_ver:1}
+Source0:	https://prereleases.llvm.org/%{version}/rc%{rc_ver}/%{clang_srcdir}.tar.xz
+Source3:	https://prereleases.llvm.org/%{version}/rc%{rc_ver}/%{clang_srcdir}.tar.xz.sig
+%else
+Source0:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}/%{clang_srcdir}.tar.xz
+Source3:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}/%{clang_srcdir}.tar.xz.sig
 %endif
-Source3:	https://%{?rc_ver:pre}releases.llvm.org/%{version}/%{?rc_ver:rc%{rc_ver}}/%{clang_srcdir}.tar.xz.sig
+%if !0%{?compat_build}
+%if 0%{?rc_ver:1}
+Source1:	https://prereleases.llvm.org/%{version}/rc%{rc_ver}/%{clang_tools_srcdir}.tar.xz
+Source2:	https://prereleases.llvm.org/%{version}/rc%{rc_ver}/%{clang_tools_srcdir}.tar.xz.sig
+%else
+Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}/%{clang_tools_srcdir}.tar.xz
+Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}/%{clang_tools_srcdir}.tar.xz.sig
+%endif
+%endif
 Source4:	https://prereleases.llvm.org/%{version}/hans-gpg-key.asc
 
 Patch4:		0002-gtest-reorg.patch
@@ -459,6 +469,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Thu Mar 26 2020 sguelton@redhat.com - 10.0.0-1
+- 10.0.0 final
+
 * Tue Mar 24 2020 sguelton@redhat.com - 10.0.0-0.11.rc6
 - 10.0.0 rc6
 
