@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 3
+%global baserelease 4
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -386,6 +386,15 @@ ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 # Fix permission
 chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
 
+# create a link to clang's resource directory that is "constant" across minor
+# version bumps
+# this is required for packages like ccls that hardcode the link to clang's
+# resource directory to not require rebuilds on minor version bumps
+# Fix for bugs like rhbz#1807574
+pushd %{buildroot}%{_libdir}/clang/
+ln -s %{version} %{maj_ver}
+popd
+
 %endif
 
 %check
@@ -471,6 +480,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Wed Jun  3 2020 Dan Čermák <dan.cermak@cgc-instruments.com> - 10.0.0-4
+- Add symlink to %%{_libdir}/clang/%%{maj_ver} for persistent access to the resource directory accross minor version bumps
+
 * Mon May 25 2020 Miro Hrončok <mhroncok@redhat.com> - 10.0.0-3
 - Rebuilt for Python 3.9
 
