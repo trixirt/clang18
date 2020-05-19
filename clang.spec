@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 1
+%global baserelease 2
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -98,6 +98,7 @@ Source4:	https://prereleases.llvm.org/%{version}/hans-gpg-key.asc
 Patch4:		0002-gtest-reorg.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
+Patch14:	0001-clang-fix-undefined-behaviour-in-RawComment-getForma.patch
 
 # Not Upstream
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
@@ -250,6 +251,7 @@ pathfix.py -i %{__python3} -pn \
 %patch4 -p1 -b .gtest
 %patch11 -p1 -b .libcxx-fix
 %patch13 -p2 -b .unwind-all
+%patch14 -p2 -b .clangd
 %patch15 -p2 -b .no-install-static
 
 mv ../%{clang_tools_srcdir} tools/extra
@@ -469,6 +471,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Tue May 19 2020 sguelton@redhat.com - 10.0.0-2
+- Backport ad7211df6f257e39da2e5a11b2456b4488f32a1e, see rhbz#1825593
+
 * Thu Mar 26 2020 sguelton@redhat.com - 10.0.0-1
 - 10.0.0 final
 

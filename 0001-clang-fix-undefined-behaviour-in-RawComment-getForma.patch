@@ -1,0 +1,47 @@
+From ad7211df6f257e39da2e5a11b2456b4488f32a1e Mon Sep 17 00:00:00 2001
+From: Oliver Bruns <obruns@gmail.com>
+Date: Mon, 6 Apr 2020 10:38:30 +0200
+Subject: [PATCH] [clang] fix undefined behaviour in
+ RawComment::getFormattedText()
+
+Summary:
+Calling `back()` and `pop_back()` on the empty string is undefined
+behavior [1,2].
+
+The issue manifested itself as an uncaught `std::out_of_range` exception
+when running `clangd` compiled on RHEL7 using devtoolset-9.
+
+[1] https://en.cppreference.com/w/cpp/string/basic_string/back
+[2] https://en.cppreference.com/w/cpp/string/basic_string/pop_back
+
+Fixes: 1ff7c32fc91c607b690d4bb9cf42f406be8dde68
+
+Reviewers: teemperor, ioeric, cfe-commits
+
+Reviewed By: teemperor
+
+Subscribers: ilya-biryukov, kadircet, usaxena95
+
+Tags: #clang
+
+Differential Revision: https://reviews.llvm.org/D77468
+---
+ clang/lib/AST/RawCommentList.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/clang/lib/AST/RawCommentList.cpp b/clang/lib/AST/RawCommentList.cpp
+index 8552b4fcd2b..a8d15036cab 100644
+--- a/clang/lib/AST/RawCommentList.cpp
++++ b/clang/lib/AST/RawCommentList.cpp
+@@ -431,7 +431,7 @@ std::string RawComment::getFormattedText(const SourceManager &SourceMgr,
+   };
+ 
+   auto DropTrailingNewLines = [](std::string &Str) {
+-    while (Str.back() == '\n')
++    while (!Str.empty() && Str.back() == '\n')
+       Str.pop_back();
+   };
+ 
+-- 
+2.25.2
+
