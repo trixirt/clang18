@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 2
+%global baserelease 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -471,6 +471,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Mon May 25 2020 Miro Hrončok <mhroncok@redhat.com> - 10.0.0-3
+- Rebuilt for Python 3.9
+
 * Tue May 19 2020 sguelton@redhat.com - 10.0.0-2
 - Backport ad7211df6f257e39da2e5a11b2456b4488f32a1e, see rhbz#1825593
 
