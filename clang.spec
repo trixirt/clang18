@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 4
+%global baserelease 5
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -102,6 +102,7 @@ Patch14:	0001-clang-fix-undefined-behaviour-in-RawComment-getForma.patch
 
 # Not Upstream
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
+Patch16:	0001-Driver-Accept-multiple-config-options-if-filenames-a.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -253,6 +254,7 @@ pathfix.py -i %{__python3} -pn \
 %patch13 -p2 -b .unwind-all
 %patch14 -p2 -b .clangd
 %patch15 -p2 -b .no-install-static
+%patch16 -p2 -b .config-multiple
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -480,6 +482,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Mon Jun 08 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-5
+- Accept multiple --config options
+
 * Wed Jun  3 2020 Dan Čermák <dan.cermak@cgc-instruments.com> - 10.0.0-4
 - Add symlink to %%{_libdir}/clang/%%{maj_ver} for persistent access to the resource directory accross minor version bumps
 
