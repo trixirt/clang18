@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 5
+%global baserelease 6
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -103,6 +103,7 @@ Patch14:	0001-clang-fix-undefined-behaviour-in-RawComment-getForma.patch
 # Not Upstream
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
 Patch16:	0001-Driver-Accept-multiple-config-options-if-filenames-a.patch
+Patch17:	0001-Add-cet.h-for-writing-CET-enabled-assembly-code.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -255,6 +256,7 @@ pathfix.py -i %{__python3} -pn \
 %patch14 -p2 -b .clangd
 %patch15 -p2 -b .no-install-static
 %patch16 -p2 -b .config-multiple
+%patch17 -p2 -b .cet.h
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -482,6 +484,9 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Fri Jun 26 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-6
+- Add cet.h header
+
 * Mon Jun 08 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-5
 - Accept multiple --config options
 
