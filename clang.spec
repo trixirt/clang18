@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 6
+%global baserelease 7
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -142,7 +142,9 @@ BuildRequires:	python3-devel
 
 # Needed for %%multilib_fix_c_header
 BuildRequires:	multilib-rpm-config
-BuildRequires: chrpath
+
+# For origin certification
+BuildRequires:	gnupg2
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -238,9 +240,13 @@ Requires:      python3
 
 
 %prep
+%{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE3}' --data='%{SOURCE0}'
+
 %if 0%{?compat_build}
 %autosetup -n %{clang_srcdir} -p1
 %else
+
+%{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE2}' --data='%{SOURCE1}'
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
 
 
@@ -275,9 +281,6 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@/64/g' test/lit.cfg.py
 sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %endif
 
-mkdir -p _build
-cd _build
-
 %ifarch s390 s390x %{arm} %ix86 ppc64le
 # Decrease debuginfo verbosity to reduce memory consumption during final library linking
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
@@ -287,7 +290,7 @@ cd _build
 # rpath of libraries and binaries.  llvm will skip the manual setting
 # if CAMKE_INSTALL_RPATH is set to a value, but cmake interprets this value
 # as nothing, so it sets the rpath to "" when installing.
-%cmake .. -G Ninja \
+%cmake  -G Ninja \
 	-DLLVM_PARALLEL_LINK_JOBS=1 \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -333,10 +336,11 @@ cd _build
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}"
 
-%ninja_build
+%cmake_build
 
 %install
-%ninja_install -C _build
+
+%cmake_install
 
 %if 0%{?compat_build}
 
@@ -406,7 +410,7 @@ popd
 # requires lit.py from LLVM utilities
 # FIXME: Fix failing ARM tests, s390x i686 and ppc64le tests
 # FIXME: Ignore test failures until rhbz#1715016 is fixed.
-LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
 %ifarch s390x i686 ppc64le %{arm}
 :
 %else
@@ -484,6 +488,10 @@ LD_LIBRARY_PATH=%{buildroot}%{_libdir} ninja check-all -C _build || \
 
 %endif
 %changelog
+* Mon Jul 20 2020 sguelton@redhat.com - 10.0.0-7
+- Update cmake macro usage
+- Finalize source verification
+
 * Fri Jun 26 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-6
 - Add cet.h header
 
