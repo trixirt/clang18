@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 7
+%global baserelease 8
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -488,6 +488,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
 
 %endif
 %changelog
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 10.0.0-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Mon Jul 20 2020 sguelton@redhat.com - 10.0.0-7
 - Update cmake macro usage
 - Finalize source verification
