@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 8
+%global baserelease 9
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -275,6 +275,11 @@ pathfix.py -i %{__python3} -pn \
 
 %build
 
+# We run the builders out of memory on armv7 and i686 when LTO is enabled
+%ifarch %{arm} i686
+%define _lto_cflags %{nil}
+%endif
+
 %if 0%{?__isa_bits} == 64
 sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@/64/g' test/lit.cfg.py
 %else
@@ -488,6 +493,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
 
 %endif
 %changelog
+* Tue Jul 28 2020 Jeff Law <law@redhat.com> - 10.0.0-9
+- Disable LTO on arm and i686
+
 * Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 10.0.0-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
