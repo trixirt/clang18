@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 9
+%global baserelease 10
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -493,6 +493,10 @@ LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
 
 %endif
 %changelog
+* Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 10.0.0-10
+- Second attempt - Rebuilt for
+  https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Tue Jul 28 2020 Jeff Law <law@redhat.com> - 10.0.0-9
 - Disable LTO on arm and i686
 
