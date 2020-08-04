@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 10
+%global baserelease 11
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -153,8 +153,6 @@ Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 # - https://bugzilla.redhat.com/show_bug.cgi?id=1158594
 Requires:	libstdc++-devel
 Requires:	gcc-c++
-
-Requires:	emacs-filesystem
 
 Provides:	clang(major) = %{maj_ver}
 
@@ -493,6 +491,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
 
 %endif
 %changelog
+* Tue Aug 04 2020 Tom Stellard <tstellar@redhat.com> - 10.0.0-11
+- Remove Requires: emacs-filesystem
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 10.0.0-10
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
