@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 1
-%global baserelease 0.1
+%global baserelease 0.2
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -97,9 +97,12 @@ Source4:	https://prereleases.llvm.org/%{version}/hans-gpg-key.asc
 Patch4:		0002-gtest-reorg.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
+# This is already in the release/11.x branch and will be included in -rc2.
+Patch14:	0001-analyzer-Fix-out-of-tree-only-clang-build-by-not-rel.patch
 
 # Not Upstream
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
+Patch16:	0001-clang-Fix-spurious-test-failure.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -141,6 +144,20 @@ BuildRequires:	multilib-rpm-config
 
 # For origin certification
 BuildRequires:	gnupg2
+
+# scan-build uses these perl modules so they need to be installed in order
+# to run the tests.
+BuildRequires: perl(Digest::MD5)
+BuildRequires: perl(File::Copy)
+BuildRequires: perl(File::Find)
+BuildRequires: perl(File::Path)
+BuildRequires: perl(File::Temp)
+BuildRequires: perl(FindBin)
+BuildRequires: perl(Hash::Util)
+BuildRequires: perl(lib)
+BuildRequires: perl(Term::ANSIColor)
+BuildRequires: perl(Text::ParseWords)
+BuildRequires: perl(Sys::Hostname)
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -253,7 +270,9 @@ pathfix.py -i %{__python3} -pn \
 %patch4 -p1 -b .gtest
 %patch11 -p1 -b .libcxx-fix
 %patch13 -p2 -b .unwind-all
+%patch14 -p2 -b .test-fix
 %patch15 -p2 -b .no-install-static
+%patch16 -p2 -b .test-fix2
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -407,13 +426,12 @@ rm -Rvf %{buildroot}%{_includedir}/clang-tidy/
 %check
 %if !0%{?compat_build}
 # requires lit.py from LLVM utilities
-# FIXME: Fix failing ARM tests, s390x i686 and ppc64le tests
-# FIXME: Ignore test failures until rhbz#1715016 is fixed.
+# FIXME: Fix failing ARM tests
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
-%ifarch s390x i686 ppc64le %{arm}
+%ifarch %{arm}
 :
 %else
-:
+false
 %endif
 
 %endif
@@ -487,6 +505,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
 
 %endif
 %changelog
+* Tue Aug 11 2020 Tom Stellard <tstellar@redhat.com> - 11.0.0-0.2.rc1
+- Fix test failures
+
 * Mon Aug 10 2020 Tom Stellard <tstellar@redhat.com> - 11.0.0-0.1.rc1
 - 11.0.0-rc1 Release
 

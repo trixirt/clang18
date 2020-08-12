@@ -1,0 +1,41 @@
+From 903c872b169dc88f434cf84c0aee32e429e1cc56 Mon Sep 17 00:00:00 2001
+From: Balazs Benics <benicsbalazs@gmail.com>
+Date: Fri, 31 Jul 2020 10:28:14 +0200
+Subject: [PATCH] [analyzer] Fix out-of-tree only clang build by not relaying
+ on private header
+
+It turned out that the D78704 included a private LLVM header, which is excluded
+from the LLVM install target.
+I'm substituting that `#include` with the public one by moving the necessary
+`#define` into that. There was a discussion about this at D78704 and on the
+cfe-dev mailing list.
+
+I'm also placing a note to remind others of this pitfall.
+
+Reviewed By: mgorny
+
+Differential Revision: https://reviews.llvm.org/D84929
+
+(cherry picked from commit 63d3aeb529a7b0fb95c2092ca38ad21c1f5cfd74)
+---
+ .../StaticAnalyzer/FalsePositiveRefutationBRVisitorTest.cpp | 2 +-
+ llvm/include/llvm/Config/config.h.cmake                     | 6 +++---
+ llvm/include/llvm/Config/llvm-config.h.cmake                | 3 +++
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/clang/unittests/StaticAnalyzer/FalsePositiveRefutationBRVisitorTest.cpp b/clang/unittests/StaticAnalyzer/FalsePositiveRefutationBRVisitorTest.cpp
+index 7c151c18211..e67dcacca0a 100644
+--- a/clang/unittests/StaticAnalyzer/FalsePositiveRefutationBRVisitorTest.cpp
++++ b/clang/unittests/StaticAnalyzer/FalsePositiveRefutationBRVisitorTest.cpp
+@@ -16,7 +16,7 @@
+ #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
+ #include "clang/StaticAnalyzer/Frontend/AnalysisConsumer.h"
+ #include "clang/StaticAnalyzer/Frontend/CheckerRegistry.h"
+-#include "llvm/Config/config.h"
++#include "llvm/Config/llvm-config.h"
+ #include "gtest/gtest.h"
+ 
+ // FIXME: Use GTEST_SKIP() instead if GTest is updated to version 1.10.0
+-- 
+2.18.1
+
