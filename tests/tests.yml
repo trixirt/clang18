@@ -19,6 +19,10 @@
       - libcxx-devel
       - glibc-devel
       - gcc
+      # Required for fedora-flags:
+      - annobin
+      - redhat-rpm-config
+
     repositories:
     - repo: "https://src.fedoraproject.org/tests/llvm-test-suite.git"
       dest: "llvm-test-suite"
@@ -34,3 +38,4 @@
       - clang/rhbz_1657544
       - clang/rhbz_1647130
       - clang/llvm-toolchain
+      - clang/fedora-flags
