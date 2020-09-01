@@ -87,8 +87,6 @@ Source4:	https://prereleases.llvm.org/%{version}/hans-gpg-key.asc
 Patch4:		0002-gtest-reorg.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
-# This is already in the release/11.x branch and will be included in -rc2.
-Patch14:	0001-analyzer-Fix-out-of-tree-only-clang-build-by-not-rel.patch
 
 # Not Upstream
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
@@ -260,7 +258,6 @@ pathfix.py -i %{__python3} -pn \
 %patch4 -p1 -b .gtest
 %patch11 -p1 -b .libcxx-fix
 %patch13 -p2 -b .unwind-all
-%patch14 -p2 -b .test-fix
 %patch15 -p2 -b .no-install-static
 %patch16 -p2 -b .test-fix2
 
@@ -380,9 +377,9 @@ rm -vf %{buildroot}%{_datadir}/clang/clang-format-bbedit.applescript
 rm -vf %{buildroot}%{_datadir}/clang/clang-format-sublime.py*
 
 # TODO: Package html docs
-rm -Rvf %{buildroot}%{_pkgdocdir}
-rm -Rvf %{buildroot}%{install_prefix}/share/clang/clang-doc-default-stylesheet.css
-rm -Rvf %{buildroot}%{install_prefix}/share/clang/index.js
+rm -Rvf %{buildroot}%{_docdir}/clang/html
+rm -Rvf %{buildroot}%{_datadir}/clang/clang-doc-default-stylesheet.css
+rm -Rvf %{buildroot}%{_datadir}/clang/index.js
 
 # TODO: What are the Fedora guidelines for packaging bash autocomplete files?
 rm -vf %{buildroot}%{_datadir}/clang/bash-autocomplete.sh
@@ -496,6 +493,9 @@ false
 
 %endif
 %changelog
+* Tue Sep 01 2020 sguelton@redhat.com - 11.0.0-0.2.rc2
+- Normalize some doc directory locations
+
 * Tue Sep 01 2020 sguelton@redhat.com - 11.0.0-0.1.rc2
 - 11.0.0-rc2 Release
 - Use %%license macro
