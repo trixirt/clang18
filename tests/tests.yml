@@ -27,7 +27,7 @@
     tests:
       - rhbz#482491:
           dir: ./
-          run: echo "int main(){}" | clang -x c -
+          run: find /usr -name 'libgcc_s.so*' && echo "int main(){}" | clang -v -x c -
       - llvm-test-suite/test-suite
       # ABI test suite is too greedy on the FS
       #- llvm-test-suite/abi-test-suite

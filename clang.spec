@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 2
-%global baserelease 0.2
+%global baserelease 0.3
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -91,6 +91,7 @@ Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
 # Not Upstream
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
 Patch16:	0001-clang-Fix-spurious-test-failure.patch
+Patch17:	0001-Driver-Prefer-gcc-toolchains-with-libgcc_s.so-when-n.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -260,6 +261,7 @@ pathfix.py -i %{__python3} -pn \
 %patch13 -p2 -b .unwind-all
 %patch15 -p2 -b .no-install-static
 %patch16 -p2 -b .test-fix2
+%patch17 -p1 -b .check-gcc_s
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -493,6 +495,9 @@ false
 
 %endif
 %changelog
+* Tue Sep 22 2020 sguelton@redhat.com - 11.0.0-0.3.rc2
+- Prefer gcc toolchains with libgcc_s
+
 * Tue Sep 01 2020 sguelton@redhat.com - 11.0.0-0.2.rc2
 - Normalize some doc directory locations
 
