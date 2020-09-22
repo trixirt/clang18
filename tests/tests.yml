@@ -29,7 +29,8 @@
           dir: ./
           run: echo "int main(){}" | clang -x c -
       - llvm-test-suite/test-suite
-      - llvm-test-suite/abi-test-suite
+      # ABI test suite is too greedy on the FS
+      #- llvm-test-suite/abi-test-suite
       - clang/rhbz_1657544
       - clang/rhbz_1647130
       - clang/llvm-toolchain
