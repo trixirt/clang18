@@ -3,8 +3,8 @@
 %global maj_ver 11
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 2
-%global baserelease 0.3
+%global rc_ver 3
+%global baserelease 0.1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -495,6 +495,9 @@ false
 
 %endif
 %changelog
+* Thu Sep 24 2020 sguelton@redhat.com - 11.0.0-0.1.rc3
+- 11.0.0-rc3 Release
+
 * Tue Sep 22 2020 sguelton@redhat.com - 11.0.0-0.3.rc2
 - Prefer gcc toolchains with libgcc_s
 
