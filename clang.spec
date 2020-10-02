@@ -3,8 +3,8 @@
 %global maj_ver 11
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 3
-%global baserelease 0.4
+%global rc_ver 5
+%global baserelease 0.5
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -495,6 +495,9 @@ false
 
 %endif
 %changelog
+* Fri Oct 02 2020 sguelton@redhat.com - 11.0.0-0.5.rc5
+- 11.0.0-rc5 Release
+
 * Sun Sep 27 2020 sguelton@redhat.com - 11.0.0-0.4.rc3
 - Fix NVR
 
