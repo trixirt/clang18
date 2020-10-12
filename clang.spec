@@ -3,8 +3,8 @@
 %global maj_ver 11
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 6
-%global baserelease 0.6
+#%%global rc_ver 6
+%global baserelease 0.7
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -495,6 +495,9 @@ false
 
 %endif
 %changelog
+* Mon Oct 12 2020 sguelton@redhat.com - 11.0.0-0.7
+- llvm 11.0.0 - final release
+
 * Thu Oct 08 2020 sguelton@redhat.com - 11.0.0-0.6.rc6
 - 11.0.0-rc6
 
