@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 0.7
+%global baserelease 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -495,6 +495,9 @@ false
 
 %endif
 %changelog
+* Thu Oct 15 2020 sguelton@redhat.com - 11.0.0-1
+- Fix NVR
+
 * Mon Oct 12 2020 sguelton@redhat.com - 11.0.0-0.7
 - llvm 11.0.0 - final release
 
