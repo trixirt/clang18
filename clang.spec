@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 1
+%global baserelease 2
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -51,6 +51,7 @@
 %else
 %global pkg_name clang
 %global install_prefix /usr
+%global pkg_libdir %{_libdir}
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -173,6 +174,7 @@ as libraries and designed to be loosely-coupled and extensible.
 
 %package libs
 Summary: Runtime library for clang
+Requires: %{name}-resource-filesystem%{?_isa} = %{version}
 Recommends: compiler-rt%{?_isa} = %{version}
 # libomp-devel is required, so clang can find the omp.h header when compiling
 # with -fopenmp.
@@ -193,6 +195,13 @@ Requires: %{name}-libs = %{version}-%{release}
 
 %description devel
 Development header files for clang.
+
+%package resource-filesystem
+Summary: Filesystem package that owns the clang resource directory
+Provides: %{name}-resource-filesystem(major) = %{maj_ver}
+
+%description resource-filesystem
+This package owns the clang resouce directory: $libdir/clang/$version/
 
 %if !0%{?compat_build}
 %package analyzer
@@ -407,6 +416,10 @@ pushd %{buildroot}%{_libdir}/clang/
 ln -s %{version} %{maj_ver}
 popd
 
+# Create sub-directories in the clang resource directory that will be
+# populated by other packages
+mkdir -p %{buildroot}%{_libdir}/clang/%{version}/{include,lib,share}/
+
 %endif
 
 # Remove clang-tidy headers.  We don't ship the libraries for these.
@@ -459,6 +472,15 @@ false
 %{pkg_libdir}/cmake/
 %endif
 
+%files resource-filesystem
+%dir %{pkg_libdir}/clang/%{version}/
+%dir %{pkg_libdir}/clang/%{version}/include/
+%dir %{pkg_libdir}/clang/%{version}/lib/
+%dir %{pkg_libdir}/clang/%{version}/share/
+%if !0%{?compat_build}
+%{pkg_libdir}/clang/%{maj_ver}
+%endif
+
 %if !0%{?compat_build}
 %files analyzer
 %{_bindir}/scan-view
@@ -495,6 +517,9 @@ false
 
 %endif
 %changelog
+* Wed Oct 28 2020 Tom Stellard <tstellar@redhat.com> - 11.0.0-2
+- Add clang-resource-filesystem sub-package
+
 * Thu Oct 15 2020 sguelton@redhat.com - 11.0.0-1
 - Fix NVR
 
