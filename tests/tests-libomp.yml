@@ -9,6 +9,8 @@
       with_items:
         - libomp
         - libomp-devel
+        - clang
+        - clang-libs
   roles:
   - role: standard-test-basic
     tags:
