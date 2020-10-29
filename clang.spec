@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 #%%global rc_ver 6
-%global baserelease 2
+%global baserelease 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -286,6 +286,10 @@ pathfix.py -i %{__python3} -pn \
 # We run the builders out of memory on armv7 and i686 when LTO is enabled
 %ifarch %{arm} i686
 %define _lto_cflags %{nil}
+%else
+# This package does not ship any object files or static libraries, so we
+# don't need -ffat-lto-objects.
+%global _lto_cflags %(echo %{_lto_cflags} | sed 's/-ffat-lto-objects//')
 %endif
 
 %if 0%{?__isa_bits} == 64
@@ -517,6 +521,9 @@ false
 
 %endif
 %changelog
+* Thu Oct 29 2020 Tom Stellard <tstellar@redhat.com> - 11.0.0-3
+- Remove -ffat-lto-objects compiler flag
+
 * Wed Oct 28 2020 Tom Stellard <tstellar@redhat.com> - 11.0.0-2
 - Add clang-resource-filesystem sub-package
 
