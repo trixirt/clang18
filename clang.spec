@@ -172,6 +172,10 @@ The goal of the Clang project is to create a new C, C++, Objective C
 and Objective C++ front-end for the LLVM compiler. Its tools are built
 as libraries and designed to be loosely-coupled and extensible.
 
+Install compiler-rt if you want the Blocks C language extension or to
+enable sanitization and profiling options when building, and
+libomp-devel to enable -fopenmp.
+
 %package libs
 Summary: Runtime library for clang
 Requires: %{name}-resource-filesystem%{?_isa} = %{version}
