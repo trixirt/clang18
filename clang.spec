@@ -2,9 +2,9 @@
 
 %global maj_ver 11
 %global min_ver 0
-%global patch_ver 0
-#%%global rc_ver 6
-%global baserelease 3
+%global patch_ver 1
+%global rc_ver 1
+%global baserelease 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -83,7 +83,7 @@ Source3:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{versio
 Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
 Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
 %endif
-Source4:	https://prereleases.llvm.org/%{version}/hans-gpg-key.asc
+Source4:	tstellar-gpg-key.asc
 
 Patch4:		0002-gtest-reorg.patch
 Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
@@ -525,6 +525,9 @@ false
 
 %endif
 %changelog
+* Tue Dec 01 2020 sguelton@redhat.com - 11.0.1-1.rc1
+- llvm 11.0.1-rc1
+
 * Thu Oct 29 2020 Tom Stellard <tstellar@redhat.com> - 11.0.0-3
 - Remove -ffat-lto-objects compiler flag
 
