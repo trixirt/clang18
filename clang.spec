@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 1
 %global rc_ver 1
-%global baserelease 1
+%global baserelease 2
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -296,6 +296,9 @@ pathfix.py -i %{__python3} -pn \
 %global _lto_cflags %(echo %{_lto_cflags} | sed 's/-ffat-lto-objects//')
 %endif
 
+# lto builds with gcc 11 fail while running the lit tests.
+%define _lto_cflags %{nil}
+
 %if 0%{?__isa_bits} == 64
 sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@/64/g' test/lit.cfg.py
 %else
@@ -525,6 +528,9 @@ false
 
 %endif
 %changelog
+* Wed Dec 16 2020 Tom Stellard <tstellar@redhat.com> - 11.0.1-2.rc1
+- Don't build with -flto
+
 * Tue Dec 01 2020 sguelton@redhat.com - 11.0.1-1.rc1
 - llvm 11.0.1-rc1
 
