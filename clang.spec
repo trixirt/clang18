@@ -4,7 +4,7 @@
 %global min_ver 1
 %global patch_ver 0
 %global rc_ver 2
-%global baserelease 4
+%global baserelease 5
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -93,6 +93,8 @@ Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
 Patch15:	0001-clang-Don-t-install-static-libraries.patch
 Patch16:	0001-clang-Fix-spurious-test-failure.patch
 Patch17:	0001-Driver-Prefer-gcc-toolchains-with-libgcc_s.so-when-n.patch
+Patch18:	0001-scan-view-Remove-Reporter.py-and-associated-AppleScr.patch
+Patch19:	0001-Partially-Revert-scan-view-Remove-Reporter.py-and-as.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -275,6 +277,12 @@ pathfix.py -i %{__python3} -pn \
 %patch15 -p2 -b .no-install-static
 %patch16 -p2 -b .test-fix2
 %patch17 -p1 -b .check-gcc_s
+%patch18 -p2 -b .scan-view-remove-files
+%patch19 -p2 -b .scan-view-remove-files-fix
+
+# Patch does not support binary diffs from git so we have to manually delete
+# this:
+rm tools/scan-view/share/FileRadar.scpt
 
 mv ../%{clang_tools_srcdir} tools/extra
 
@@ -528,6 +536,9 @@ false
 
 %endif
 %changelog
+* Thu Feb 09 2021 Tom Stellard <tstellar@redhat.com> - 11.1.0-0.5.rc2
+- Remove some unnecessary scan-view files
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 11.1.0-0.4.rc2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
