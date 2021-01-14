@@ -1,10 +1,10 @@
 %global compat_build 0
 
 %global maj_ver 11
-%global min_ver 0
-%global patch_ver 1
-#%%global rc_ver 2
-%global baserelease 4
+%global min_ver 1
+%global patch_ver 0
+%global rc_ver 1
+%global baserelease 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -72,7 +72,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	%{baserelease}%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Release:	%{?rc_ver:0.}%{baserelease}%{?rc_ver:.rc%{rc_ver}}%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -528,6 +528,9 @@ false
 
 %endif
 %changelog
+* Thu Jan 14 2021 Serge Guelton - 11.1.0-0.1.rc1
+- 11.1.0-rc1 release
+
 * Wed Jan 06 2021 Serge Guelton - 11.0.1-4
 - LLVM 11.0.1 final
 
