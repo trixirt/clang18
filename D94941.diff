@@ -1,0 +1,36 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -509,7 +509,7 @@
+     "${CLANG_VERSION_MAJOR}" CACHE STRING
+     "Major version number that will be appended to the clang executable name")
+ set(LIBCLANG_LIBRARY_VERSION
+-    "${CLANG_VERSION_MAJOR}" CACHE STRING
++    "${CLANG_VERSION_MAJOR}.${CLANG_VERSION_MINOR}" CACHE STRING
+     "Major version number that will be appended to the libclang library")
+ mark_as_advanced(CLANG_EXECUTABLE_VERSION LIBCLANG_LIBRARY_VERSION)
+ 
+diff --git a/tools/clang-shlib/CMakeLists.txt b/tools/clang-shlib/CMakeLists.txt
+--- a/tools/clang-shlib/CMakeLists.txt
++++ b/tools/clang-shlib/CMakeLists.txt
+@@ -48,3 +48,8 @@
+                   ${_OBJECTS}
+                   LINK_LIBS
+                   ${_DEPS})
++
++    set_target_properties(clang-cpp
++      PROPERTIES
++      VERSION ${LIBCLANG_LIBRARY_VERSION}
++      SOVERSION ${LIBCLANG_LIBRARY_VERSION})
+diff --git a/tools/libclang/CMakeLists.txt b/tools/libclang/CMakeLists.txt
+--- a/tools/libclang/CMakeLists.txt
++++ b/tools/libclang/CMakeLists.txt
+@@ -150,6 +150,7 @@
+   else()
+     set_target_properties(libclang
+       PROPERTIES
++      SOVERSION ${LIBCLANG_LIBRARY_VERSION}
+       VERSION ${LIBCLANG_LIBRARY_VERSION}
+       DEFINE_SYMBOL _CINDEX_LIB_)
+     # FIXME: _CINDEX_LIB_ affects dllexport/dllimport on Win32.
+
