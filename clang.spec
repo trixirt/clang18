@@ -4,7 +4,7 @@
 %global min_ver 1
 %global patch_ver 0
 %global rc_ver 2
-%global baserelease 3
+%global baserelease 4
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -528,6 +528,9 @@ false
 
 %endif
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 11.1.0-0.4.rc2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Fri Jan 22 2021 Serge Guelton - 11.1.0-0.3.rc2
 - 11.1.0-rc2 release
 
