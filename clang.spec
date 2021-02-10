@@ -68,7 +68,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -80,6 +80,9 @@ Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_
 Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
 %endif
 Source4:	tstellar-gpg-key.asc
+%if !0%{?compat_build}
+Source5:	macros.%{name}
+%endif
 
 # Patches for clang
 Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
@@ -379,6 +382,15 @@ rm -Rf %{buildroot}%{install_prefix}/libexec
 
 %else
 
+# File in the macros file for other packages to use.  We are not doing this
+# in the compat package, because the version macros would # conflict with
+# eachother if both clang and the clang compat package were installed together.
+install -p -m0644 -D %{SOURCE5} %{buildroot}%{_rpmmacrodir}/macros.%{name}
+sed -i -e "s|@@CLANG_MAJOR_VERSION@@|%{maj_ver}|" \
+       -e "s|@@CLANG_MINOR_VERSION@@|%{min_ver}|" \
+       -e "s|@@CLANG_PATCH_VERSION@@|%{patch_ver}|" \
+       %{buildroot}%{_rpmmacrodir}/macros.%{name}
+
 # install clang python bindings
 mkdir -p %{buildroot}%{python3_sitelib}/clang/
 install -p -m644 bindings/python/clang/* %{buildroot}%{python3_sitelib}/clang/
@@ -485,6 +497,7 @@ false
 %{_includedir}/clang-c/
 %{_libdir}/cmake/*
 %dir %{_datadir}/clang/
+%{_rpmmacrodir}/macros.%{name}
 %else
 %{pkg_libdir}/*.so
 %{pkg_includedir}/clang/
@@ -548,6 +561,9 @@ false
 
 %endif
 %changelog
+* Thu Sep 09 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0~rc1-2
+- Add macros.clang file
+
 * Fri Aug 06 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0~rc1-1
 - 13.0.0-rc1 Release
 
