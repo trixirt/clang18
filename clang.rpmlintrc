@@ -1,0 +1,3 @@
+# clang needs libstdc++-devel installed in order to compile c++ programs.
+addFilter("E: devel-dependency libstdc\+\+-devel")
+addFilter("E: explicit-lib-dependency libstdc\+\+-devel")

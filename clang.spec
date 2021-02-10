@@ -290,7 +290,9 @@ pathfix.py -i %{__python3} -pn \
 	tools/clang-format/*.py \
 	tools/clang-format/git-clang-format \
 	utils/hmaptool/hmaptool \
-	tools/scan-view/bin/scan-view
+	tools/scan-view/bin/scan-view \
+	tools/scan-view/share/Reporter.py \
+	tools/scan-view/share/startfile.py
 %endif
 
 %build
@@ -425,6 +427,7 @@ ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
 # Fix permission
 chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
+chmod a+x %{buildroot}%{_datadir}/scan-view/{Reporter.py,startfile.py}
 
 # create a link to clang's resource directory that is "constant" across minor
 # version bumps
