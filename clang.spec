@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 3
-%global baserelease 5
+%global baserelease 6
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -85,13 +85,11 @@ Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{versio
 %endif
 Source4:	tstellar-gpg-key.asc
 
-
 %if !0%{?compat_build}
 Patch21:	completion-model-cmake.patch
 %endif
 
 Patch4:		0001-PATCH-clang-Reorganize-gtest-integration.patch
-Patch11:	0002-PATCH-clang-ToolChain-Add-lgcc_s-to-the-linker-flags.patch
 Patch13:    0003-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch15:    0004-PATCH-clang-Don-t-install-static-libraries.patch
 Patch17:    0005-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
@@ -277,7 +275,6 @@ pathfix.py -i %{__python3} -pn \
 %setup -q -n %{clang_srcdir}
 
 %patch4  -p2 -b .gtest
-%patch11 -p2 -b .libcxx-fix
 %patch13 -p2 -b .unwind-default
 %patch15 -p2 -b .no-install-static
 %patch17 -p2 -b .check-gcc_s
@@ -369,7 +366,8 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	\
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
 	-DBUILD_SHARED_LIBS=OFF \
-	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}"
+	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}" \
+	-DCLANG_DEFAULT_UNWINDLIB=libgcc
 
 %cmake_build
 
@@ -539,6 +537,10 @@ false
 
 %endif
 %changelog
+* Mon Mar 15 2021 Timm Bäder <tbaeder@redhat.com> 12.0.0-0.6.rc3
+- Set CLANG_DEFAULT_UNWIND_LIB instead of using custom patch
+- Add toolchains test to the tests.yml
+
 * Thu Mar 11 2021 sguelton@redhat.com - 12.0.0-0.5.rc3
 - LLVM 12.0.0 rc3
 

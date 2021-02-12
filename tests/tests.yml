@@ -18,6 +18,7 @@
       - compiler-rt
       - libcxx-devel
       - glibc-devel
+      - glibc-static
       - gcc
       # Required for fedora-flags:
       - annobin
@@ -39,3 +40,4 @@
       - clang/rhbz_1647130
       - clang/llvm-toolchain
       - clang/fedora-flags
+      - clang/toolchains
