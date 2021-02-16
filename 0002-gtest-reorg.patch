@@ -1,17 +1,7 @@
-From 1f26a0284925859b72ee520ce74452d77d822409 Mon Sep 17 00:00:00 2001
-From: serge-sans-paille <sguelton@redhat.com>
-Date: Mon, 28 Jan 2019 19:12:27 +0000
-Subject: [PATCH 2/2] [PATCH] gtest reorg
-
----
- CMakeLists.txt | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c2016a45ca..48ea3c3bb9 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -157,12 +157,6 @@ Please install Python or specify the PYTHON_EXECUTABLE CMake variable.")
+diff -Naur clang-12.0.0rc1.src.orig/CMakeLists.txt clang-12.0.0rc1.src/CMakeLists.txt
+--- clang-12.0.0rc1.src.orig/CMakeLists.txt	2021-02-14 21:40:31.000000000 +0100
++++ clang-12.0.0rc1.src/CMakeLists.txt	2021-02-14 21:41:57.000000000 +0100
+@@ -153,12 +153,6 @@
          set(LLVM_UTILS_PROVIDED ON)
          set(CLANG_TEST_DEPS FileCheck count not)
        endif()
@@ -24,7 +14,7 @@ index c2016a45ca..48ea3c3bb9 100644
      else()
        # Seek installed Lit.
        find_program(LLVM_LIT
-@@ -507,7 +501,11 @@ endif()
+@@ -537,7 +531,11 @@
  
  
  if( CLANG_INCLUDE_TESTS )
@@ -37,6 +27,3 @@ index c2016a45ca..48ea3c3bb9 100644
      add_subdirectory(unittests)
      list(APPEND CLANG_TEST_DEPS ClangUnitTests)
      list(APPEND CLANG_TEST_PARAMS
--- 
-2.19.2
-

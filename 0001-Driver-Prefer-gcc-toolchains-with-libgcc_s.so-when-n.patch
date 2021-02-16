@@ -77,7 +77,7 @@ diff --git a/lib/Driver/ToolChains/Gnu.h b/lib/Driver/ToolChains/Gnu.h
 index 52690ab4..2a4452d9 100644
 --- a/lib/Driver/ToolChains/Gnu.h
 +++ b/lib/Driver/ToolChains/Gnu.h
-@@ -190,6 +190,7 @@ public:
+@@ -190,6 +190,7 @@
    /// Driver, and has logic for fuzzing that where appropriate.
    class GCCInstallationDetector {
      bool IsValid;
@@ -85,8 +85,8 @@ index 52690ab4..2a4452d9 100644
      llvm::Triple GCCTriple;
      const Driver &D;
  
-@@ -213,7 +214,8 @@ public:
-     MultilibSet Multilibs;
+@@ -216,7 +217,8 @@
+     const std::string GentooConfigDir = "/etc/env.d/gcc";
  
    public:
 -    explicit GCCInstallationDetector(const Driver &D) : IsValid(false), D(D) {}
@@ -95,6 +95,7 @@ index 52690ab4..2a4452d9 100644
      void init(const llvm::Triple &TargetTriple, const llvm::opt::ArgList &Args,
                ArrayRef<std::string> ExtraTripleAliases = None);
  
+
 diff --git a/test/Driver/Inputs/fedora_28_tree/usr/lib/gcc/x86_64-linux-gnu/7/crtbegin.o b/test/Driver/Inputs/fedora_28_tree/usr/lib/gcc/x86_64-linux-gnu/7/crtbegin.o
 new file mode 100644
 index 00000000..e69de29b

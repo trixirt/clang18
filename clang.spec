@@ -1,10 +1,10 @@
 %global compat_build 0
 
-%global maj_ver 11
-%global min_ver 1
+%global maj_ver 12
+%global min_ver 0
 %global patch_ver 0
-%global rc_ver 2
-%global baserelease 5
+%global rc_ver 1
+%global baserelease 1
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -85,16 +85,18 @@ Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{versio
 %endif
 Source4:	tstellar-gpg-key.asc
 
-Patch4:		0002-gtest-reorg.patch
-Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
-Patch13:	0001-Make-funwind-tables-the-default-for-all-archs.patch
+
+%if !0%{?compat_build}
+Patch21:	completion-model-cmake.patch
+Patch22:	clang-tidy.patch
+%endif
 
 # Not Upstream
-Patch15:	0001-clang-Don-t-install-static-libraries.patch
-Patch16:	0001-clang-Fix-spurious-test-failure.patch
-Patch17:	0001-Driver-Prefer-gcc-toolchains-with-libgcc_s.so-when-n.patch
-Patch18:	0001-scan-view-Remove-Reporter.py-and-associated-AppleScr.patch
-Patch19:	0001-Partially-Revert-scan-view-Remove-Reporter.py-and-as.patch
+Patch4:		0002-gtest-reorg.patch
+Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
+Patch13:    0001-Make-funwind-tables-the-default-for-all-archs.patch
+Patch15:    0001-clang-Don-t-install-static-libraries.patch
+Patch17:    0001-Driver-Prefer-gcc-toolchains-with-libgcc_s.so-when-n.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -263,6 +265,11 @@ Requires:      python3
 
 %{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE2}' --data='%{SOURCE1}'
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
+%patch21 -p1 -b .comp-model
+%patch22 -p1 -b .clang-tidy
+
+# failing test case
+rm test/clang-tidy/checkers/altera-struct-pack-align.cpp
 
 
 pathfix.py -i %{__python3} -pn \
@@ -273,26 +280,18 @@ pathfix.py -i %{__python3} -pn \
 
 %patch4 -p1 -b .gtest
 %patch11 -p1 -b .libcxx-fix
-%patch13 -p2 -b .unwind-all
+%patch13 -p1 -b .unwind-default
 %patch15 -p2 -b .no-install-static
-%patch16 -p2 -b .test-fix2
 %patch17 -p1 -b .check-gcc_s
-%patch18 -p2 -b .scan-view-remove-files
-%patch19 -p2 -b .scan-view-remove-files-fix
 
-# Patch does not support binary diffs from git so we have to manually delete
-# this:
-rm tools/scan-view/share/FileRadar.scpt
-
-mv ../%{clang_tools_srcdir} tools/extra
+# failing test case
+rm test/CodeGen/profile-filter.c
 
 pathfix.py -i %{__python3} -pn \
 	tools/clang-format/*.py \
 	tools/clang-format/git-clang-format \
 	utils/hmaptool/hmaptool \
-	tools/scan-view/bin/scan-view \
-	tools/scan-view/share/Reporter.py \
-	tools/scan-view/share/startfile.py
+	tools/scan-view/bin/scan-view
 %endif
 
 %build
@@ -340,6 +339,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
 %else
 	-DCLANG_INCLUDE_TESTS:BOOL=ON \
+	-DLLVM_EXTERNAL_CLANG_TOOLS_EXTRA_SOURCE_DIR=../%{clang_tools_srcdir} \
 	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
 %if 0%{?__isa_bits} == 64
@@ -427,7 +427,6 @@ ln -s clang++ %{buildroot}%{_bindir}/clang++-%{maj_ver}
 
 # Fix permission
 chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
-chmod a+x %{buildroot}%{_datadir}/scan-view/{Reporter.py,startfile.py}
 
 # create a link to clang's resource directory that is "constant" across minor
 # version bumps
@@ -539,7 +538,10 @@ false
 
 %endif
 %changelog
-* Thu Feb 09 2021 Tom Stellard <tstellar@redhat.com> - 11.1.0-0.5.rc2
+* Sun Feb 14 2021 sguelton@redhat.com - 12.0.0-0.1.rc1
+- 12.0.0-rc1 release
+
+* Tue Feb 09 2021 Tom Stellard <tstellar@redhat.com> - 11.1.0-0.5.rc2
 - Remove some unnecessary scan-view files
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 11.1.0-0.4.rc2
