@@ -37,16 +37,16 @@
 	%{_bindir}/clang-cpp \
 
 %if 0%{?compat_build}
-%global pkg_name clang%{maj_ver}.%{min_ver}
+%global pkg_name clang%{maj_ver}
 # Install clang to same prefix as llvm, so that apps that use llvm-config
 # will also be able to find clang libs.
-%global install_prefix %{_libdir}/llvm%{maj_ver}.%{min_ver}
+%global install_prefix %{_libdir}/llvm%{maj_ver}
 %global install_bindir %{install_prefix}/bin
 %global install_includedir %{install_prefix}/include
 %global install_libdir %{install_prefix}/lib
 
 %global pkg_bindir %{install_bindir}
-%global pkg_includedir %{_includedir}/llvm%{maj_ver}.%{min_ver}
+%global pkg_includedir %{install_includedir}
 %global pkg_libdir %{install_libdir}
 %else
 %global pkg_name clang
@@ -103,8 +103,8 @@ BuildRequires:	gcc-c++
 BuildRequires:	cmake
 BuildRequires:	ninja-build
 %if 0%{?compat_build}
-BuildRequires:	llvm%{maj_ver}.%{min_ver}-devel = %{version}
-BuildRequires:	llvm%{maj_ver}.%{min_ver}-static = %{version}
+BuildRequires:	llvm%{maj_ver}-devel = %{version}
+BuildRequires:	llvm%{maj_ver}-static = %{version}
 %else
 BuildRequires:	llvm-devel = %{version}
 BuildRequires:	llvm-test = %{version}
@@ -334,7 +334,8 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
 %endif
 %if 0%{?compat_build}
-	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver}.%{min_ver}-%{__isa_bits} \
+	-DCLANG_BUILD_TOOLS:BOOL=OFF \
+	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver}-%{__isa_bits} \
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
 %else
@@ -349,10 +350,10 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %endif
 %endif
 	\
-%if !0%{compat_build}
-	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen \
+%if 0%{compat_build}
+	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen-%{maj_ver} \
 %else
-	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen-%{maj_ver}.%{min_ver} \
+	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen \
 %endif
 	-DCLANG_ENABLE_ARCMT:BOOL=ON \
 	-DCLANG_ENABLE_STATIC_ANALYZER:BOOL=ON \
