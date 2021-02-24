@@ -88,7 +88,6 @@ Source4:	tstellar-gpg-key.asc
 
 %if !0%{?compat_build}
 Patch21:	completion-model-cmake.patch
-Patch22:	clang-tidy.patch
 %endif
 
 # Not Upstream
@@ -266,7 +265,6 @@ Requires:      python3
 %{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE2}' --data='%{SOURCE1}'
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
 %patch21 -p1 -b .comp-model
-%patch22 -p1 -b .clang-tidy
 
 # failing test case
 rm test/clang-tidy/checkers/altera-struct-pack-align.cpp
