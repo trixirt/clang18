@@ -87,7 +87,6 @@ Source4:	tstellar-gpg-key.asc
 
 
 %if !0%{?compat_build}
-Patch21:	completion-model-cmake.patch
 Patch22:	clang-tidy.patch
 %endif
 
