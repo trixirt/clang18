@@ -265,6 +265,7 @@ Requires:      python3
 
 %{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE2}' --data='%{SOURCE1}'
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
+%patch21 -p1 -b .comp-model
 %patch22 -p1 -b .clang-tidy
 
 # failing test case
