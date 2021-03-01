@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 2
-%global baserelease 2
+%global baserelease 3
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -96,6 +96,7 @@ Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
 Patch13:    0001-Make-funwind-tables-the-default-for-all-archs.patch
 Patch15:    0001-clang-Don-t-install-static-libraries.patch
 Patch17:    0001-Driver-Prefer-gcc-toolchains-with-libgcc_s.so-when-n.patch
+Patch19:    0001-Partially-Revert-scan-view-Remove-Reporter.py-and-as.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -281,6 +282,8 @@ pathfix.py -i %{__python3} -pn \
 %patch13 -p1 -b .unwind-default
 %patch15 -p2 -b .no-install-static
 %patch17 -p1 -b .check-gcc_s
+%patch19 -p2 -b .scan-view-remove-files-fix
+
 
 # failing test case
 rm test/CodeGen/profile-filter.c
@@ -537,6 +540,9 @@ false
 
 %endif
 %changelog
+* Mon Mar 01 2021 sguelton@redhat.com - 12.0.0-0.3.rc2
+- Reapply some wrongly removed patch
+
 * Wed Feb 24 2021 sguelton@redhat.com - 12.0.0-0.2.rc2
 - 12.0.0-rc2 release
 
