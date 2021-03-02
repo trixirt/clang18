@@ -90,13 +90,12 @@ Source4:	tstellar-gpg-key.asc
 Patch21:	completion-model-cmake.patch
 %endif
 
-# Not Upstream
-Patch4:		0002-gtest-reorg.patch
-Patch11:	0001-ToolChain-Add-lgcc_s-to-the-linker-flags-when-using-.patch
-Patch13:    0001-Make-funwind-tables-the-default-for-all-archs.patch
-Patch15:    0001-clang-Don-t-install-static-libraries.patch
-Patch17:    0001-Driver-Prefer-gcc-toolchains-with-libgcc_s.so-when-n.patch
-Patch19:    0001-Partially-Revert-scan-view-Remove-Reporter.py-and-as.patch
+Patch4:		0001-PATCH-clang-Reorganize-gtest-integration.patch
+Patch11:	0002-PATCH-clang-ToolChain-Add-lgcc_s-to-the-linker-flags.patch
+Patch13:    0003-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
+Patch15:    0004-PATCH-clang-Don-t-install-static-libraries.patch
+Patch17:    0005-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
+Patch19:    0006-PATCH-clang-Partially-Revert-scan-view-Remove-Report.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -277,11 +276,11 @@ pathfix.py -i %{__python3} -pn \
 
 %setup -q -n %{clang_srcdir}
 
-%patch4 -p1 -b .gtest
-%patch11 -p1 -b .libcxx-fix
-%patch13 -p1 -b .unwind-default
+%patch4  -p2 -b .gtest
+%patch11 -p2 -b .libcxx-fix
+%patch13 -p2 -b .unwind-default
 %patch15 -p2 -b .no-install-static
-%patch17 -p1 -b .check-gcc_s
+%patch17 -p2 -b .check-gcc_s
 %patch19 -p2 -b .scan-view-remove-files-fix
 
 

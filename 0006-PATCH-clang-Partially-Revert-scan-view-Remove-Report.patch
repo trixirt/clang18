@@ -1,8 +1,8 @@
-From 9d68d4554d903353a7d4599d2428bd479651eb40 Mon Sep 17 00:00:00 2001
+From 4e7dc19c77a609671b2dea81797d79dad1b688c3 Mon Sep 17 00:00:00 2001
 From: Tom Stellard <tstellar@redhat.com>
 Date: Tue, 9 Feb 2021 13:35:43 -0800
-Subject: [PATCH] Partially Revert "scan-view: Remove Reporter.py and
- associated AppleScript files"
+Subject: [PATCH 6/6] [PATCH][clang] Partially Revert "scan-view: Remove
+ Reporter.py and associated AppleScript files"
 
 This reverts some of commit dbb01536f6f49fa428f170e34466072ef439b3e9.
 
@@ -14,12 +14,12 @@ dbb01536f6f49fa428f170e34466072ef439b3e9.
 Differential Revision: https://reviews.llvm.org/D96367
 ---
  clang/tools/scan-view/CMakeLists.txt    |   1 +
- clang/tools/scan-view/share/Reporter.py | 183 ++++++++++++++++++++++++
+ clang/tools/scan-view/share/Reporter.py | 183 ++++++++++++++++++++++++++++++++
  2 files changed, 184 insertions(+)
  create mode 100644 clang/tools/scan-view/share/Reporter.py
 
 diff --git a/clang/tools/scan-view/CMakeLists.txt b/clang/tools/scan-view/CMakeLists.txt
-index dd3d33439299..eccc6b83195b 100644
+index dd3d334..eccc6b8 100644
 --- a/clang/tools/scan-view/CMakeLists.txt
 +++ b/clang/tools/scan-view/CMakeLists.txt
 @@ -5,6 +5,7 @@ set(BinFiles
@@ -32,7 +32,7 @@ index dd3d33439299..eccc6b83195b 100644
  
 diff --git a/clang/tools/scan-view/share/Reporter.py b/clang/tools/scan-view/share/Reporter.py
 new file mode 100644
-index 000000000000..31a14fb0cf74
+index 0000000..31a14fb
 --- /dev/null
 +++ b/clang/tools/scan-view/share/Reporter.py
 @@ -0,0 +1,183 @@
@@ -220,5 +220,5 @@ index 000000000000..31a14fb0cf74
 +    return reporters
 +
 -- 
-2.27.0
+1.8.3.1
 
