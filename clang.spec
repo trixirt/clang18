@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 2
-%global baserelease 3
+%global baserelease 4
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -539,6 +539,9 @@ false
 
 %endif
 %changelog
+* Tue Mar 09 2021 sguelton@redhat.com - 12.0.0-0.4.rc2
+- rebuilt
+
 * Mon Mar 01 2021 sguelton@redhat.com - 12.0.0-0.3.rc2
 - Reapply some wrongly removed patch
 
