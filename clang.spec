@@ -3,8 +3,8 @@
 %global maj_ver 12
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 2
-%global baserelease 4
+%global rc_ver 3
+%global baserelease 5
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -539,6 +539,9 @@ false
 
 %endif
 %changelog
+* Thu Mar 11 2021 sguelton@redhat.com - 12.0.0-0.5.rc3
+- LLVM 12.0.0 rc3
+
 * Tue Mar 09 2021 sguelton@redhat.com - 12.0.0-0.4.rc2
 - rebuilt
 
