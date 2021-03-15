@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 3
-%global baserelease 6
+%global baserelease 7
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -94,6 +94,7 @@ Patch13:    0003-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch15:    0004-PATCH-clang-Don-t-install-static-libraries.patch
 Patch17:    0005-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
 Patch19:    0006-PATCH-clang-Partially-Revert-scan-view-Remove-Report.patch
+Patch20:    0007-PATCH-clang-Allow-__ieee128-as-an-alias-to-__float12.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -279,6 +280,7 @@ pathfix.py -i %{__python3} -pn \
 %patch15 -p2 -b .no-install-static
 %patch17 -p2 -b .check-gcc_s
 %patch19 -p2 -b .scan-view-remove-files-fix
+%patch20 -p2 -b .ieee128
 
 
 # failing test case
@@ -537,6 +539,9 @@ false
 
 %endif
 %changelog
+* Mon Mar 15 2021 sguelton@redhat.com - 12.0.0-0.7.rc3
+- Apply patch D97846 to fix rhbz#1934065
+
 * Mon Mar 15 2021 Timm Bäder <tbaeder@redhat.com> 12.0.0-0.6.rc3
 - Set CLANG_DEFAULT_UNWIND_LIB instead of using custom patch
 - Add toolchains test to the tests.yml
