@@ -1,7 +1,7 @@
-From ca5dec7a5ec6ca29ee6c4f2a35aaec03ad2e8238 Mon Sep 17 00:00:00 2001
+From d8af49687765744efaae7ba0f0c4c0fcd58a0e31 Mon Sep 17 00:00:00 2001
 From: serge-sans-paille <sguelton@redhat.com>
 Date: Wed, 23 Sep 2020 12:47:30 +0000
-Subject: [PATCH 5/7] [PATCH][clang] Prefer gcc toolchains with libgcc_s.so
+Subject: [PATCH 4/6] [PATCH][clang] Prefer gcc toolchains with libgcc_s.so
  when not static linking libgcc
 
 Fedora ships cross-compilers on all platforms, so a user could end up

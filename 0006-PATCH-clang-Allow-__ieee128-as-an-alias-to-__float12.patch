@@ -1,12 +1,14 @@
-From 7e0b36755d9bcccaddd1c4c1c69b1f12b729cf4e Mon Sep 17 00:00:00 2001
+From 1ef1e91142ac48ecb826f33e1e7072c7402d9fe7 Mon Sep 17 00:00:00 2001
 From: serge-sans-paille <sguelton@redhat.com>
-Date: Mon, 15 Mar 2021 09:28:48 +0100
-Subject: [PATCH 7/7] [PATCH][clang] Allow __ieee128 as an alias to __float128
+Date: Wed, 3 Mar 2021 09:58:31 +0100
+Subject: [PATCH 6/6] [PATCH][clang] Allow __ieee128 as an alias to __float128
  on ppc
 
 This matches gcc behavior.
 
-Backported from https://reviews.llvm.org/D97846
+Differential Revision: https://reviews.llvm.org/D97846
+
+(cherry picked from commit 4aa510be78a75a4da82657fe433016f00dad0784)
 ---
  clang/include/clang/Basic/LangOptions.def | 1 +
  clang/lib/Basic/IdentifierTable.cpp       | 3 +++

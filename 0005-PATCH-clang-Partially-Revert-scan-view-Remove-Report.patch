@@ -1,7 +1,7 @@
-From 88134d9897dce14e34c51406320764356bfde6a4 Mon Sep 17 00:00:00 2001
+From ea01f898fd74bae23d8be31f1a29b542e886e3a5 Mon Sep 17 00:00:00 2001
 From: Tom Stellard <tstellar@redhat.com>
 Date: Tue, 9 Feb 2021 13:35:43 -0800
-Subject: [PATCH 6/7] [PATCH][clang] Partially Revert "scan-view: Remove
+Subject: [PATCH 5/6] [PATCH][clang] Partially Revert "scan-view: Remove
  Reporter.py and associated AppleScript files"
 
 This reverts some of commit dbb01536f6f49fa428f170e34466072ef439b3e9.

@@ -85,16 +85,18 @@ Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{versio
 %endif
 Source4:	tstellar-gpg-key.asc
 
-%if !0%{?compat_build}
-Patch21:	completion-model-cmake.patch
-%endif
+# Patches for clang
+Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
+Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
+Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
+Patch3:     0004-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
+Patch4:     0005-PATCH-clang-Partially-Revert-scan-view-Remove-Report.patch
+Patch5:     0006-PATCH-clang-Allow-__ieee128-as-an-alias-to-__float12.patch
 
-Patch4:		0001-PATCH-clang-Reorganize-gtest-integration.patch
-Patch13:    0003-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
-Patch15:    0004-PATCH-clang-Don-t-install-static-libraries.patch
-Patch17:    0005-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
-Patch19:    0006-PATCH-clang-Partially-Revert-scan-view-Remove-Report.patch
-Patch20:    0007-PATCH-clang-Allow-__ieee128-as-an-alias-to-__float12.patch
+# Patches for clang-tools-extra
+%if !0%{?compat_build}
+Patch201:	0001-PATCH-clang-tools-extra-Make-clangd-CompletionModel-.patch
+%endif
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -258,30 +260,22 @@ Requires:      python3
 %{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE3}' --data='%{SOURCE0}'
 
 %if 0%{?compat_build}
-%autosetup -n %{clang_srcdir} -p1
+%autosetup -n %{clang_srcdir} -p2
 %else
 
 %{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE2}' --data='%{SOURCE1}'
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
-%patch21 -p1 -b .comp-model
+%autopatch -m200 -p2
 
 # failing test case
 rm test/clang-tidy/checkers/altera-struct-pack-align.cpp
-
 
 pathfix.py -i %{__python3} -pn \
 	clang-tidy/tool/*.py \
 	clang-include-fixer/find-all-symbols/tool/run-find-all-symbols.py
 
 %setup -q -n %{clang_srcdir}
-
-%patch4  -p2 -b .gtest
-%patch13 -p2 -b .unwind-default
-%patch15 -p2 -b .no-install-static
-%patch17 -p2 -b .check-gcc_s
-%patch19 -p2 -b .scan-view-remove-files-fix
-%patch20 -p2 -b .ieee128
-
+%autopatch -M200 -p2
 
 # failing test case
 rm test/CodeGen/profile-filter.c
