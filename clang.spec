@@ -3,8 +3,8 @@
 %global maj_ver 12
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 3
-%global baserelease 8
+%global rc_ver 4
+%global baserelease 9
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -533,6 +533,9 @@ false
 
 %endif
 %changelog
+* Fri Apr 02 2021 sguelton@redhat.com - 12.0.0-0.9.rc4
+- New upstream release candidate
+
 * Wed Mar 31 2021 Jonathan Wakely <jwakely@redhat.com> - 12.0.0-0.8.rc3
 - Rebuilt for removed libstdc++ symbols (#1937698)
 
