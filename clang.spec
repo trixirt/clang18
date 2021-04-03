@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 4
-%global baserelease 9
+%global baserelease 10
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -132,6 +132,11 @@ BuildRequires:	libatomic
 
 # We need python3-devel for pathfix.py.
 BuildRequires:	python3-devel
+
+# For reproducible pyc file generation
+# See https://docs.fedoraproject.org/en-US/packaging-guidelines/Python_Appendix/#_byte_compilation_reproducibility
+BuildRequires: /usr/bin/marshalparser
+%global py_reproducible_pyc_path %{buildroot}%{python3_sitelib}
 
 # Needed for %%multilib_fix_c_header
 BuildRequires:	multilib-rpm-config
@@ -533,6 +538,9 @@ false
 
 %endif
 %changelog
+* Sat Apr 03 2021 sguelton@redhat.com - 12.0.0-0.10.rc4
+- Make pyc files from python3-clang reproducible
+
 * Fri Apr 02 2021 sguelton@redhat.com - 12.0.0-0.9.rc4
 - New upstream release candidate
 
