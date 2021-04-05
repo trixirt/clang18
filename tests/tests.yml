@@ -17,6 +17,7 @@
       - lld
       - compiler-rt
       - libcxx-devel
+      - libcxx-static
       - glibc-devel
       - glibc-static
       - gcc
