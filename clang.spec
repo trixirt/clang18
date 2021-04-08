@@ -3,8 +3,8 @@
 %global maj_ver 12
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 4
-%global baserelease 10
+%global rc_ver 5
+%global baserelease 11
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -538,6 +538,9 @@ false
 
 %endif
 %changelog
+* Thu Apr 08 2021 sguelton@redhat.com - 12.0.0-0.11.rc5
+- New upstream release candidate
+
 * Sat Apr 03 2021 sguelton@redhat.com - 12.0.0-0.10.rc4
 - Make pyc files from python3-clang reproducible
 
