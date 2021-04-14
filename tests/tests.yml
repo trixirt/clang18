@@ -24,6 +24,8 @@
       # Required for fedora-flags:
       - annobin
       - redhat-rpm-config
+      # Required for clang-format-diff
+      - clang-tools-extra
 
     repositories:
     - repo: "https://src.fedoraproject.org/rpms/llvm-test-suite.git"
@@ -40,3 +42,4 @@
       - llvm-toolchain
       - fedora-flags
       - toolchains
+      - clang-format-diff

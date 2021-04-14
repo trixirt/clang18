@@ -4,7 +4,7 @@
 %global min_ver 0
 %global patch_ver 0
 %global rc_ver 5
-%global baserelease 11
+%global baserelease 12
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -446,6 +446,9 @@ mkdir -p %{buildroot}%{_libdir}/clang/%{version}/{include,lib,share}/
 # Remove clang-tidy headers.  We don't ship the libraries for these.
 rm -Rvf %{buildroot}%{_includedir}/clang-tidy/
 
+# Add a symlink in /usr/bin to clang-format-diff
+ln -s %{_datadir}/clang/clang-format-diff.py %{buildroot}%{_bindir}/clang-format-diff
+
 %check
 %if !0%{?compat_build}
 # requires lit.py from LLVM utilities
@@ -517,6 +520,7 @@ false
 %{_bindir}/c-index-test
 %{_bindir}/find-all-symbols
 %{_bindir}/modularize
+%{_bindir}/clang-format-diff
 %{_mandir}/man1/diagtool.1.gz
 %{_emacs_sitestartdir}/clang-format.el
 %{_emacs_sitestartdir}/clang-rename.el
@@ -538,6 +542,10 @@ false
 
 %endif
 %changelog
+* Wed Apr 14 2021 Tom Stellard <tstellar@redhat.com> - 12.0.0-0.12.rc5
+- Add symlink to clang-format-diff in /usr/bin
+- rhbz#1939018
+
 * Thu Apr 08 2021 sguelton@redhat.com - 12.0.0-0.11.rc5
 - New upstream release candidate
 
