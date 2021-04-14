@@ -26,19 +26,17 @@
       - redhat-rpm-config
 
     repositories:
-    - repo: "https://src.fedoraproject.org/tests/llvm-test-suite.git"
+    - repo: "https://src.fedoraproject.org/rpms/llvm-test-suite.git"
       dest: "llvm-test-suite"
-    - repo: "https://src.fedoraproject.org/tests/clang.git"
-      dest: "clang"
     tests:
       - rhbz#482491:
           dir: ./
           run: find /usr -name 'libgcc_s.so*' && echo "int main(){}" | clang -v -x c -
-      - llvm-test-suite/test-suite
+      - llvm-test-suite/tests/test-suite
       # ABI test suite is too greedy on the FS
       #- llvm-test-suite/abi-test-suite
-      - clang/rhbz_1657544
-      - clang/rhbz_1647130
-      - clang/llvm-toolchain
-      - clang/fedora-flags
-      - clang/toolchains
+      - rhbz_1657544
+      - rhbz_1647130
+      - llvm-toolchain
+      - fedora-flags
+      - toolchains

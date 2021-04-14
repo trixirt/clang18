@@ -15,10 +15,7 @@
   - role: standard-test-basic
     tags:
       - classic
-    repositories:
-    - repo: "https://src.fedoraproject.org/tests/clang.git"
-      dest: "clang"
     required_packages:
       - clang
     tests:
-      - clang/libomp
+      - libomp

@@ -17,7 +17,7 @@
     tags:
       - classic
     repositories:
-    - repo: "https://src.fedoraproject.org/tests/pocl.git"
+    - repo: "https://src.fedoraproject.org/rpms/pocl.git"
       dest: "pocl"
     required_packages:
       - ocl-icd-devel
@@ -25,4 +25,4 @@
       - gcc
     tests:
     # rhbz#1582884
-    - pocl/simple-opencl-no-clang:
+    - pocl/tests/simple-opencl-no-clang
