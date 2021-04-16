@@ -3,8 +3,7 @@
 %global maj_ver 12
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 5
-%global baserelease 12
+#%%global rc_ver 5
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -71,8 +70,8 @@
 %global clang_tools_srcdir clang-tools-extra-%{version}%{?rc_ver:rc%{rc_ver}}.src
 
 Name:		%pkg_name
-Version:	%{maj_ver}.%{min_ver}.%{patch_ver}
-Release:	%{?rc_ver:0.}%{baserelease}%{?rc_ver:.rc%{rc_ver}}%{?dist}
+Version:	%{maj_ver}.%{min_ver}.%{patch_ver}%{?rc_ver:~rc%{rc_ver}}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -542,6 +541,9 @@ false
 
 %endif
 %changelog
+* Fri Apr 16 2021 Tom Stellard <tstellar@redhat.cm> - 12.0.0-1
+- 12.0.0 Release
+
 * Wed Apr 14 2021 Tom Stellard <tstellar@redhat.com> - 12.0.0-0.12.rc5
 - Add symlink to clang-format-diff in /usr/bin
 - rhbz#1939018
