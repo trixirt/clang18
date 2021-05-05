@@ -1,4 +1,4 @@
-%global compat_build 0
+%bcond_with compat_build
 
 %global maj_ver 12
 %global min_ver 0
@@ -35,7 +35,7 @@
 	%{_bindir}/clang-cl \
 	%{_bindir}/clang-cpp \
 
-%if 0%{?compat_build}
+%if %{with compat_build}
 %global pkg_name clang%{maj_ver}
 # Install clang to same prefix as llvm, so that apps that use llvm-config
 # will also be able to find clang libs.
@@ -78,7 +78,7 @@ License:	NCSA
 URL:		http://llvm.org
 Source0:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_srcdir}.tar.xz
 Source3:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_srcdir}.tar.xz.sig
-%if !0%{?compat_build}
+%if %{without compat_build}
 Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
 Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
 %endif
@@ -93,7 +93,7 @@ Patch4:     0005-PATCH-clang-Partially-Revert-scan-view-Remove-Report.patch
 Patch5:     0006-PATCH-clang-Allow-__ieee128-as-an-alias-to-__float12.patch
 
 # Patches for clang-tools-extra
-%if !0%{?compat_build}
+%if %{without compat_build}
 Patch201:	0001-PATCH-clang-tools-extra-Make-clangd-CompletionModel-.patch
 %endif
 
@@ -101,7 +101,7 @@ BuildRequires:	gcc
 BuildRequires:	gcc-c++
 BuildRequires:	cmake
 BuildRequires:	ninja-build
-%if 0%{?compat_build}
+%if %{with compat_build}
 BuildRequires:	llvm%{maj_ver}-devel = %{version}
 BuildRequires:	llvm%{maj_ver}-static = %{version}
 %else
@@ -198,7 +198,7 @@ Runtime library for clang.
 
 %package devel
 Summary: Development header files for clang
-%if !0%{?compat_build}
+%if %{without compat_build}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # The clang CMake files reference tools from clang-tools-extra.
 Requires: %{name}-tools-extra%{?_isa} = %{version}-%{release}
@@ -215,7 +215,7 @@ Provides: %{name}-resource-filesystem(major) = %{maj_ver}
 %description resource-filesystem
 This package owns the clang resouce directory: $libdir/clang/$version/
 
-%if !0%{?compat_build}
+%if %{without compat_build}
 %package analyzer
 Summary:	A source code analysis framework
 License:	NCSA and MIT
@@ -263,7 +263,7 @@ Requires:      python3
 %prep
 %{gpgverify} --keyring='%{SOURCE4}' --signature='%{SOURCE3}' --data='%{SOURCE0}'
 
-%if 0%{?compat_build}
+%if %{with compat_build}
 %autosetup -n %{clang_srcdir} -p2
 %else
 
@@ -330,7 +330,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DCMAKE_C_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
 	-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
 %endif
-%if 0%{?compat_build}
+%if %{with compat_build}
 	-DCLANG_BUILD_TOOLS:BOOL=OFF \
 	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver}-%{__isa_bits} \
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
@@ -347,7 +347,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %endif
 %endif
 	\
-%if 0%{compat_build}
+%if %{with compat_build}
 	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen-%{maj_ver} \
 %else
 	-DLLVM_TABLEGEN_EXE:FILEPATH=%{_bindir}/llvm-tblgen \
@@ -375,7 +375,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 
 %cmake_install
 
-%if 0%{?compat_build}
+%if %{with compat_build}
 
 # Remove binaries/other files
 rm -Rf %{buildroot}%{install_bindir}
@@ -449,7 +449,7 @@ rm -Rvf %{buildroot}%{_includedir}/clang-tidy/
 ln -s %{_datadir}/clang/clang-format-diff.py %{buildroot}%{_bindir}/clang-format-diff
 
 %check
-%if !0%{?compat_build}
+%if %{without compat_build}
 # requires lit.py from LLVM utilities
 # FIXME: Fix failing ARM tests
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
@@ -462,7 +462,7 @@ false
 %endif
 
 
-%if !0%{?compat_build}
+%if %{without compat_build}
 %files
 %license LICENSE.TXT
 %{clang_binaries}
@@ -473,7 +473,7 @@ false
 %endif
 
 %files libs
-%if !0%{?compat_build}
+%if %{without compat_build}
 %{_libdir}/clang/
 %{_libdir}/*.so.*
 %else
@@ -482,7 +482,7 @@ false
 %endif
 
 %files devel
-%if !0%{?compat_build}
+%if %{without compat_build}
 %{_libdir}/*.so
 %{_includedir}/clang/
 %{_includedir}/clang-c/
@@ -500,11 +500,11 @@ false
 %dir %{pkg_libdir}/clang/%{version}/include/
 %dir %{pkg_libdir}/clang/%{version}/lib/
 %dir %{pkg_libdir}/clang/%{version}/share/
-%if !0%{?compat_build}
+%if %{without compat_build}
 %{pkg_libdir}/clang/%{maj_ver}
 %endif
 
-%if !0%{?compat_build}
+%if %{without compat_build}
 %files analyzer
 %{_bindir}/scan-view
 %{_bindir}/scan-build
