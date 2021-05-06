@@ -53,12 +53,6 @@
 %global pkg_libdir %{_libdir}
 %endif
 
-%if 0%{?fedora} || 0%{?rhel} > 7
-%bcond_without python3
-%else
-%bcond_with python3
-%endif
-
 %global build_install_prefix %{buildroot}%{install_prefix}
 
 %ifarch ppc64le
@@ -120,11 +114,8 @@ BuildRequires:	ncurses-devel
 # should BuildRequires: emacs if it packages emacs integration files.
 BuildRequires:	emacs
 
-# These build dependencies are required for the test suite.
-%if %with python3
 # The testsuite uses /usr/bin/lit which is part of the python3-lit package.
 BuildRequires:	python3-lit
-%endif
 
 BuildRequires:	python3-sphinx
 BuildRequires:	libatomic
