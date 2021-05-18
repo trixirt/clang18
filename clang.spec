@@ -65,7 +65,7 @@
 
 Name:		%pkg_name
 Version:	%{maj_ver}.%{min_ver}.%{patch_ver}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -323,7 +323,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %endif
 %if %{with compat_build}
 	-DCLANG_BUILD_TOOLS:BOOL=OFF \
-	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver}-%{__isa_bits} \
+	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver} \
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
 %else
@@ -532,6 +532,9 @@ false
 
 %endif
 %changelog
+* Tue May 18 2021 sguelton@redhat.com - 12.0.0-2
+- Use the alternative-managed version of llvm-config
+
 * Fri Apr 16 2021 Tom Stellard <tstellar@redhat.cm> - 12.0.0-1
 - 12.0.0 Release
 
