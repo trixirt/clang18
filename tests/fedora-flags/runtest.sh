@@ -1,22 +1,20 @@
 #!/bin/bash
 
-set -x
+set -ex pipefail
 
-status=0
+cflags=`rpm -D '%toolchain clang' -E %{build_cflags}`
+cxxflags=`rpm -D '%toolchain clang' -E %{build_cxxflags}`
+ldflags=`rpm -D '%toolchain clang' -E %{build_ldflags}`
 
-# arhmfp not tested due to rhbz#1918924.
-arches="s390x ppc64le x86_64 i386 aarch64"
 
-for arch in $arches; do
-	root="fedora-rawhide-$arch"
-	mock -r $root --install clang
-	mock -r $root --copyin main.c main.cpp hello.c hello.cpp test-clang.sh .
-	if mock -r $root --shell bash test-clang.sh; then
-		echo "$arch: PASS"
-	else
-		echo "$arch: FAIL"
-		status=1
-	fi
-done
+# Test a c program
+clang $cflags -c hello.c -o hello.o
+clang $cflags -c main.c -o main.o
+clang $ldflags -o hello main.o hello.o
+./hello | grep "Hello World"
 
-exit $status
+# Test a cxx program
+clang++ $cxxflags -c hello.cpp -o hello-cpp.o
+clang++ $cxxflags -c main.cpp -o main-cpp.o
+clang++ $ldflags -o hello-cpp main-cpp.o hello-cpp.o
+./hello-cpp | grep "Hello World"

@@ -22,8 +22,6 @@
       - glibc-static
       - gcc
       # Required for fedora-flags:
-      - mock
-      - qemu-user-static
       - annobin
       - redhat-rpm-config
       # Required for clang-format-diff
