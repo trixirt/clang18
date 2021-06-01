@@ -2,8 +2,9 @@
 
 %global maj_ver 12
 %global min_ver 0
-%global patch_ver 0
-#%%global rc_ver 5
+%global patch_ver 1
+%global rc_ver 1
+%global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
 	%{_bindir}/clang-apply-replacements \
@@ -60,21 +61,21 @@
 %global _smp_mflags -j8
 %endif
 
-%global clang_srcdir clang-%{version}%{?rc_ver:rc%{rc_ver}}.src
-%global clang_tools_srcdir clang-tools-extra-%{version}%{?rc_ver:rc%{rc_ver}}.src
+%global clang_srcdir clang-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
+%global clang_tools_srcdir clang-tools-extra-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 
 Name:		%pkg_name
-Version:	%{maj_ver}.%{min_ver}.%{patch_ver}%{?rc_ver:~rc%{rc_ver}}
-Release:	2%{?dist}
+Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
 URL:		http://llvm.org
-Source0:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_srcdir}.tar.xz
-Source3:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_srcdir}.tar.xz.sig
+Source0:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_srcdir}.tar.xz
+Source3:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_srcdir}.tar.xz.sig
 %if %{without compat_build}
-Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
-Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
+Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
+Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
 %endif
 Source4:	tstellar-gpg-key.asc
 
@@ -83,7 +84,6 @@ Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
 Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0004-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
-Patch4:     0005-PATCH-clang-Partially-Revert-scan-view-Remove-Report.patch
 Patch5:     0006-PATCH-clang-Allow-__ieee128-as-an-alias-to-__float12.patch
 
 # Patches for clang-tools-extra
@@ -532,6 +532,9 @@ false
 
 %endif
 %changelog
+* Thu May 27 2021 Tom Stellard <tstellar@redhat.com> - clang-12.0.1~rc1-1
+- 12.0.1-rc1 Release
+
 * Tue May 18 2021 sguelton@redhat.com - 12.0.0-2
 - Use the alternative-managed version of llvm-config
 
