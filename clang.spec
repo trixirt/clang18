@@ -66,7 +66,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -532,6 +532,9 @@ false
 
 %endif
 %changelog
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 12.0.1~rc1-2
+- Rebuilt for Python 3.10
+
 * Thu May 27 2021 Tom Stellard <tstellar@redhat.com> - clang-12.0.1~rc1-1
 - 12.0.1-rc1 Release
 
