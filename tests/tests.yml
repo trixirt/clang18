@@ -26,6 +26,23 @@
       - redhat-rpm-config
       # Required for clang-format-diff
       - clang-tools-extra
+      # the requirements below are for the integration suite
+      - cmake
+      - llvm-devel
+      - clang
+      - clang-analyzer
+      - clang-tools-extra
+      - compiler-rt
+      - ninja-build
+      - libcxx-devel
+      - libomp-devel
+      - python-lit
+      - lld
+      - lldb
+      - git
+      - make
+      - libstdc++-static
+      - clang-devel
 
     repositories:
     - repo: "https://src.fedoraproject.org/rpms/llvm-test-suite.git"
@@ -43,3 +60,4 @@
       - fedora-flags
       - toolchains
       - clang-format-diff
+      - integration-test-suite
