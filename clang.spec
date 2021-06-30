@@ -3,7 +3,7 @@
 %global maj_ver 12
 %global min_ver 0
 %global patch_ver 1
-%global rc_ver 1
+%global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
@@ -66,7 +66,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -85,11 +85,6 @@ Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0004-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
 Patch5:     0006-PATCH-clang-Allow-__ieee128-as-an-alias-to-__float12.patch
-
-# Patches for clang-tools-extra
-%if %{without compat_build}
-Patch201:	0001-PATCH-clang-tools-extra-Make-clangd-CompletionModel-.patch
-%endif
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -532,6 +527,9 @@ false
 
 %endif
 %changelog
+* Wed Jun 30 2021 Tom Stellard <tstellar@redhat.com> - clang-12.0.1~rc3-1
+- 12.0.1-rc3 Release
+
 * Tue Jun 08 2021 Tom Stellard <tstellar@redhat.com> - 12.0.1~rc1-3
 - Only enable -funwind-tables by default on Fedora arches
 
