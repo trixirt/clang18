@@ -66,7 +66,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -274,7 +274,8 @@ pathfix.py -i %{__python3} -pn \
 	tools/clang-format/*.py \
 	tools/clang-format/git-clang-format \
 	utils/hmaptool/hmaptool \
-	tools/scan-view/bin/scan-view
+	tools/scan-view/bin/scan-view \
+	tools/scan-build-py/bin/*
 %endif
 
 %build
@@ -527,6 +528,9 @@ false
 
 %endif
 %changelog
+* Fri Jul 09 2021 Tom Stellard <tstellar@redhat.com> - 12.0.1~rc3-2
+- Fix ambiguous python shebangs
+
 * Wed Jun 30 2021 Tom Stellard <tstellar@redhat.com> - clang-12.0.1~rc3-1
 - 12.0.1-rc3 Release
 
