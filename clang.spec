@@ -3,7 +3,7 @@
 %global maj_ver 12
 %global min_ver 0
 %global patch_ver 1
-%global rc_ver 3
+#global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
@@ -66,7 +66,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	2%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -528,6 +528,9 @@ false
 
 %endif
 %changelog
+* Tue Jul 13 2021 Tom Stellard <tstellar@redhat.com> - 12.0.1-1
+- 12.0.1 Release
+
 * Fri Jul 09 2021 Tom Stellard <tstellar@redhat.com> - 12.0.1~rc3-2
 - Fix ambiguous python shebangs
 
