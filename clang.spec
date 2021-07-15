@@ -72,7 +72,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -163,8 +163,7 @@ Requires:	gcc-c++
 
 Provides:	clang(major) = %{maj_ver}
 
-Conflicts:	compiler-rt < %{version}
-Conflicts:	compiler-rt > %{version}
+Conflicts:	compiler-rt < 11.0.0
 
 %description
 clang: noun
@@ -563,6 +562,9 @@ false
 
 %endif
 %changelog
+* Thu Oct 27 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-4
+- Remove Conflicts: compiler-rt for newer versions of compiler-rt
+
 * Wed Oct 06 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-3
 - Fix gcc detection with redhat triples
 
