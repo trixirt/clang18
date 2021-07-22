@@ -66,7 +66,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -369,11 +369,6 @@ rm -Rf %{buildroot}%{install_bindir}
 rm -Rf %{buildroot}%{install_prefix}/share
 rm -Rf %{buildroot}%{install_prefix}/libexec
 
-# Move include files
-mkdir -p %{buildroot}%{pkg_includedir}
-mv  %{buildroot}/%{install_includedir}/clang %{buildroot}/%{pkg_includedir}/
-mv  %{buildroot}/%{install_includedir}/clang-c %{buildroot}/%{pkg_includedir}/
-
 %else
 
 # install clang python bindings
@@ -423,17 +418,20 @@ pushd %{buildroot}%{_libdir}/clang/
 ln -s %{version} %{maj_ver}
 popd
 
+%endif
+
 # Create sub-directories in the clang resource directory that will be
 # populated by other packages
-mkdir -p %{buildroot}%{_libdir}/clang/%{version}/{include,lib,share}/
+mkdir -p %{buildroot}%{pkg_libdir}/clang/%{version}/{include,lib,share}/
 
-%endif
 
 # Remove clang-tidy headers.  We don't ship the libraries for these.
 rm -Rvf %{buildroot}%{_includedir}/clang-tidy/
 
+%if %{without compat_build}
 # Add a symlink in /usr/bin to clang-format-diff
 ln -s %{_datadir}/clang/clang-format-diff.py %{buildroot}%{_bindir}/clang-format-diff
+%endif
 
 %check
 %if %{without compat_build}
@@ -528,6 +526,9 @@ false
 
 %endif
 %changelog
+* Thu Jul 22 2021 Tom Stellard <tstellar@redhat.com> - 12.0.1-3
+- Fix compat build
+
 * Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 12.0.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
