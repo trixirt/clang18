@@ -1,9 +1,9 @@
 %bcond_with compat_build
 
-%global maj_ver 12
+%global maj_ver 13
 %global min_ver 0
-%global patch_ver 1
-#global rc_ver 3
+%global patch_ver 0
+%global rc_ver 1
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
@@ -64,9 +64,11 @@
 %global clang_srcdir clang-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 
+%global abi_revision 0
+
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -84,7 +86,7 @@ Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
 Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0004-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
-Patch5:     0006-PATCH-clang-Allow-__ieee128-as-an-alias-to-__float12.patch
+Patch4:     0001-cmake-Allow-shared-libraries-to-customize-the-soname.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -275,7 +277,8 @@ pathfix.py -i %{__python3} -pn \
 	tools/clang-format/git-clang-format \
 	utils/hmaptool/hmaptool \
 	tools/scan-view/bin/scan-view \
-	tools/scan-build-py/bin/*
+	tools/scan-build-py/bin/* \
+	tools/scan-build-py/libexec/*
 %endif
 
 %build
@@ -307,6 +310,9 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 # rpath of libraries and binaries.  llvm will skip the manual setting
 # if CAMKE_INSTALL_RPATH is set to a value, but cmake interprets this value
 # as nothing, so it sets the rpath to "" when installing.
+
+# -DLLVM_ENABLE_NEW_PASS_MANAGER=ON can be removed once this patch is committed:
+# https://reviews.llvm.org/D107628
 %cmake  -G Ninja \
 	-DLLVM_PARALLEL_LINK_JOBS=1 \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
@@ -347,8 +353,10 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DLLVM_ENABLE_EH=ON \
 	-DLLVM_ENABLE_RTTI=ON \
 	-DLLVM_BUILD_DOCS=ON \
+	-DLLVM_ENABLE_NEW_PASS_MANAGER=ON \
 	-DLLVM_ENABLE_SPHINX=ON \
 	-DCLANG_LINK_CLANG_DYLIB=ON \
+	-DLLVM_ABI_REVISION=%{abi_revision} \
 	-DSPHINX_WARNINGS_AS_ERRORS=OFF \
 	\
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
@@ -375,6 +383,10 @@ rm -Rf %{buildroot}%{install_prefix}/libexec
 mkdir -p %{buildroot}%{python3_sitelib}/clang/
 install -p -m644 bindings/python/clang/* %{buildroot}%{python3_sitelib}/clang/
 %py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/clang
+
+# install scanbuild-py to python sitelib.
+mv %{buildroot}%{_prefix}/lib/{libear,libscanbuild} %{buildroot}%{python3_sitelib}
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/{libear,libscanbuild}
 
 # multilib fix
 %multilib_fix_c_header --file %{_includedir}/clang/Config/config.h
@@ -493,11 +505,21 @@ false
 %files analyzer
 %{_bindir}/scan-view
 %{_bindir}/scan-build
+%{_bindir}/analyze-build
+%{_bindir}/intercept-build
+%{_bindir}/scan-build-py
 %{_libexecdir}/ccc-analyzer
 %{_libexecdir}/c++-analyzer
+%{_libexecdir}/analyze-c++
+%{_libexecdir}/analyze-cc
+%{_libexecdir}/intercept-c++
+%{_libexecdir}/intercept-cc
 %{_datadir}/scan-view/
 %{_datadir}/scan-build/
 %{_mandir}/man1/scan-build.1.*
+%{python3_sitelib}/libear
+%{python3_sitelib}/libscanbuild
+
 
 %files tools-extra
 %{clang_tools_binaries}
@@ -513,7 +535,7 @@ false
 %{_datadir}/clang/clang-format-diff.py*
 %{_datadir}/clang/clang-include-fixer.py*
 %{_datadir}/clang/clang-tidy-diff.py*
-%{_datadir}/clang/run-clang-tidy.py*
+%{_bindir}/run-clang-tidy
 %{_datadir}/clang/run-find-all-symbols.py*
 %{_datadir}/clang/clang-rename.py*
 
@@ -526,6 +548,9 @@ false
 
 %endif
 %changelog
+* Fri Aug 06 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0~rc1-1
+- 13.0.0-rc1 Release
+
 * Thu Jul 22 2021 Tom Stellard <tstellar@redhat.com> - 12.0.1-3
 - Fix compat build
 
