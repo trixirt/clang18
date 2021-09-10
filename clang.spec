@@ -68,7 +68,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -90,6 +90,7 @@ Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0004-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
 Patch4:     0001-cmake-Allow-shared-libraries-to-customize-the-soname.patch
+Patch5:     0001-PATCH-clang-Fix-scan-build-py-executable-lookup-path.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -561,6 +562,9 @@ false
 
 %endif
 %changelog
+* Fri Sep 10 2021 sguelton@redhat.com - 13.0.0~rc1-3
+- Apply scan-build-py intergation patch
+
 * Thu Sep 09 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0~rc1-2
 - Add macros.clang file
 
