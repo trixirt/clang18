@@ -1,4 +1,5 @@
 %bcond_with compat_build
+%bcond_without check
 
 %global maj_ver 13
 %global min_ver 0
@@ -68,7 +69,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -460,9 +461,11 @@ ln -s %{_datadir}/clang/clang-format-diff.py %{buildroot}%{_bindir}/clang-format
 
 %check
 %if %{without compat_build}
+%if %{with check}
 # requires lit.py from LLVM utilities
 # FIXME: Fix failing ARM tests
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
+%endif
 %ifarch %{arm}
 :
 %else
@@ -562,6 +565,9 @@ false
 
 %endif
 %changelog
+* Tue Sep 14 2021 Konrad Kleine <kkleine@redhat.com> - 13.0.0~rc1-4
+- Add --without=check option
+
 * Fri Sep 10 2021 sguelton@redhat.com - 13.0.0~rc1-3
 - Apply scan-build-py intergation patch
 
