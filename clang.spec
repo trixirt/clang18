@@ -4,7 +4,7 @@
 %global maj_ver 13
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 1
+%global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
@@ -65,11 +65,11 @@
 %global clang_srcdir clang-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 
-%global abi_revision 0
+%global abi_revision 1
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	4%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -565,6 +565,9 @@ false
 
 %endif
 %changelog
+* Sat Sep 18 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0~rc1-5
+- 13.0.0-rc3 Release
+
 * Tue Sep 14 2021 Konrad Kleine <kkleine@redhat.com> - 13.0.0~rc1-4
 - Add --without=check option
 
