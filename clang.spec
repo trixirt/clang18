@@ -4,7 +4,7 @@
 %global maj_ver 13
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 3
+#global rc_ver 4
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
@@ -22,6 +22,7 @@
 	%{_bindir}/clang-refactor \
 	%{_bindir}/clang-rename \
 	%{_bindir}/clang-reorder-fields \
+	%{_bindir}/clang-repl \
 	%{_bindir}/clang-scan-deps \
 	%{_bindir}/clang-tidy \
 	%{_bindir}/clangd \
@@ -65,7 +66,7 @@
 %global clang_srcdir clang-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 
-%global abi_revision 1
+%global abi_revision 2
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
@@ -565,6 +566,9 @@ false
 
 %endif
 %changelog
+* Fri Oct 01 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-1
+- 13.0.0 Release
+
 * Sat Sep 18 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0~rc1-5
 - 13.0.0-rc3 Release
 
