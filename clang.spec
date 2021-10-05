@@ -66,11 +66,13 @@
 %global clang_srcdir clang-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 
+%if !%{maj_ver} && 0%{?rc_ver}
 %global abi_revision 2
+%endif
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -362,7 +364,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DLLVM_ENABLE_NEW_PASS_MANAGER=ON \
 	-DLLVM_ENABLE_SPHINX=ON \
 	-DCLANG_LINK_CLANG_DYLIB=ON \
-	-DLLVM_ABI_REVISION=%{abi_revision} \
+	%{?abi_revision:-DLLVM_ABI_REVISION=%{abi_revision}} \
 	-DSPHINX_WARNINGS_AS_ERRORS=OFF \
 	\
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
@@ -566,6 +568,9 @@ false
 
 %endif
 %changelog
+* Tue Oct 05 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-2
+- Drop abi_revision from soname
+
 * Fri Oct 01 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-1
 - 13.0.0 Release
 
