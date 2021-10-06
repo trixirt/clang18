@@ -72,7 +72,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -92,7 +92,7 @@ Source5:	macros.%{name}
 Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
 Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
-Patch3:     0004-PATCH-clang-Prefer-gcc-toolchains-with-libgcc_s.so-w.patch
+Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
 Patch4:     0001-cmake-Allow-shared-libraries-to-customize-the-soname.patch
 Patch5:     0001-PATCH-clang-Fix-scan-build-py-executable-lookup-path.patch
 
@@ -568,6 +568,9 @@ false
 
 %endif
 %changelog
+* Wed Oct 06 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-3
+- Fix gcc detection with redhat triples
+
 * Tue Oct 05 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-2
 - Drop abi_revision from soname
 
