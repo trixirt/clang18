@@ -84,7 +84,7 @@ Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_
 Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
 %endif
 Source4:	tstellar-gpg-key.asc
-%if !0%{?compat_build}
+%if %{without compat_build}
 Source5:	macros.%{name}
 %endif
 
