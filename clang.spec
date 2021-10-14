@@ -314,11 +314,6 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
 
-# -DCMAKE_INSTALL_RPATH=";" is a workaround for llvm manually setting the
-# rpath of libraries and binaries.  llvm will skip the manual setting
-# if CAMKE_INSTALL_RPATH is set to a value, but cmake interprets this value
-# as nothing, so it sets the rpath to "" when installing.
-
 # -DLLVM_ENABLE_NEW_PASS_MANAGER=ON can be removed once this patch is committed:
 # https://reviews.llvm.org/D107628
 %cmake  -G Ninja \
@@ -326,7 +321,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 	-DPYTHON_EXECUTABLE=%{__python3} \
-	-DCMAKE_INSTALL_RPATH:BOOL=";" \
+	-DCMAKE_SKIP_RPATH:BOOL=ON \
 %ifarch s390 s390x %{arm} %ix86 ppc64le
 	-DCMAKE_C_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
 	-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
@@ -467,7 +462,7 @@ ln -s %{_datadir}/clang/clang-format-diff.py %{buildroot}%{_bindir}/clang-format
 %if %{with check}
 # requires lit.py from LLVM utilities
 # FIXME: Fix failing ARM tests
-LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %cmake_build --target check-all || \
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %{__ninja} check-all -C %{__cmake_builddir} || \
 %endif
 %ifarch %{arm}
 :
