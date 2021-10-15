@@ -125,7 +125,7 @@ BuildRequires:	python3-lit
 BuildRequires:	python3-sphinx
 BuildRequires:	libatomic
 
-# We need python3-devel for pathfix.py.
+# We need python3-devel for %%py3_shebang_fix
 BuildRequires:	python3-devel
 
 # For reproducible pyc file generation
@@ -270,8 +270,8 @@ Requires:      python3
 # failing test case
 rm test/clang-tidy/checkers/altera-struct-pack-align.cpp
 
-pathfix.py -i %{__python3} -pn \
-	clang-tidy/tool/*.py \
+%py3_shebang_fix \
+	clang-tidy/tool/ \
 	clang-include-fixer/find-all-symbols/tool/run-find-all-symbols.py
 
 %setup -q -n %{clang_srcdir}
@@ -280,8 +280,8 @@ pathfix.py -i %{__python3} -pn \
 # failing test case
 rm test/CodeGen/profile-filter.c
 
-pathfix.py -i %{__python3} -pn \
-	tools/clang-format/*.py \
+%py3_shebang_fix \
+	tools/clang-format/ \
 	tools/clang-format/git-clang-format \
 	utils/hmaptool/hmaptool \
 	tools/scan-view/bin/scan-view \
