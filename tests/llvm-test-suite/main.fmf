@@ -5,3 +5,4 @@ require:
   - git
   - clang
   - llvm-test-suite
+duration: 1h
