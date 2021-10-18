@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh -eux
 
-set -ex pipefail
+set pipefail
 
 cflags=`rpm -D '%toolchain clang' -E %{build_cflags}`
 cxxflags=`rpm -D '%toolchain clang' -E %{build_cxxflags}`

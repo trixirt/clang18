@@ -1,0 +1,4 @@
+summary: clang-format-diff
+test: ./test.sh
+require:
+  - clang-tools-extra

@@ -1,0 +1,12 @@
+# TODO REVIEW: better summary
+summary: ""
+test: ./test.sh
+require:
+  - clang
+  - lld
+  - compiler-rt
+  - libcxx-devel
+  - libcxx-static
+  - glibc-devel
+  - glibc-static
+  - gcc

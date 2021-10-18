@@ -1,0 +1,4 @@
+summary: RHBZ1647130
+test: ./test.sh
+require:
+  - clang

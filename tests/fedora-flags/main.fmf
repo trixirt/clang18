@@ -1,0 +1,5 @@
+summary: fedora-flags
+test: ./test.sh
+require:
+  - annobin
+  - redhat-rpm-config

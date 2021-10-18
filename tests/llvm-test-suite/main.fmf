@@ -1,0 +1,6 @@
+# TODO: once llvm-test-suite is converted to TMT, we can just link the test from plan.
+summary: Run tests from llvm-test-suite package
+test: ./test.sh
+require:
+  - git
+  - clang

@@ -1,0 +1,18 @@
+summary: pocl tests
+discover:
+    how: fmf
+    test: pocl
+execute:
+    how: tmt
+prepare:
+    # Programs linked against pocl should be able to run without clang installed,
+    # so when we run the test we want to make sure clang is not installed to
+    # verify we haven't introduced an implicit dependency on clang.
+    - name: Drop clang
+      how: shell
+      script: |
+        dnf erase -y clang
+
+provision:
+  hardware:
+    memory: ">= 4 GiB"

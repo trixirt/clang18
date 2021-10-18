@@ -1,0 +1,16 @@
+summary: libomp tests
+discover:
+    how: fmf
+    test: libomp
+execute:
+    how: tmt
+prepare:
+    # We want to make sure libomp is not already present on the system to ensure
+    # that clang pulls in the correct libomp dependencies when it is installed.
+    - name: Drop libomp
+      how: shell
+      script: |
+        dnf erase -y libomp libomp-devel clang clang-libs
+provision:
+  hardware:
+    memory: ">= 4 GiB"

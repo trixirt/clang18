@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/sh -eux
 
 # Tests for using a full LLVM toolchain: clang + compiler-rt + libcxx + lld
 
-set -ex pipefail
+set pipefail
 
 # Test compile a C program.
 cat << EOF | \

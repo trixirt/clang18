@@ -1,6 +1,4 @@
-#!/bin/sh
-set -e
-set -x
+#!/bin/sh -eux
 
 tmp_cpp=`mktemp -t XXXXX.cpp`
 tmp_dir=`mktemp -d`

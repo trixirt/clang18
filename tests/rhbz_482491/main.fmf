@@ -1,0 +1,5 @@
+summary: rhbz-482491
+test: ./test.sh
+require:
+  - clang
+  - libgcc

@@ -1,0 +1,19 @@
+summary: Clang tests
+discover:
+    - name: Local tests
+      how: fmf
+      filter: "tag:-not-in-default"
+    - name: "LLVM's integration test suite"
+      how: fmf
+      url: https://src.fedoraproject.org/rpms/llvm.git
+      ref: rawhide
+      test: integration-test-suite
+execute:
+    how: tmt
+prepare:
+    - name: packages
+      how: install
+      package: clang
+provision:
+  hardware:
+    memory: ">= 4 GiB"

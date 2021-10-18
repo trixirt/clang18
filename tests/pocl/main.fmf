@@ -1,0 +1,16 @@
+# TODO REVIEW: get fitting summary - what's the purpose of this test? Comment from the STI version says:
+#
+# This is separate from tests.yml because we want to run the tests without
+# clang installed.
+summary: pocl
+# This test requires a special preparation, see `/tests/tests-pocl` plan. As such,
+# it shouldn't be part of the `/tests/default` plan.
+tag:
+  - not-in-default
+# rhbz#1582884
+test: ./test.sh
+require:
+  - git
+  - ocl-icd-devel
+  - pocl
+  - gcc

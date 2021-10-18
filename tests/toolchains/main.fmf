@@ -1,0 +1,7 @@
+# TODO REVIEW: better summary
+summary: ""
+test: ./test.sh
+# TODO REVIEW: are these all requirements? test.sh seems to run quite a lot of stuff, looks like we
+# need more packages from LLVM family.
+require:
+  - clang

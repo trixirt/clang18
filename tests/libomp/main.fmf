@@ -1,0 +1,13 @@
+# TODO: get fitting summary - what's the purpose of this test? Comment from the STI version says:
+#
+# We want to make sure libomp is not already present on the system to ensure
+# that clang pulls in the correct libomp dependencies when it is installed.
+summary: libomp tests
+# This test requires a special preparation, see `/tests/tests-libomp` plan. As such,
+# it shouldn't be part of the `/tests/default` plan.
+tag:
+  - not-in-default
+test: ./test.sh
+require:
+  - clang
+  - libomp
