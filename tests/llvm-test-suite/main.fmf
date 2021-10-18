@@ -4,3 +4,4 @@ test: ./test.sh
 require:
   - git
   - clang
+  - llvm-test-suite
