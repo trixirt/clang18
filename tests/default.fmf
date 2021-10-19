@@ -3,7 +3,7 @@ discover:
     - name: Local tests
       how: fmf
       filter: "tag:-not-in-default"
-    - name: "LLVM's integration test suite"
+    - name: "Upstream LLVM integration test suite"
       how: fmf
       url: https://src.fedoraproject.org/rpms/llvm.git
       ref: rawhide
