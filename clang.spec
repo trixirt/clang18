@@ -72,7 +72,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -187,6 +187,11 @@ Recommends: compiler-rt%{?_isa} = %{version}
 # with -fopenmp.
 Recommends: libomp-devel%{_isa} = %{version}
 Recommends: libomp%{_isa} = %{version}
+
+# Use lld as the default linker on ARM due to rhbz#1918924
+%ifarch %{arm}
+Requires: lld
+%endif
 
 %description libs
 Runtime library for clang.
@@ -364,6 +369,9 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}" \
+%ifarch %{arm}
+	-DCLANG_DEFAULT_LINKER=lld \
+%endif
 	-DCLANG_DEFAULT_UNWINDLIB=libgcc
 
 %cmake_build
@@ -562,6 +570,9 @@ false
 
 %endif
 %changelog
+* Thu Oct 28 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-5
+- Make lld the default linker on arm
+
 * Wed Oct 27 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-4
 - Remove Conflicts: compiler-rt for newer versions of compiler-rt
 
