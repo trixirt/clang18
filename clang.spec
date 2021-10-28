@@ -562,7 +562,7 @@ false
 
 %endif
 %changelog
-* Thu Oct 27 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-4
+* Wed Oct 27 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-4
 - Remove Conflicts: compiler-rt for newer versions of compiler-rt
 
 * Wed Oct 06 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-3
