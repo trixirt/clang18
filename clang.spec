@@ -72,7 +72,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -293,6 +293,8 @@ rm test/CodeGen/profile-filter.c
 	tools/clang-format/git-clang-format \
 	utils/hmaptool/hmaptool \
 	tools/scan-view/bin/scan-view \
+	tools/scan-view/share/Reporter.py \
+	tools/scan-view/share/startfile.py \
 	tools/scan-build-py/bin/* \
 	tools/scan-build-py/libexec/*
 %endif
@@ -412,6 +414,9 @@ install -p -m644 bindings/python/clang/* %{buildroot}%{python3_sitelib}/clang/
 # install scanbuild-py to python sitelib.
 mv %{buildroot}%{_prefix}/lib/{libear,libscanbuild} %{buildroot}%{python3_sitelib}
 %py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/{libear,libscanbuild}
+
+# Fix permissions of scan-view scripts
+chmod a+x %{buildroot}%{_datadir}/scan-view/{Reporter.py,startfile.py}
 
 # multilib fix
 %multilib_fix_c_header --file %{_includedir}/clang/Config/config.h
@@ -575,6 +580,9 @@ false
 
 %endif
 %changelog
+* Wed Feb 16 2022 Tom Stellard <tstellar@redhat.com> - 13.0.1-2
+- Fix some rpmlinter errors
+
 * Thu Feb 03 2022 Nikita Popov <npopov@redhat.com> - 13.0.1-1
 - Update to LLVM 13.0.1 final
 
