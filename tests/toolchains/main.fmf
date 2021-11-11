@@ -1,7 +1,21 @@
 # TODO REVIEW: better summary
 summary: ""
 test: ./test.sh
+adjust:
+  - environment+:
+      CXXLIBS: "libc++"
+    require:
+      - clang
+      - libcxx-devel
+    when: "distro == fedora"
+    because: testing against libcxx package in Fedora
+  - environment+:
+      CXXLIBS: "libstdc++"
+    require:
+      - clang
+      - libstdc++
+    when: "distro == rhel"
+    because: testing against libstdc++ package in RHEL as libcxx is not shipped with RHEL
 # TODO REVIEW: are these all requirements? test.sh seems to run quite a lot of stuff, looks like we
 # need more packages from LLVM family.
-require:
-  - clang
+require: []

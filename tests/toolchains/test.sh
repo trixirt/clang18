@@ -2,6 +2,12 @@
 
 set pipefail
 
+if [ -z "${CXXLIBS:-}" ]; then
+  echo "CXXLIBS variable is a required input but it's not specified!"
+  echo "Test metadata should have picked a proper value, depending on distro."
+  exit 1
+fi
+
 status=0
 
 test_toolchain() {
@@ -23,6 +29,9 @@ test_toolchain() {
                 args="$args -rtlib=$1"
                 ;;
             libc++)
+                args="$args -stdlib=$1"
+                ;;
+            libstdc++)
                 args="$args -stdlib=$1"
                 ;;
             lld)
@@ -54,7 +63,7 @@ echo ""
 for compiler in clang clang++; do
     for rtlib in "" compiler-rt; do
         for linker in "" lld; do
-            for cxxlib in "" libc++; do
+            for cxxlib in "" $CXXLIBS; do
                 if [ "$compiler" = "clang" -a -n "$cxxlib" ]; then
                     continue
                 fi

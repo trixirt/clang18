@@ -1,12 +1,30 @@
 # TODO REVIEW: better summary
 summary: ""
 test: ./test.sh
-require:
-  - clang
-  - lld
-  - compiler-rt
-  - libcxx-devel
-  - libcxx-static
-  - glibc-devel
-  - glibc-static
-  - gcc
+adjust:
+  - environment+:
+      CXXLIB: "libc++"
+    require:
+      - clang
+      - lld
+      - compiler-rt
+      - libcxx-devel
+      - libcxx-static
+      - glibc-devel
+      - glibc-static
+      - gcc
+    when: "distro == fedora"
+    because: testing against libcxx package in Fedora
+  - environment+:
+      CXXLIB: "libstdc++"
+    require:
+      - clang
+      - lld
+      - compiler-rt
+      - glibc-devel
+      - glibc-static
+      - gcc
+      - libstdc++
+    when: "distro == rhel"
+    because: testing against libstdc++ package in RHEL as libcxx is not shipped with RHEL
+require: []

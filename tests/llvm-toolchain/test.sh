@@ -4,6 +4,12 @@
 
 set pipefail
 
+if [ -z "${CXXLIB:-}" ]; then
+  echo "CXXLIB variable is a required input but it's not specified!"
+  echo "Test metadata should have picked a proper value, depending on distro."
+  exit 1
+fi
+
 # Test compile a C program.
 cat << EOF | \
 	clang -fuse-ld=lld -rtlib=compiler-rt -x c - && \
@@ -18,7 +24,7 @@ EOF
 
 # Test compile a C++ program.
 cat << EOF | \
-	clang++ -x c++ -fuse-ld=lld -rtlib=compiler-rt -stdlib=libc++ - && \
+	clang++ -x c++ -fuse-ld=lld -rtlib=compiler-rt -stdlib="$CXXLIB" - && \
 	./a.out | grep 'Hello World'
 
 #include <iostream>
