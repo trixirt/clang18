@@ -470,13 +470,12 @@ ln -s %{_datadir}/clang/clang-format-diff.py %{buildroot}%{_bindir}/clang-format
 # requires lit.py from LLVM utilities
 # FIXME: Fix failing ARM tests
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %{__ninja} check-all -C %{__cmake_builddir} || \
-%endif
 %ifarch %{arm}
 :
 %else
 false
 %endif
-
+%endif
 %endif
 
 
