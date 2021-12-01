@@ -1,4 +1,11 @@
-summary: Clang tests
+summary: Clang tests for build/PR gating
+adjust:
+  - because: "Plan to be ran when either executed locally, or executed by CI system to gate a build or PR."
+    when: >-
+      trigger is defined
+      and trigger != commit
+      and trigger != build
+    enabled: false
 discover:
     - name: Local tests
       how: fmf
