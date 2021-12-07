@@ -1,5 +1,11 @@
 # TODO: once llvm-test-suite is converted to TMT, we can just link the test from plan.
 summary: Run tests from llvm-test-suite package
+
+adjust:
+  - because: "llvm-test-suite is available for Fedora, not RHEL"
+    when: "distro == rhel"
+    enabled: false
+
 test: ./test.sh
 require:
   - git
