@@ -3,6 +3,12 @@
 # This is separate from tests.yml because we want to run the tests without
 # clang installed.
 summary: pocl
+
+adjust:
+  - because: "PoCL is shipped with Fedora, not RHEL"
+    when: "distro == rhel"
+    enabled: false
+
 # This test requires a special preparation, see `/tests/tests-pocl` plan. As such,
 # it shouldn't be part of the `/tests/default` plan.
 tag:

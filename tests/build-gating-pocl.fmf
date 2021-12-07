@@ -6,6 +6,11 @@ adjust:
       and trigger != commit
       and trigger != build
     enabled: false
+
+  - because: "PoCL is shipped with Fedora, not RHEL"
+    when: "distro == rhel"
+    enabled: false
+
 discover:
     how: fmf
     test: pocl
