@@ -1,21 +1,31 @@
 # TODO REVIEW: better summary
 summary: ""
-test: ./test.sh
+test: "$WITH_SCL ./test.sh"
 adjust:
+  # Common requirements when LLVM is not SCL-ized
+  - require+:
+      - clang
+    when: "collection is not defined"
+
+  # Requirements for SCL-ized LLVM
+  - require+:
+      - llvm-toolset-13.0-clang
+    when: "collection == llvm-toolset-13.0"
+
   - environment+:
       CXXLIBS: "libc++"
     require:
-      - clang
       - libcxx-devel
     when: "distro == fedora"
     because: testing against libcxx package in Fedora
+
   - environment+:
       CXXLIBS: "libstdc++"
     require:
-      - clang
       - libstdc++
     when: "distro == rhel"
     because: testing against libstdc++ package in RHEL as libcxx is not shipped with RHEL
+
 # TODO REVIEW: are these all requirements? test.sh seems to run quite a lot of stuff, looks like we
 # need more packages from LLVM family.
 require: []

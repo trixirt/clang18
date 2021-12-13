@@ -1,5 +1,5 @@
 summary: fedora-flags
-test: ./test.sh
+test: "$WITH_SCL ./test.sh"
 require:
   - annobin
   - redhat-rpm-config

@@ -14,7 +14,7 @@ adjust:
 tag:
   - not-in-default
 # rhbz#1582884
-test: ./test.sh
+test: "$WITH_SCL ./test.sh"
 require:
   - git
   - ocl-icd-devel

@@ -1,3 +1,15 @@
+#
+# Build/PR gating tests for *LLVM 13*
+#
+# Compatible with various LLVM 13 distributions:
+#
+#   * Fedora (ursine packages)
+#   * Centos 9 stream (ursine packages)
+#   * RHEL-9 (ursine packages)
+#   * RHEL-8 (Red Hat module)
+#   * RHEL-7 (software collection)
+#
+
 summary: Clang tests for build/PR gating
 adjust:
   - because: "Plan to be ran when either executed locally, or executed by CI system to gate a build or PR."
@@ -6,6 +18,12 @@ adjust:
       and trigger != commit
       and trigger != build
     enabled: false
+
+  - because: "When testing SCL-ized LLVM, the collection must be enabled first"
+    environment+:
+      WITH_SCL: "scl enable llvm-toolset-13.0 rust-toolset-1.58"
+    when: "collection == llvm-toolset-13.0"
+
 discover:
     - name: Local tests
       how: fmf
@@ -17,10 +35,6 @@ discover:
       test: integration-test-suite
 execute:
     how: tmt
-prepare:
-    - name: packages
-      how: install
-      package: clang
 provision:
   hardware:
     memory: ">= 4 GiB"

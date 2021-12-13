@@ -6,7 +6,8 @@ adjust:
     when: "distro == rhel"
     enabled: false
 
-test: ./test.sh
+test: "$WITH_SCL ./test.sh"
+
 require:
   - git
   - clang

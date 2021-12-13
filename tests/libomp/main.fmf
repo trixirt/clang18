@@ -7,7 +7,20 @@ summary: libomp tests
 # it shouldn't be part of the `/tests/default` plan.
 tag:
   - not-in-default
-test: ./test.sh
-require:
-  - clang
-  - libomp
+test: "$WITH_SCL ./test.sh"
+adjust:
+  # Common requirements when LLVM is not SCL-ized
+  - require:
+      - clang
+      - clang-libs
+      - libomp
+      - libomp-devel
+    when: "collection is not defined"
+
+  # Requirements for SCL-ized LLVM
+  - require:
+      - llvm-toolset-13.0-clang
+      - llvm-toolset-13.0-clang-libs
+      - llvm-toolset-13.0-libomp
+      - llvm-toolset-13.0-libomp-devel
+    when: "collection == llvm-toolset-13.0"

@@ -1,5 +1,14 @@
 summary: rhbz-482491
-test: ./test.sh
+test: "$WITH_SCL ./test.sh"
 require:
-  - clang
   - libgcc
+adjust:
+  # Common requirements when LLVM is not SCL-ized
+  - require+:
+      - clang
+    when: "collection is not defined"
+
+  # Requirements for SCL-ized LLVM
+  - require+:
+      - llvm-toolset-13.0-clang
+    when: "collection == llvm-toolset-13.0"
