@@ -128,10 +128,12 @@ BuildRequires:	libatomic
 # We need python3-devel for %%py3_shebang_fix
 BuildRequires:	python3-devel
 
+%if %{without compat_build}
 # For reproducible pyc file generation
 # See https://docs.fedoraproject.org/en-US/packaging-guidelines/Python_Appendix/#_byte_compilation_reproducibility
 BuildRequires: /usr/bin/marshalparser
 %global py_reproducible_pyc_path %{buildroot}%{python3_sitelib}
+%endif
 
 # Needed for %%multilib_fix_c_header
 BuildRequires:	multilib-rpm-config
