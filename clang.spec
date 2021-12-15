@@ -388,6 +388,8 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 rm -Rf %{buildroot}%{install_bindir}
 rm -Rf %{buildroot}%{install_prefix}/share
 rm -Rf %{buildroot}%{install_prefix}/libexec
+# Remove scanview-py helper libs
+rm -Rf %{buildroot}%{install_prefix}/lib/{libear,libscanbuild}
 
 %else
 
