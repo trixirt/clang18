@@ -334,7 +334,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %endif
 %if %{with compat_build}
 	-DCLANG_BUILD_TOOLS:BOOL=OFF \
-	-DLLVM_CONFIG:FILEPATH=%{_bindir}/llvm-config-%{maj_ver} \
+	-DLLVM_CONFIG:FILEPATH=%{pkg_bindir}/llvm-config-%{maj_ver}-%{__isa_bits} \
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
 %else
