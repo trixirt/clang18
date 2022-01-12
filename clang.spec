@@ -3,8 +3,8 @@
 
 %global maj_ver 13
 %global min_ver 0
-%global patch_ver 0
-#global rc_ver 4
+%global patch_ver 1
+%global rc_ver 1
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
@@ -72,7 +72,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	5%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -569,6 +569,9 @@ false
 
 %endif
 %changelog
+* Wed Jan 12 2022 Nikita Popov <npopov@redhat.com> - 13.0.1~rc1-1
+- Update to LLVM 13.0.1rc1
+
 * Thu Oct 28 2021 Tom Stellard <tstellar@redhat.com> - 13.0.0-5
 - Make lld the default linker on arm
 
