@@ -24,6 +24,27 @@ adjust:
       WITH_SCL: "scl enable llvm-toolset-13.0 rust-toolset-1.58"
     when: "collection == llvm-toolset-13.0"
 
+  # Unfortunately, TMT does not support more declarative approach, we need to run commands on our own.
+  - because: "On RHEL, CRB must be enabled to provide rarer packages"
+    prepare+:
+      - name: Enable CRB
+        how: shell
+        script: dnf config-manager --set-enabled rhel-CRB
+    when: >-
+      distro == centos
+      or distro == rhel-9
+      or distro == rhel-8
+
+  # Unfortunatelly, TMT does not support more declarative approach, we need to run commands on our own.
+  - because: "On RHEL-7, EPEL must be enabled to provided rarer packages"
+    prepare+:
+      - name: Enable EPEL
+        how: shell
+        script: |
+          rpm -q epel-release || yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+          yum-config-manager --enable epel
+    when: distro == rhel-7
+
 discover:
     - name: Local tests
       how: fmf
