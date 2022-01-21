@@ -7,8 +7,10 @@ adjust:
       and trigger != build
     enabled: false
 
-  - because: "PoCL is shipped with Fedora, not RHEL"
-    when: "distro == rhel"
+  - because: "PoCL is shipped with Fedora, not RHEL/CentOS"
+    when: >-
+      distro == rhel
+      or distro == centos
     enabled: false
 
 discover:

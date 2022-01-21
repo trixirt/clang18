@@ -2,8 +2,10 @@
 summary: Run tests from llvm-test-suite package
 
 adjust:
-  - because: "llvm-test-suite is available for Fedora, not RHEL"
-    when: "distro == rhel"
+  - because: "llvm-test-suite is available for Fedora, not RHEL/CentOS"
+    when: >-
+      distro == rhel
+      or distro == centos
     enabled: false
 
 test: "$WITH_SCL ./test.sh"

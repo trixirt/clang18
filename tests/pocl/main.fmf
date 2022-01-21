@@ -5,8 +5,10 @@
 summary: pocl
 
 adjust:
-  - because: "PoCL is shipped with Fedora, not RHEL"
-    when: "distro == rhel"
+  - because: "PoCL is shipped with Fedora, not RHEL/CentOS"
+    when: >-
+      distro == rhel
+      or distro == centos
     enabled: false
 
 # This test requires a special preparation, see `/tests/tests-pocl` plan. As such,
