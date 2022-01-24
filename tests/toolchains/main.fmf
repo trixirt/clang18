@@ -28,4 +28,5 @@ adjust:
 
 # TODO REVIEW: are these all requirements? test.sh seems to run quite a lot of stuff, looks like we
 # need more packages from LLVM family.
-require: []
+require:
+  - glibc-static
