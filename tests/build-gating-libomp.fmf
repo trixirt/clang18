@@ -6,6 +6,10 @@ adjust:
       and trigger != commit
       and trigger != build
     enabled: false
+  - because: "When testing SCL-ized LLVM, the collection must be enabled first"
+    environment+:
+      WITH_SCL: "scl enable llvm-toolset-13.0"
+    when: "collection == llvm-toolset-13.0"
 discover:
     how: fmf
     test: libomp
@@ -17,7 +21,7 @@ prepare:
     - name: Drop libomp
       how: shell
       script: |
-        dnf erase -y libomp libomp-devel clang clang-libs
+        yum erase -y libomp libomp-devel clang clang-libs
 provision:
   hardware:
     memory: ">= 4 GiB"

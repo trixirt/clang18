@@ -57,7 +57,8 @@ test_toolchain() {
 }
 
 clang --version
-dnf info installed clang | grep ^Source
+# Repoquery is needed instead yum info for compatibility with RHEL-7
+repoquery -i --installed $(rpm -qf $(which clang)) | grep ^Source
 echo ""
 
 for compiler in clang clang++; do

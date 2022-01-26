@@ -21,7 +21,7 @@ adjust:
 
   - because: "When testing SCL-ized LLVM, the collection must be enabled first"
     environment+:
-      WITH_SCL: "scl enable llvm-toolset-13.0 rust-toolset-1.58"
+      WITH_SCL: "scl enable llvm-toolset-13.0"
     when: "collection == llvm-toolset-13.0"
 
   # Unfortunately, TMT does not support more declarative approach, we need to run commands on our own.
@@ -46,10 +46,10 @@ adjust:
     when: distro == rhel-7
 
 discover:
-    - name: Local tests
+    - name: clang-tests
       how: fmf
       filter: "tag:-not-in-default"
-    - name: "Upstream LLVM integration test suite"
+    - name: upstream-llvm-integration-testsuite
       how: fmf
       url: https://src.fedoraproject.org/rpms/llvm.git
       ref: rawhide

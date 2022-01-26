@@ -3,6 +3,7 @@ summary: ""
 test: "$WITH_SCL ./test.sh"
 require:
   - glibc-static
+  - yum-utils
 adjust:
   # Common requirements when LLVM is not SCL-ized
   - require+:
