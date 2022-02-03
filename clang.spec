@@ -95,6 +95,8 @@ Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
 Patch4:     0001-cmake-Allow-shared-libraries-to-customize-the-soname.patch
 Patch5:     0001-PATCH-clang-Fix-scan-build-py-executable-lookup-path.patch
+# This patch can be dropped once gcc-12.0.1-0.5.fc36 is in the repo.
+Patch6:     0001-Work-around-gcc-miscompile.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
