@@ -4,7 +4,7 @@
 %global maj_ver 13
 %global min_ver 0
 %global patch_ver 1
-%global rc_ver 3
+#global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %global clang_tools_binaries \
@@ -569,6 +569,9 @@ false
 
 %endif
 %changelog
+* Thu Feb 03 2022 Nikita Popov <npopov@redhat.com> - 13.0.1-1
+- Update to LLVM 13.0.1 final
+
 * Tue Feb 01 2022 Nikita Popov <npopov@redhat.com> - 13.0.1~rc3-1
 - Update to LLVM 13.0.1rc3
 
