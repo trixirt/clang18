@@ -32,5 +32,7 @@ adjust:
       CXXLIB: "libstdc++"
     require:
       - libstdc++
-    when: "distro == rhel"
+    when: >-
+      distro == rhel
+      or distro == centos
     because: testing against libstdc++ package in RHEL as libcxx is not shipped with RHEL

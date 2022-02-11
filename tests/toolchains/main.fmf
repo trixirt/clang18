@@ -1,6 +1,8 @@
 # TODO REVIEW: better summary
 summary: ""
 test: "$WITH_SCL ./test.sh"
+require:
+  - glibc-static
 adjust:
   # Common requirements when LLVM is not SCL-ized
   - require+:
@@ -14,19 +16,19 @@ adjust:
 
   - environment+:
       CXXLIBS: "libc++"
-    require:
+    require+:
       - libcxx-devel
     when: "distro == fedora"
     because: testing against libcxx package in Fedora
 
   - environment+:
       CXXLIBS: "libstdc++"
-    require:
+    require+:
       - libstdc++
-    when: "distro == rhel"
+    when: >-
+      distro == rhel
+      or distro == centos
     because: testing against libstdc++ package in RHEL as libcxx is not shipped with RHEL
 
 # TODO REVIEW: are these all requirements? test.sh seems to run quite a lot of stuff, looks like we
 # need more packages from LLVM family.
-require:
-  - glibc-static
