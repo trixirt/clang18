@@ -80,6 +80,11 @@ for compiler in clang clang++; do
                       args="$args -pthread"
                     fi
 
+                    # lld is not supported in s390x
+                    if [[ "$(uname -m)" = "s390x" && "$linker" = "lld" ]]; then
+                      continue
+                    fi
+
                     test_toolchain $compiler $rtlib $linker $cxxlib $args
                 done
             done

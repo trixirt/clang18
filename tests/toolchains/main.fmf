@@ -4,21 +4,34 @@ test: "$WITH_SCL ./test.sh"
 require:
   - glibc-static
   - yum-utils
+  # This require EPEL/CRB to be enabled on RHEL
+  - libstdc++-static
 adjust:
   # Common requirements when LLVM is not SCL-ized
   - require+:
       - clang
+      - compiler-rt
+      - lld
     when: "collection is not defined"
+  - require-:
+      - lld
+    when: collection is not defined and arch == s390x
 
   # Requirements for SCL-ized LLVM
   - require+:
       - llvm-toolset-13.0-clang
+      - llvm-toolset-13.0-compiler-rt
+      - llvm-toolset-13.0-lld
     when: "collection == llvm-toolset-13.0"
+  - require-:
+      - llvm-toolset-13.0-lld
+    when: collection == llvm-toolset-13.0 and arch == s390x
 
   - environment+:
       CXXLIBS: "libc++"
     require+:
       - libcxx-devel
+      - libcxx-static
     when: "distro == fedora"
     because: testing against libcxx package in Fedora
 
