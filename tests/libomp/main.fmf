@@ -9,6 +9,10 @@ tag:
   - not-in-default
 test: "$WITH_SCL ./test.sh"
 adjust:
+  - because: "libomp is not supported in s390x"
+    when: arch == s390x
+    enabled: false
+
   # Common requirements when LLVM is not SCL-ized
   - require:
       - clang
