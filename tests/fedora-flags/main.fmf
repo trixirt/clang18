@@ -3,3 +3,14 @@ test: "$WITH_SCL ./test.sh"
 require:
   - annobin
   - redhat-rpm-config
+adjust:
+  - because: s390x does not have epel repo which is required to provide rpm macros
+    enabled: false
+    when: >-
+      distro == rhel-7
+      and arch == s390x
+
+  - because: "To enable rpm macros not available by default (e.g. build_cflags), epel-rpm-macros is needed"
+  - require+:
+      - epel-rpm-macros
+    when: distro == rhel-7
