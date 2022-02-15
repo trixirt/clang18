@@ -85,6 +85,11 @@ for compiler in clang clang++; do
                       continue
                     fi
 
+                    # compiler-rt does not provide builtins for s390x
+                    if [[ "$(uname -m)" = "s390x" && "$rtlib" = "compiler-rt" ]]; then
+                      continue
+                    fi
+
                     test_toolchain $compiler $rtlib $linker $cxxlib $args
                 done
             done
