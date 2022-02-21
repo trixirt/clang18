@@ -5,9 +5,11 @@ adjust:
   # Common requirements when LLVM is not SCL-ized
   - require+:
       - clang
+      - clang-analyzer
     when: "collection is not defined"
 
   # Requirements for SCL-ized LLVM
   - require+:
       - llvm-toolset-13.0-clang
+      - llvm-toolset-13.0-clang-analyzer
     when: "collection == llvm-toolset-13.0"
