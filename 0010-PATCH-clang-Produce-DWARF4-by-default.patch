@@ -1,0 +1,86 @@
+From 6509777d4c12a42c7487814d868375a86712bf5b Mon Sep 17 00:00:00 2001
+From: Konrad Kleine <kkleine@redhat.com>
+Date: Thu, 24 Mar 2022 09:44:21 +0100
+Subject: [PATCH][clang]Produce DWARF4 by default
+
+Have a look at the following commit to see when the move from DWARF 4 to 5 first happened upstream:
+
+https://github.com/llvm/llvm-project/commit/d3b26dea16108c427b19b5480c9edc76edf8f5b4?diff=unified
+---
+ clang/include/clang/Driver/ToolChain.h | 2 +-
+ clang/test/CodeGen/dwarf-version.c     | 4 ++--
+ clang/test/Driver/cl-options.c         | 2 +-
+ clang/test/Driver/ve-toolchain.c       | 2 +-
+ clang/test/Driver/ve-toolchain.cpp     | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/clang/include/clang/Driver/ToolChain.h b/clang/include/clang/Driver/ToolChain.h
+index adf1753e8d3a..c8adc4d917ce 100644
+--- a/clang/include/clang/Driver/ToolChain.h
++++ b/clang/include/clang/Driver/ToolChain.h
+@@ -515,7 +515,7 @@ public:
+ 
+   // Return the DWARF version to emit, in the absence of arguments
+   // to the contrary.
+-  virtual unsigned GetDefaultDwarfVersion() const { return 5; }
++  virtual unsigned GetDefaultDwarfVersion() const { return 4; }
+ 
+   // Some toolchains may have different restrictions on the DWARF version and
+   // may need to adjust it. E.g. NVPTX may need to enforce DWARF2 even when host
+diff --git a/clang/test/CodeGen/dwarf-version.c b/clang/test/CodeGen/dwarf-version.c
+index 0a6fa4768026..96f01749d0d8 100644
+--- a/clang/test/CodeGen/dwarf-version.c
++++ b/clang/test/CodeGen/dwarf-version.c
+@@ -2,8 +2,8 @@
+ // RUN: %clang -target x86_64-linux-gnu -gdwarf-3 -S -emit-llvm -o - %s | FileCheck %s --check-prefix=VER3
+ // RUN: %clang -target x86_64-linux-gnu -gdwarf-4 -S -emit-llvm -o - %s | FileCheck %s --check-prefix=VER4
+ // RUN: %clang -target x86_64-linux-gnu -gdwarf-5 -S -emit-llvm -o - %s | FileCheck %s --check-prefix=VER5
+-// RUN: %clang -target x86_64-linux-gnu -g -S -emit-llvm -o - %s | FileCheck %s --check-prefix=VER5
+-// RUN: %clang -target x86_64-linux-gnu -gdwarf -S -emit-llvm -o - %s | FileCheck %s --check-prefix=VER5
++// RUN: %clang -target x86_64-linux-gnu -g -S -emit-llvm -o - %s | FileCheck %s --check-prefix=VER4
++// RUN: %clang -target x86_64-linux-gnu -gdwarf -S -emit-llvm -o - %s | FileCheck %s --check-prefix=VER4
+ 
+ // The -isysroot is used as a hack to avoid LIT messing with the SDKROOT
+ // environment variable which indirecty overrides the version in the target
+diff --git a/clang/test/Driver/cl-options.c b/clang/test/Driver/cl-options.c
+index f332cd83b26e..911779fffbef 100644
+--- a/clang/test/Driver/cl-options.c
++++ b/clang/test/Driver/cl-options.c
+@@ -597,7 +597,7 @@
+ // RUN: %clang_cl /Z7 -gdwarf /c -### -- %s 2>&1 | FileCheck -check-prefix=Z7_gdwarf %s
+ // Z7_gdwarf: "-gcodeview"
+ // Z7_gdwarf: "-debug-info-kind=constructor"
+-// Z7_gdwarf: "-dwarf-version=
++// Z7_gdwarf: "-dwarf-version=4
+ 
+ // RUN: %clang_cl -fmsc-version=1800 -TP -### -- %s 2>&1 | FileCheck -check-prefix=CXX11 %s
+ // CXX11: -std=c++11
+diff --git a/clang/test/Driver/ve-toolchain.c b/clang/test/Driver/ve-toolchain.c
+index 753dee19fcbf..dfd12cc0bba4 100644
+--- a/clang/test/Driver/ve-toolchain.c
++++ b/clang/test/Driver/ve-toolchain.c
+@@ -6,7 +6,7 @@
+ /// Checking dwarf-version
+ 
+ // RUN: %clang -### -g -target ve %s 2>&1 | FileCheck -check-prefix=DWARF_VER %s
+-// DWARF_VER: "-dwarf-version=5"
++// DWARF_VER: "-dwarf-version=4"
+ 
+ ///-----------------------------------------------------------------------------
+ /// Checking include-path
+diff --git a/clang/test/Driver/ve-toolchain.cpp b/clang/test/Driver/ve-toolchain.cpp
+index 4b2b9c5747fe..3a196dd94ca1 100644
+--- a/clang/test/Driver/ve-toolchain.cpp
++++ b/clang/test/Driver/ve-toolchain.cpp
+@@ -7,7 +7,7 @@
+ 
+ // RUN: %clangxx -### -g -target ve-unknown-linux-gnu \
+ // RUN:     %s 2>&1 | FileCheck -check-prefix=DWARF_VER %s
+-// DWARF_VER: "-dwarf-version=5"
++// DWARF_VER: "-dwarf-version=4"
+ 
+ ///-----------------------------------------------------------------------------
+ /// Checking include-path
+-- 
+2.35.1
+

@@ -1,10 +1,10 @@
 %bcond_with compat_build
 %bcond_without check
 
-%global maj_ver 13
+%global maj_ver 14
 %global min_ver 0
-%global patch_ver 1
-#global rc_ver 3
+%global patch_ver 0
+#global rc_ver 4
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %if %{with compat_build}
@@ -41,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	2%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -63,9 +63,17 @@ Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
 Patch4:     0001-cmake-Allow-shared-libraries-to-customize-the-soname.patch
-Patch5:     0001-PATCH-clang-Fix-scan-build-py-executable-lookup-path.patch
 # This patch can be dropped once gcc-12.0.1-0.5.fc36 is in the repo.
-Patch6:     0001-Work-around-gcc-miscompile.patch
+Patch5:     0001-Work-around-gcc-miscompile.patch
+# https://github.com/llvm/llvm-project/commit/fed96f31bb5b68f77dd617ee8e698dd8171ee71b
+Patch6:     m-branch-protection.patch
+Patch7:     0010-PATCH-clang-Produce-DWARF4-by-default.patch
+
+# Patches for clang-tools-extra
+# See https://reviews.llvm.org/D120301
+Patch201:   llvm-hello.patch
+# See https://github.com/llvm/llvm-project/issues/54116
+Patch202:   remove-test.patch
 
 BuildRequires:	gcc
 BuildRequires:	gcc-c++
@@ -94,6 +102,7 @@ BuildRequires:	emacs
 BuildRequires:	python3-lit
 
 BuildRequires:	python3-sphinx
+BuildRequires:	python3-recommonmark
 BuildRequires:	libatomic
 
 # We need python3-devel for %%py3_shebang_fix
@@ -244,6 +253,12 @@ Requires:      python3
 %setup -T -q -b 1 -n %{clang_tools_srcdir}
 %autopatch -m200 -p2
 
+
+# This test is broken upstream. It is a clang-tidy unittest
+# that includes a file from clang, breaking standalone builds.
+# https://github.com/llvm/llvm-project/issues/54116
+rm unittests/clang-tidy/ReadabilityModuleTest.cpp
+
 # failing test case
 rm test/clang-tidy/checkers/altera-struct-pack-align.cpp
 
@@ -269,7 +284,6 @@ rm test/CodeGen/profile-filter.c
 %endif
 
 %build
-
 # We run the builders out of memory on armv7 and i686 when LTO is enabled
 %ifarch %{arm} i686
 %define _lto_cflags %{nil}
@@ -292,6 +306,11 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 # Decrease debuginfo verbosity to reduce memory consumption during final library linking
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
+
+
+%set_build_flags
+CXXFLAGS="$CXXFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
+CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 
 # -DLLVM_ENABLE_NEW_PASS_MANAGER=ON can be removed once this patch is committed:
 # https://reviews.llvm.org/D107628
@@ -401,7 +420,7 @@ rm -vf %{buildroot}%{_datadir}/clang/clang-format-bbedit.applescript
 rm -vf %{buildroot}%{_datadir}/clang/clang-format-sublime.py*
 
 # TODO: Package html docs
-rm -Rvf %{buildroot}%{_docdir}/clang/html
+rm -Rvf %{buildroot}%{_docdir}/Clang/clang/html
 rm -Rvf %{buildroot}%{_datadir}/clang/clang-doc-default-stylesheet.css
 rm -Rvf %{buildroot}%{_datadir}/clang/index.js
 
@@ -576,6 +595,9 @@ false
 
 %endif
 %changelog
+* Wed Mar 23 2022 Timm Bäder <tbaeder@redhat.com> - 14.0.0-1
+- Update to 14.0.0
+
 * Wed Feb 16 2022 Tom Stellard <tstellar@redhat.com> - 13.0.1-2
 - Fix some rpmlinter errors
 
