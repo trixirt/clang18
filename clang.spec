@@ -7,37 +7,6 @@
 #global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
-%global clang_tools_binaries \
-	%{_bindir}/clang-apply-replacements \
-	%{_bindir}/clang-change-namespace \
-	%{_bindir}/clang-check \
-	%{_bindir}/clang-doc \
-	%{_bindir}/clang-extdef-mapping \
-	%{_bindir}/clang-format \
-	%{_bindir}/clang-include-fixer \
-	%{_bindir}/clang-move \
-	%{_bindir}/clang-offload-bundler \
-	%{_bindir}/clang-offload-wrapper \
-	%{_bindir}/clang-query \
-	%{_bindir}/clang-refactor \
-	%{_bindir}/clang-rename \
-	%{_bindir}/clang-reorder-fields \
-	%{_bindir}/clang-repl \
-	%{_bindir}/clang-scan-deps \
-	%{_bindir}/clang-tidy \
-	%{_bindir}/clangd \
-	%{_bindir}/diagtool \
-	%{_bindir}/hmaptool \
-	%{_bindir}/pp-trace
-
-%global clang_binaries \
-	%{_bindir}/clang \
-	%{_bindir}/clang++ \
-	%{_bindir}/clang-%{maj_ver} \
-	%{_bindir}/clang++-%{maj_ver} \
-	%{_bindir}/clang-cl \
-	%{_bindir}/clang-cpp \
-
 %if %{with compat_build}
 %global pkg_name clang%{maj_ver}
 # Install clang to same prefix as llvm, so that apps that use llvm-config
@@ -493,7 +462,12 @@ false
 %if %{without compat_build}
 %files
 %license LICENSE.TXT
-%{clang_binaries}
+%{_bindir}/clang
+%{_bindir}/clang++
+%{_bindir}/clang-%{maj_ver}
+%{_bindir}/clang++-%{maj_ver}
+%{_bindir}/clang-cl
+%{_bindir}/clang-cpp
 %{_mandir}/man1/clang.1.gz
 %{_mandir}/man1/clang++.1.gz
 %{_mandir}/man1/clang-%{maj_ver}.1.gz
@@ -554,7 +528,29 @@ false
 
 
 %files tools-extra
-%{clang_tools_binaries}
+%{_bindir}/clang-apply-replacements
+%{_bindir}/clang-change-namespace
+%{_bindir}/clang-check
+%{_bindir}/clang-doc
+%{_bindir}/clang-extdef-mapping
+%{_bindir}/clang-format
+%{_bindir}/clang-include-fixer
+%{_bindir}/clang-move
+%{_bindir}/clang-offload-bundler
+%{_bindir}/clang-offload-wrapper
+%{_bindir}/clang-linker-wrapper
+%{_bindir}/clang-nvlink-wrapper
+%{_bindir}/clang-query
+%{_bindir}/clang-refactor
+%{_bindir}/clang-rename
+%{_bindir}/clang-reorder-fields
+%{_bindir}/clang-repl
+%{_bindir}/clang-scan-deps
+%{_bindir}/clang-tidy
+%{_bindir}/clangd
+%{_bindir}/diagtool
+%{_bindir}/hmaptool
+%{_bindir}/pp-trace
 %{_bindir}/c-index-test
 %{_bindir}/find-all-symbols
 %{_bindir}/modularize
