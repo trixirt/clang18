@@ -41,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -68,6 +68,8 @@ Patch5:     0001-Work-around-gcc-miscompile.patch
 # https://github.com/llvm/llvm-project/commit/fed96f31bb5b68f77dd617ee8e698dd8171ee71b
 Patch6:     m-branch-protection.patch
 Patch7:     0010-PATCH-clang-Produce-DWARF4-by-default.patch
+# This is cherry-picked from trunk and can be dropped in LLVM 15
+Patch8:		0001-HIP-Fix-HIP-include-path.patch
 
 # Patches for clang-tools-extra
 # See https://reviews.llvm.org/D120301
@@ -595,6 +597,9 @@ false
 
 %endif
 %changelog
+* Mon Apr 04 2022 Jeremy Newton <alexjnewt AT hotmail DOT com> - 14.0.0-2
+- Add patch for HIP (cherry-picked from llvm trunk, to be LLVM15)
+
 * Wed Mar 23 2022 Timm Bäder <tbaeder@redhat.com> - 14.0.0-1
 - Update to 14.0.0
 
