@@ -13,3 +13,7 @@ adjust:
       - llvm-toolset-13.0-clang
       - llvm-toolset-13.0-clang-analyzer
     when: "collection == llvm-toolset-13.0"
+  - require+:
+      - llvm-toolset-14.0-clang
+      - llvm-toolset-14.0-clang-analyzer
+    when: "collection == llvm-toolset-14.0"

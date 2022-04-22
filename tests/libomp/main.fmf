@@ -28,3 +28,9 @@ adjust:
       - llvm-toolset-13.0-libomp
       - llvm-toolset-13.0-libomp-devel
     when: "collection == llvm-toolset-13.0"
+  - require:
+      - llvm-toolset-14.0-clang
+      - llvm-toolset-14.0-clang-libs
+      - llvm-toolset-14.0-libomp
+      - llvm-toolset-14.0-libomp-devel
+    when: "collection == llvm-toolset-14.0"

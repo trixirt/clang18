@@ -10,3 +10,6 @@ adjust:
   - require:
       - llvm-toolset-13.0-clang-tools-extra
     when: "collection == llvm-toolset-13.0"
+  - require:
+      - llvm-toolset-14.0-clang-tools-extra
+    when: "collection == llvm-toolset-14.0"

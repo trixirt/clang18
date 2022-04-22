@@ -11,6 +11,10 @@ adjust:
     environment+:
       WITH_SCL: "scl enable llvm-toolset-13.0"
     when: "collection == llvm-toolset-13.0"
+  - because: "When testing SCL-ized LLVM, the collection must be enabled first"
+    environment+:
+      WITH_SCL: "scl enable llvm-toolset-14.0"
+    when: "collection == llvm-toolset-14.0"
 
   - because: "libomp not supported in s390x"
     when: arch == s390x
