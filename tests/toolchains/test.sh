@@ -80,8 +80,10 @@ for compiler in clang clang++; do
                       args="$args -pthread"
                     fi
 
-                    # lld is not supported in s390x
-                    if [[ "$(uname -m)" = "s390x" && "$linker" = "lld" ]]; then
+                    # lld is not supported in s390x and ppc64
+                    if [[ "$(uname -m)" = "s390x" || "$(uname -m)" = "ppc64" ]] \
+                        && [[ "$linker" = "lld" ]];
+                    then
                       continue
                     fi
 
