@@ -13,5 +13,6 @@ test: "$WITH_SCL ./test.sh"
 require:
   - git
   - clang
+  - ninja-build
   - llvm-test-suite
 duration: 1h
