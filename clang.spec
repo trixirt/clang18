@@ -25,8 +25,6 @@
 %global pkg_libdir %{_libdir}
 %endif
 
-%global build_install_prefix %{buildroot}%{install_prefix}
-
 %ifarch ppc64le
 # Too many threads on ppc64 systems causes OOM errors.
 %global _smp_mflags -j8
