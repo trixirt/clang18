@@ -2,6 +2,7 @@ summary: fedora-flags
 test: "$WITH_SCL ./test.sh"
 require:
   - annobin
+  - clang
   - redhat-rpm-config
 adjust:
   - because: s390x does not have epel repo which is required to provide rpm macros
