@@ -1,6 +1,30 @@
 summary: Test build a simple RPM package to ensure that -fopenmp works
+test: "$WITH_SCL ./runtest.sh"
 require:
-  - dnf
-  - dnf-plugins-core
   - rpm-build
-test: ./runtest.sh
+adjust:
+  - because: "libomp not supported in s390x"
+    when: arch == s390x
+    enabled: false
+
+  - because: "Use yum in RHEL < 8"
+    require+:
+      - yum-utils
+    environment+:
+      BUILDDEP_CMD: "yum-builddep"
+    when: distro < rhel-8
+
+  - because: "Use dnf in RHEL >= 8, Fedora and CentOS"
+    require+:
+      - dnf-plugins-core
+    environment+:
+      BUILDDEP_CMD: "dnf builddep"
+    when: distro >= rhel-8 or distro != rhel
+
+  # Requirements for SCL-ized LLVM
+  - require+:
+      - llvm-toolset-13.0-build
+    when: "collection == llvm-toolset-13.0"
+  - require+:
+      - llvm-toolset-14.0-build
+    when: "collection == llvm-toolset-14.0"

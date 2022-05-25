@@ -1,4 +1,5 @@
 %global toolchain clang
+%{?scl:%global scl_prefix %{scl}-}
 
 Name: test
 Version: 1
@@ -6,8 +7,8 @@ Release: 1
 Summary: Test package for checking that RPM packages using -fopenmp build correctly
 License: MIT
 
-BuildRequires: clang
-BuildRequires: libomp
+BuildRequires: %{?scl_prefix}clang
+BuildRequires: %{?scl_prefix}libomp
 
 Source0: test.c
 
