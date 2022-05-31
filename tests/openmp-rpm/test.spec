@@ -21,7 +21,8 @@ https://fedoraproject.org/wiki/Changes/Broken_RPATH_will_fail_rpmbuild
 https://github.com/llvm/llvm-project/commit/9b9d08111b618d74574ba03e5cc3d752ecc56f55
 
 %build
-clang ${CFLAGS} -fopenmp %{SOURCE0} -o main
+clang ${CFLAGS} -c %{SOURCE0} -o test.o
+clang ${LDFLAGS} -fopenmp test.o -o main
 
 %check
 ./main
