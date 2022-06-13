@@ -41,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -601,6 +601,9 @@ false
 
 %endif
 %changelog
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 14.0.0-4
+- Rebuilt for Python 3.11
+
 * Thu May 19 2022 Tom Stellard <tstellar@redhat.com> - 14.0.0-3
 - Use the ieee128 format for long double on ppc64le
 
