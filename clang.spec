@@ -39,7 +39,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -358,7 +358,7 @@ CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 	\
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
 	-DBUILD_SHARED_LIBS=OFF \
-	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}" \
+	-DCLANG_REPOSITORY_STRING="%{?dist_vendor} %{version}-%{release}" \
 %ifarch %{arm}
 	-DCLANG_DEFAULT_LINKER=lld \
 %endif
@@ -591,6 +591,9 @@ false
 
 %endif
 %changelog
+* Thu Jul 28 2022 Amit Shah <amitshah@fedoraproject.org> - 14.0.5-4
+- Use the dist_vendor macro to identify the distribution
+
 * Wed Jul 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 14.0.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
