@@ -39,7 +39,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -310,7 +310,6 @@ CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 
 # -DLLVM_ENABLE_NEW_PASS_MANAGER=ON can be removed once this patch is committed:
 # https://reviews.llvm.org/D107628
-# -DPPC_LINUX_DEFAULT_IEEELONGDOUBLE=ON to match gcc.
 %cmake  -G Ninja \
 	-DLLVM_PARALLEL_LINK_JOBS=1 \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
@@ -360,9 +359,6 @@ CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCLANG_REPOSITORY_STRING="%{?fedora:Fedora}%{?rhel:Red Hat} %{version}-%{release}" \
-%if 0%{?fedora}
-	-DPPC_LINUX_DEFAULT_IEEELONGDOUBLE=ON \
-%endif
 %ifarch %{arm}
 	-DCLANG_DEFAULT_LINKER=lld \
 %endif
@@ -595,6 +591,9 @@ false
 
 %endif
 %changelog
+* Thu Jun 30 2022 Miro Hrončok <mhroncok@redhat.com> - 14.0.5-2
+- Revert "Use the ieee128 format for long double on ppc64le" until rhbz#2100546 is fixed
+
 * Tue Jun 14 2022 Timm Bäder <tbaeder@redhat.com> - 14.0.5-1
 - Update to 14.0.5
 
