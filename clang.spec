@@ -39,7 +39,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -310,6 +310,7 @@ CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 
 # -DLLVM_ENABLE_NEW_PASS_MANAGER=ON can be removed once this patch is committed:
 # https://reviews.llvm.org/D107628
+# -DPPC_LINUX_DEFAULT_IEEELONGDOUBLE=ON to match gcc.
 %cmake  -G Ninja \
 	-DLLVM_PARALLEL_LINK_JOBS=1 \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
@@ -359,6 +360,9 @@ CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 	-DCLANG_BUILD_EXAMPLES:BOOL=OFF \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCLANG_REPOSITORY_STRING="%{?dist_vendor} %{version}-%{release}" \
+%if 0%{?fedora}
+	-DPPC_LINUX_DEFAULT_IEEELONGDOUBLE=ON \
+%endif
 %ifarch %{arm}
 	-DCLANG_DEFAULT_LINKER=lld \
 %endif
@@ -591,6 +595,9 @@ false
 
 %endif
 %changelog
+* Mon Jul 18 2022 Tom Stellard <tstellar@redhat.com> - 14.0.5-5
+- Re-enable ieee128 as the default long double format on ppc64le
+
 * Thu Jul 28 2022 Amit Shah <amitshah@fedoraproject.org> - 14.0.5-4
 - Use the dist_vendor macro to identify the distribution
 

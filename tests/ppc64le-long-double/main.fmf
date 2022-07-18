@@ -1,8 +1,6 @@
 summary: Test that gcc and clang use the same long double format on ppc64le
 test: $WITH_SCL ./runtest.sh
 duration: 1h
-# see https://bugzilla.redhat.com/show_bug.cgi?id=2100546
-enabled: false
 adjust:
   # Common requirements when LLVM is not SCL-ized
   - require+:
