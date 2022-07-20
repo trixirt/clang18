@@ -1,16 +1,29 @@
 summary: fedora-flags
 test: "$WITH_SCL ./test.sh"
 require:
-  - annobin
-  - clang
   - redhat-rpm-config
 adjust:
+
+  # Common requirements when LLVM is not SCL-ized
+  - require+:
+      - clang
+    when: "collection is not defined"
+
+  # Requirements for SCL-ized LLVM
+  - require+:
+      - llvm-toolset-13.0-clang
+    when: "collection == llvm-toolset-13.0"
+  - require+:
+      - llvm-toolset-14.0-clang
+    when: "collection == llvm-toolset-14.0"
+
   - because: s390x does not have epel repo which is required to provide rpm macros
     enabled: false
     when: >-
       distro == rhel-7
       and arch == s390x
 
+  # Note: this needs epel-release repo to be available
   - because: "To enable rpm macros not available by default (e.g. build_cflags), epel-rpm-macros is needed"
     require+:
       - epel-rpm-macros
