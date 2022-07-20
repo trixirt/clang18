@@ -39,7 +39,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -591,6 +591,9 @@ false
 
 %endif
 %changelog
+* Wed Jul 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 14.0.5-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
 * Thu Jun 30 2022 Miro Hrončok <mhroncok@redhat.com> - 14.0.5-2
 - Revert "Use the ieee128 format for long double on ppc64le" until rhbz#2100546 is fixed
 
