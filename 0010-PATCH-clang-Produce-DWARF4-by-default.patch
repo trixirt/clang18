@@ -1,4 +1,4 @@
-From c7fd378862328e3e2c60be76b7a15821ca2d44ab Mon Sep 17 00:00:00 2001
+From 1f68d73910ddee1beaf3582480b8a9738c941a43 Mon Sep 17 00:00:00 2001
 From: Konrad Kleine <kkleine@redhat.com>
 Date: Thu, 24 Mar 2022 09:44:21 +0100
 Subject: [PATCH] Produce DWARF4 by default
@@ -16,11 +16,11 @@ https://github.com/llvm/llvm-project/commit/d3b26dea16108c427b19b5480c9edc76edf8
  6 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/clang/include/clang/Driver/ToolChain.h b/clang/include/clang/Driver/ToolChain.h
-index bfc46af00265..a2f4ac85e7d7 100644
+index f20ab164531b..53c86ee82936 100644
 --- a/clang/include/clang/Driver/ToolChain.h
 +++ b/clang/include/clang/Driver/ToolChain.h
-@@ -515,7 +515,7 @@ public:
- 
+@@ -535,7 +535,7 @@ public:
+   
    // Return the DWARF version to emit, in the absence of arguments
    // to the contrary.
 -  virtual unsigned GetDefaultDwarfVersion() const { return 5; }
@@ -44,10 +44,10 @@ index 0a6fa4768026..96f01749d0d8 100644
  // The -isysroot is used as a hack to avoid LIT messing with the SDKROOT
  // environment variable which indirecty overrides the version in the target
 diff --git a/clang/test/Driver/cl-options.c b/clang/test/Driver/cl-options.c
-index 8d240e6e6e5c..1a568e95d349 100644
+index a2e350a0a835..01889ba0bf9b 100644
 --- a/clang/test/Driver/cl-options.c
 +++ b/clang/test/Driver/cl-options.c
-@@ -596,7 +596,7 @@
+@@ -570,7 +570,7 @@
  // RUN: %clang_cl /Z7 -gdwarf /c -### -- %s 2>&1 | FileCheck -check-prefix=Z7_gdwarf %s
  // Z7_gdwarf: "-gcodeview"
  // Z7_gdwarf: "-debug-info-kind=constructor"
@@ -70,25 +70,25 @@ index d982b1070cae..bb129e75769c 100644
  
  // CHECK-WITH-G-STANDALONE: "-debug-info-kind=standalone"
 diff --git a/clang/test/Driver/ve-toolchain.c b/clang/test/Driver/ve-toolchain.c
-index 753dee19fcbf..dfd12cc0bba4 100644
+index 32e25769b6da..b8a2852daba8 100644
 --- a/clang/test/Driver/ve-toolchain.c
 +++ b/clang/test/Driver/ve-toolchain.c
 @@ -6,7 +6,7 @@
  /// Checking dwarf-version
  
- // RUN: %clang -### -g -target ve %s 2>&1 | FileCheck -check-prefix=DWARF_VER %s
+ // RUN: %clang -### -g --target=ve %s 2>&1 | FileCheck -check-prefix=DWARF_VER %s
 -// DWARF_VER: "-dwarf-version=5"
 +// DWARF_VER: "-dwarf-version=4"
  
  ///-----------------------------------------------------------------------------
  /// Checking include-path
 diff --git a/clang/test/Driver/ve-toolchain.cpp b/clang/test/Driver/ve-toolchain.cpp
-index 4b2b9c5747fe..3a196dd94ca1 100644
+index 5a33d5eceb61..cedf895b36dc 100644
 --- a/clang/test/Driver/ve-toolchain.cpp
 +++ b/clang/test/Driver/ve-toolchain.cpp
 @@ -7,7 +7,7 @@
  
- // RUN: %clangxx -### -g -target ve-unknown-linux-gnu \
+ // RUN: %clangxx -### -g --target=ve-unknown-linux-gnu \
  // RUN:     %s 2>&1 | FileCheck -check-prefix=DWARF_VER %s
 -// DWARF_VER: "-dwarf-version=5"
 +// DWARF_VER: "-dwarf-version=4"
@@ -96,5 +96,5 @@ index 4b2b9c5747fe..3a196dd94ca1 100644
  ///-----------------------------------------------------------------------------
  /// Checking include-path
 -- 
-2.27.0
+2.37.1
 

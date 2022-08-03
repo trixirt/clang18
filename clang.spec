@@ -1,10 +1,12 @@
+%global toolchain clang
+
 %bcond_with compat_build
 %bcond_without check
 
-%global maj_ver 14
+%global maj_ver 15
 %global min_ver 0
-%global patch_ver 5
-#global rc_ver 4
+%global patch_ver 0
+#global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %if %{with compat_build}
@@ -39,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	7%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -50,29 +52,27 @@ Source3:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_
 Source1:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz
 Source2:	https://github.com/llvm/llvm-project/releases/download/llvmorg-%{clang_version}%{?rc_ver:-rc%{rc_ver}}/%{clang_tools_srcdir}.tar.xz.sig
 %endif
-Source4:	tstellar-gpg-key.asc
+Source4:	release-keys.asc
 %if %{without compat_build}
 Source5:	macros.%{name}
 %endif
 
 # Patches for clang
 Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
-Patch1:     0002-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
+Patch1:     0003-PATCH-Make-funwind-tables-the-default-on-all-archs.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
 Patch4:     0001-cmake-Allow-shared-libraries-to-customize-the-soname.patch
-# This patch can be dropped once gcc-12.0.1-0.5.fc36 is in the repo.
-Patch5:     0001-Work-around-gcc-miscompile.patch
-Patch7:     0010-PATCH-clang-Produce-DWARF4-by-default.patch
+Patch5:     0010-PATCH-clang-Produce-DWARF4-by-default.patch
+
+# TODO: Can be dropped in LLVM 16: https://reviews.llvm.org/D133316
+Patch6:     0001-Mark-fopenmp-implicit-rpath-as-NoArgumentUnused.patch
 
 # Patches for clang-tools-extra
 # See https://reviews.llvm.org/D120301
-Patch201:   llvm-hello.patch
-# See https://github.com/llvm/llvm-project/issues/54116
-Patch202:   remove-test.patch
+Patch201:   0001-clang-tools-extra-Make-test-dependency-on-LLVMHello-.patch
 
-BuildRequires:	gcc
-BuildRequires:	gcc-c++
+BuildRequires:	clang
 BuildRequires:	cmake
 BuildRequires:	ninja-build
 %if %{with compat_build}
@@ -252,13 +252,8 @@ Requires:      python3
 %autopatch -m200 -p2
 
 
-# This test is broken upstream. It is a clang-tidy unittest
-# that includes a file from clang, breaking standalone builds.
-# https://github.com/llvm/llvm-project/issues/54116
-rm unittests/clang-tidy/ReadabilityModuleTest.cpp
-
 # failing test case
-rm test/clang-tidy/checkers/altera-struct-pack-align.cpp
+rm test/clang-tidy/checkers/altera/struct-pack-align.cpp
 
 %py3_shebang_fix \
 	clang-tidy/tool/ \
@@ -282,17 +277,13 @@ rm test/CodeGen/profile-filter.c
 %endif
 
 %build
-# We run the builders out of memory on armv7 and i686 when LTO is enabled
-%ifarch %{arm} i686
-%define _lto_cflags %{nil}
-%else
-# This package does not ship any object files or static libraries, so we
-# don't need -ffat-lto-objects.
-%global _lto_cflags %(echo %{_lto_cflags} | sed 's/-ffat-lto-objects//')
-%endif
 
-# lto builds with gcc 11 fail while running the lit tests.
+# Use ThinLTO to limit build time.
+%define _lto_cflags -flto=thin
+# And disable LTO on AArch64 entirely.
+%ifarch aarch64
 %define _lto_cflags %{nil}
+%endif
 
 %if 0%{?__isa_bits} == 64
 sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@/64/g' test/lit.cfg.py
@@ -300,18 +291,16 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@/64/g' test/lit.cfg.py
 sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %endif
 
-%ifarch s390 s390x %{arm} %ix86 ppc64le
+%ifarch s390 s390x %{arm} aarch64 %ix86 ppc64le
 # Decrease debuginfo verbosity to reduce memory consumption during final library linking
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
 
+# Disable dwz on aarch64, because it takes a huge amount of time to decide not to optimize things.
+%ifarch aarch64
+%define _find_debuginfo_dwz_opts %{nil}
+%endif
 
-%set_build_flags
-CXXFLAGS="$CXXFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
-CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
-
-# -DLLVM_ENABLE_NEW_PASS_MANAGER=ON can be removed once this patch is committed:
-# https://reviews.llvm.org/D107628
 %cmake  -G Ninja \
 	-DLLVM_PARALLEL_LINK_JOBS=1 \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
@@ -329,6 +318,7 @@ CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
 %else
 	-DCLANG_INCLUDE_TESTS:BOOL=ON \
+	-DLLVM_BUILD_UTILS:BOOL=ON \
 	-DLLVM_EXTERNAL_CLANG_TOOLS_EXTRA_SOURCE_DIR=../%{clang_tools_srcdir} \
 	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
@@ -352,7 +342,6 @@ CFLAGS="$CFLAGS -Wno-address -Wno-nonnull -Wno-maybe-uninitialized"
 	-DLLVM_ENABLE_EH=ON \
 	-DLLVM_ENABLE_RTTI=ON \
 	-DLLVM_BUILD_DOCS=ON \
-	-DLLVM_ENABLE_NEW_PASS_MANAGER=ON \
 	-DLLVM_ENABLE_SPHINX=ON \
 	-DCLANG_LINK_CLANG_DYLIB=ON \
 	%{?abi_revision:-DLLVM_ABI_REVISION=%{abi_revision}} \
@@ -506,6 +495,7 @@ false
 %{_includedir}/clang/
 %{_includedir}/clang-c/
 %{_libdir}/cmake/*
+%{_bindir}/clang-tblgen
 %dir %{_datadir}/clang/
 %{_rpmmacrodir}/macros.%{name}
 %else
@@ -554,9 +544,11 @@ false
 %{_bindir}/clang-include-fixer
 %{_bindir}/clang-move
 %{_bindir}/clang-offload-bundler
+%{_bindir}/clang-offload-packager
 %{_bindir}/clang-offload-wrapper
 %{_bindir}/clang-linker-wrapper
 %{_bindir}/clang-nvlink-wrapper
+%{_bindir}/clang-pseudo
 %{_bindir}/clang-query
 %{_bindir}/clang-refactor
 %{_bindir}/clang-rename
@@ -593,13 +585,16 @@ false
 
 %endif
 %changelog
+* Tue Sep 06 2022 Nikita Popov <npopov@redhat.com> - 15.0.0-1
+- Update to LLVM 15.0.0
+
 * Mon Aug 29 2022 sguelton@redhat.com - 14.0.5-7
 - Add a Recommends on libatomic, see rhbz#2118592
 
 * Wed Aug 10 2022 Nikita Popov <npopov@redhat.com> - 14.0.5-6
 - Revert powerpc -mabi=ieeelongdouble default
 
-* Mon Aug 04 2022 Tom Stellard <tstellar@redhat.com> - 14.0.5-5
+* Thu Aug 04 2022 Tom Stellard <tstellar@redhat.com> - 14.0.5-5
 - Re-enable ieee128 as the default long double format on ppc64le
 
 * Thu Jul 28 2022 Amit Shah <amitshah@fedoraproject.org> - 14.0.5-4
