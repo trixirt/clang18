@@ -39,7 +39,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -161,6 +161,8 @@ libomp-devel to enable -fopenmp.
 Summary: Runtime library for clang
 Requires: %{name}-resource-filesystem%{?_isa} = %{version}
 Recommends: compiler-rt%{?_isa} = %{version}
+# atomic support is not part of compiler-rt
+Recommends: libatomic%{?_isa}
 # libomp-devel is required, so clang can find the omp.h header when compiling
 # with -fopenmp.
 Recommends: libomp-devel%{_isa} = %{version}
@@ -591,6 +593,9 @@ false
 
 %endif
 %changelog
+* Mon Aug 29 2022 sguelton@redhat.com - 14.0.5-7
+- Add a Recommends on libatomic, see rhbz#2118592
+
 * Wed Aug 10 2022 Nikita Popov <npopov@redhat.com> - 14.0.5-6
 - Revert powerpc -mabi=ieeelongdouble default
 
