@@ -68,9 +68,11 @@ Patch5:     0010-PATCH-clang-Produce-DWARF4-by-default.patch
 # TODO: Can be dropped in LLVM 16: https://reviews.llvm.org/D133316
 Patch6:     0001-Mark-fopenmp-implicit-rpath-as-NoArgumentUnused.patch
 
+%if %{without compat_build}
 # Patches for clang-tools-extra
 # See https://reviews.llvm.org/D120301
 Patch201:   0001-clang-tools-extra-Make-test-dependency-on-LLVMHello-.patch
+%endif
 
 BuildRequires:	clang
 BuildRequires:	cmake
@@ -178,11 +180,11 @@ Runtime library for clang.
 
 %package devel
 Summary: Development header files for clang
+Requires: %{name}-libs = %{version}-%{release}
 %if %{without compat_build}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # The clang CMake files reference tools from clang-tools-extra.
 Requires: %{name}-tools-extra%{?_isa} = %{version}-%{release}
-Requires: %{name}-libs = %{version}-%{release}
 %endif
 
 %description devel
