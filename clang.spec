@@ -301,7 +301,12 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 %define _find_debuginfo_dwz_opts %{nil}
 %endif
 
+# TODO: Drop the HAVE_CXX_ATOMICS64_WITHOUT_LIB once clang15 is in the buildroot. It looks like
+# previously clang emitted __atomic_load for std::atomic<double>, which is not detected by cmake.
 %cmake  -G Ninja \
+%ifarch %ix86
+	-DHAVE_CXX_ATOMICS64_WITHOUT_LIB=OFF \
+%endif
 	-DLLVM_PARALLEL_LINK_JOBS=1 \
 	-DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
