@@ -72,6 +72,8 @@ Patch6:     0001-Mark-fopenmp-implicit-rpath-as-NoArgumentUnused.patch
 # TODO: Drop once updating to 15.0.1 or newer.
 Patch7:     0001-Clang-15.0.1-Downgrade-implicit-int-and-implicit-fun.patch
 
+Patch8:     0001-Take-into-account-Fedora-Specific-install-dir-for-li.patch
+
 %if %{without compat_build}
 # Patches for clang-tools-extra
 # See https://reviews.llvm.org/D120301
@@ -596,6 +598,9 @@ false
 
 %endif
 %changelog
+* Sat Sep 17 2022 sguelton@redhat.com - 15.0.0-3
+- Improve integration of llvm's libunwind
+
 * Wed Sep 14 2022 Nikita Popov <npopov@redhat.com> - 15.0.0-2
 - Downgrade implicit int and implicit function declaration to warning only
 
