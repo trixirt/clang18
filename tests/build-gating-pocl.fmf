@@ -16,6 +16,8 @@ adjust:
 discover:
     how: fmf
     test: pocl
+    url: https://src.fedoraproject.org/tests/clang.git
+    ref: main
 execute:
     how: tmt
 prepare:
