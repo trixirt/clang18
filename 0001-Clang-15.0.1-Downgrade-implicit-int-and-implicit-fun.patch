@@ -1,4 +1,4 @@
-From 77c19531189aac51466617f97cdacdaebf56291a Mon Sep 17 00:00:00 2001
+From 87932fdfa171458562a5d9237c81fced205d9e99 Mon Sep 17 00:00:00 2001
 From: Aaron Ballman <aaron@aaronballman.com>
 Date: Wed, 14 Sep 2022 09:38:39 +0200
 Subject: [PATCH] [Clang 15.0.1] Downgrade implicit int and implicit function
@@ -12,6 +12,9 @@ See https://discourse.llvm.org/t/configure-script-breakage-with-the-new-werror-i
  .../clang/Basic/DiagnosticSemaKinds.td        |  8 ++---
  clang/test/C/drs/dr0xx.c                      |  2 +-
  clang/test/C/drs/dr1xx.c                      |  2 +-
+ .../CodeGen/PowerPC/builtins-ppc-p8vector.c   |  4 +--
+ .../CodeGen/builtins-arm-msvc-compat-only.c   |  4 +--
+ clang/test/CodeGen/neon-crypto.c              |  2 +-
  clang/test/Driver/cxx_for_opencl.clcpp        |  2 +-
  clang/test/FixIt/fixit.c                      |  2 +-
  clang/test/Frontend/fixed_point_errors.c      |  4 +--
@@ -56,7 +59,7 @@ See https://discourse.llvm.org/t/configure-script-breakage-with-the-new-werror-i
  .../SemaObjC/ivar-lookup-resolution-builtin.m |  2 +-
  clang/test/SemaObjC/protocols.m               |  2 +-
  clang/test/SemaOpenCL/invalid-pipes-cl1.2.cl  |  2 +-
- 48 files changed, 124 insertions(+), 124 deletions(-)
+ 51 files changed, 129 insertions(+), 129 deletions(-)
 
 diff --git a/clang/docs/ReleaseNotes.rst b/clang/docs/ReleaseNotes.rst
 index cbf3f4b37b5f..a26846a3eac4 100644
@@ -155,6 +158,62 @@ index 70435b523765..1e430c5fb395 100644
 +  i = also_undeclared(); /* c99untilc2x-warning {{call to undeclared function 'also_undeclared'; ISO C99 and later do not support implicit function declarations}}
                              c2xandup-error {{use of undeclared identifier 'also_undeclared'}}
                            */
+ }
+diff --git a/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c b/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c
+index af3d5c7d066b..3c55e63d1bc8 100644
+--- a/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c
++++ b/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c
+@@ -143,7 +143,7 @@ void test1() {
+   res_vui = vec_mergee(vui, vui);
+ // CHECK: @llvm.ppc.altivec.vperm
+ // CHECK-LE: @llvm.ppc.altivec.vperm
+-// CHECK-PPC: error: call to undeclared function 'vec_mergee'
++// CHECK-PPC: warning: call to undeclared function 'vec_mergee'
+ 
+   res_vbll = vec_mergee(vbll, vbll);
+ // CHECK: @llvm.ppc.altivec.vperm
+@@ -177,7 +177,7 @@ void test1() {
+   res_vui = vec_mergeo(vui, vui);
+ // CHECK: @llvm.ppc.altivec.vperm
+ // CHECK-LE: @llvm.ppc.altivec.vperm
+-// CHECK-PPC: error: call to undeclared function 'vec_mergeo'
++// CHECK-PPC: warning: call to undeclared function 'vec_mergeo'
+ 
+   /* vec_cmpeq */
+   res_vbll = vec_cmpeq(vbll, vbll);
+diff --git a/clang/test/CodeGen/builtins-arm-msvc-compat-only.c b/clang/test/CodeGen/builtins-arm-msvc-compat-only.c
+index 42cc9d70a142..c2b021b31174 100644
+--- a/clang/test/CodeGen/builtins-arm-msvc-compat-only.c
++++ b/clang/test/CodeGen/builtins-arm-msvc-compat-only.c
+@@ -1,6 +1,6 @@
+ // RUN: %clang_cc1 -triple thumbv7-windows -fms-extensions -emit-llvm -o - %s \
+ // RUN:     | FileCheck %s -check-prefix CHECK-MSVC
+-// RUN: not %clang_cc1 -triple armv7-eabi -emit-llvm %s -o /dev/null 2>&1 \
++// RUN: %clang_cc1 -triple armv7-eabi -emit-llvm %s -o /dev/null 2>&1 \
+ // RUN:     | FileCheck %s -check-prefix CHECK-EABI
+ // REQUIRES: arm-registered-target
+ 
+@@ -9,7 +9,7 @@ void emit() {
+ }
+ 
+ // CHECK-MSVC: call void asm sideeffect ".inst.n 0xDEFE", ""()
+-// CHECK-EABI: error: call to undeclared function '__emit'
++// CHECK-EABI: warning: call to undeclared function '__emit'
+ 
+ void emit_truncated() {
+   __emit(0x11110000); // movs r0, r0
+diff --git a/clang/test/CodeGen/neon-crypto.c b/clang/test/CodeGen/neon-crypto.c
+index 916886574416..1b29b1a53096 100644
+--- a/clang/test/CodeGen/neon-crypto.c
++++ b/clang/test/CodeGen/neon-crypto.c
+@@ -14,7 +14,7 @@
+ 
+ uint8x16_t test_vaeseq_u8(uint8x16_t data, uint8x16_t key) {
+   // CHECK-LABEL: @test_vaeseq_u8
+-  // CHECK-NO-CRYPTO: error: call to undeclared function 'vaeseq_u8'
++  // CHECK-NO-CRYPTO: warning: call to undeclared function 'vaeseq_u8'
+   return vaeseq_u8(data, key);
+   // CHECK: call <16 x i8> @llvm.{{arm.neon|aarch64.crypto}}.aese(<16 x i8> %data, <16 x i8> %key)
  }
 diff --git a/clang/test/Driver/cxx_for_opencl.clcpp b/clang/test/Driver/cxx_for_opencl.clcpp
 index fc2fc621791d..e3e89c53b888 100644
