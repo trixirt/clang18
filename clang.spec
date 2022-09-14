@@ -41,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -67,6 +67,10 @@ Patch5:     0010-PATCH-clang-Produce-DWARF4-by-default.patch
 
 # TODO: Can be dropped in LLVM 16: https://reviews.llvm.org/D133316
 Patch6:     0001-Mark-fopenmp-implicit-rpath-as-NoArgumentUnused.patch
+
+# Backport of https://reviews.llvm.org/D133800 to the 15.0.0 release.
+# TODO: Drop once updating to 15.0.1 or newer.
+Patch7:     0001-Clang-15.0.1-Downgrade-implicit-int-and-implicit-fun.patch
 
 %if %{without compat_build}
 # Patches for clang-tools-extra
@@ -592,6 +596,9 @@ false
 
 %endif
 %changelog
+* Wed Sep 14 2022 Nikita Popov <npopov@redhat.com> - 15.0.0-2
+- Downgrade implicit int and implicit function declaration to warning only
+
 * Tue Sep 06 2022 Nikita Popov <npopov@redhat.com> - 15.0.0-1
 - Update to LLVM 15.0.0
 
