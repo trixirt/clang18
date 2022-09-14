@@ -1,4 +1,4 @@
-From 87932fdfa171458562a5d9237c81fced205d9e99 Mon Sep 17 00:00:00 2001
+From 9a95c7e534a4f0e7e992ea62cf3efc75fbdc04ae Mon Sep 17 00:00:00 2001
 From: Aaron Ballman <aaron@aaronballman.com>
 Date: Wed, 14 Sep 2022 09:38:39 +0200
 Subject: [PATCH] [Clang 15.0.1] Downgrade implicit int and implicit function
@@ -12,7 +12,7 @@ See https://discourse.llvm.org/t/configure-script-breakage-with-the-new-werror-i
  .../clang/Basic/DiagnosticSemaKinds.td        |  8 ++---
  clang/test/C/drs/dr0xx.c                      |  2 +-
  clang/test/C/drs/dr1xx.c                      |  2 +-
- .../CodeGen/PowerPC/builtins-ppc-p8vector.c   |  4 +--
+ .../CodeGen/PowerPC/builtins-ppc-p8vector.c   | 28 +++++++--------
  .../CodeGen/builtins-arm-msvc-compat-only.c   |  4 +--
  clang/test/CodeGen/neon-crypto.c              |  2 +-
  clang/test/Driver/cxx_for_opencl.clcpp        |  2 +-
@@ -59,7 +59,7 @@ See https://discourse.llvm.org/t/configure-script-breakage-with-the-new-werror-i
  .../SemaObjC/ivar-lookup-resolution-builtin.m |  2 +-
  clang/test/SemaObjC/protocols.m               |  2 +-
  clang/test/SemaOpenCL/invalid-pipes-cl1.2.cl  |  2 +-
- 51 files changed, 129 insertions(+), 129 deletions(-)
+ 51 files changed, 141 insertions(+), 141 deletions(-)
 
 diff --git a/clang/docs/ReleaseNotes.rst b/clang/docs/ReleaseNotes.rst
 index cbf3f4b37b5f..a26846a3eac4 100644
@@ -160,7 +160,7 @@ index 70435b523765..1e430c5fb395 100644
                            */
  }
 diff --git a/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c b/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c
-index af3d5c7d066b..3c55e63d1bc8 100644
+index af3d5c7d066b..54d2c70c0aa5 100644
 --- a/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c
 +++ b/clang/test/CodeGen/PowerPC/builtins-ppc-p8vector.c
 @@ -143,7 +143,7 @@ void test1() {
@@ -181,6 +181,105 @@ index af3d5c7d066b..3c55e63d1bc8 100644
  
    /* vec_cmpeq */
    res_vbll = vec_cmpeq(vbll, vbll);
+@@ -403,7 +403,7 @@ void test1() {
+   res_vsc = vec_cntlz(vsc);
+ // CHECK: call <16 x i8> @llvm.ctlz.v16i8(<16 x i8> %{{.+}}, i1 false)
+ // CHECK-LE: call <16 x i8> @llvm.ctlz.v16i8(<16 x i8> %{{.+}}, i1 false)
+-// CHECK-PPC: error: call to undeclared function 'vec_cntlz'
++// CHECK-PPC: warning: call to undeclared function 'vec_cntlz'
+ 
+   res_vuc = vec_cntlz(vuc);
+ // CHECK: call <16 x i8> @llvm.ctlz.v16i8(<16 x i8> %{{.+}}, i1 false)
+@@ -754,19 +754,19 @@ void test1() {
+   res_vsi = vec_vpksdss(vsll, vsll);
+ // CHECK: llvm.ppc.altivec.vpksdss
+ // CHECK-LE: llvm.ppc.altivec.vpksdss
+-// CHECK-PPC: error: call to undeclared function 'vec_vpksdss'
++// CHECK-PPC: warning: call to undeclared function 'vec_vpksdss'
+ 
+   /* vec_vpksdus */
+   res_vui = vec_vpksdus(vsll, vsll);
+ // CHECK: llvm.ppc.altivec.vpksdus
+ // CHECK-LE: llvm.ppc.altivec.vpksdus
+-// CHECK-PPC: error: call to undeclared function 'vec_vpksdus'
++// CHECK-PPC: warning: call to undeclared function 'vec_vpksdus'
+ 
+   /* vec_vpkudum */
+   res_vsi = vec_vpkudum(vsll, vsll);
+ // CHECK: vperm
+ // CHECK-LE: vperm
+-// CHECK-PPC: error: call to undeclared function 'vec_vpkudum'
++// CHECK-PPC: warning: call to undeclared function 'vec_vpkudum'
+ 
+   res_vui = vec_vpkudum(vull, vull);
+ // CHECK: vperm
+@@ -775,13 +775,13 @@ void test1() {
+   res_vui = vec_vpkudus(vull, vull);
+ // CHECK: llvm.ppc.altivec.vpkudus
+ // CHECK-LE: llvm.ppc.altivec.vpkudus
+-// CHECK-PPC: error: call to undeclared function 'vec_vpkudus'
++// CHECK-PPC: warning: call to undeclared function 'vec_vpkudus'
+ 
+   /* vec_vupkhsw */
+   res_vsll = vec_vupkhsw(vsi);
+ // CHECK: llvm.ppc.altivec.vupkhsw
+ // CHECK-LE: llvm.ppc.altivec.vupklsw
+-// CHECK-PPC: error: call to undeclared function 'vec_vupkhsw'
++// CHECK-PPC: warning: call to undeclared function 'vec_vupkhsw'
+ 
+   res_vbll = vec_vupkhsw(vbi);
+ // CHECK: llvm.ppc.altivec.vupkhsw
+@@ -791,7 +791,7 @@ void test1() {
+   res_vsll = vec_vupklsw(vsi);
+ // CHECK: llvm.ppc.altivec.vupklsw
+ // CHECK-LE: llvm.ppc.altivec.vupkhsw
+-// CHECK-PPC: error: call to undeclared function 'vec_vupklsw'
++// CHECK-PPC: warning: call to undeclared function 'vec_vupklsw'
+ 
+   res_vbll = vec_vupklsw(vbi);
+ // CHECK: llvm.ppc.altivec.vupklsw
+@@ -845,7 +845,7 @@ void test1() {
+ // CHECK: xor <16 x i8> [[T1]], <i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1>
+ // CHECK-LE: [[T1:%.+]] = and <16 x i8>
+ // CHECK-LE: xor <16 x i8> [[T1]], <i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1>
+-// CHECK-PPC: error: call to undeclared function 'vec_nand'
++// CHECK-PPC: warning: call to undeclared function 'vec_nand'
+ 
+   res_vbc = vec_nand(vbc, vbc);
+ // CHECK: [[T1:%.+]] = and <16 x i8>
+@@ -937,7 +937,7 @@ void test1() {
+ // CHECK: or <16 x i8> {{%.+}}, [[T1]]
+ // CHECK-LE: [[T1:%.+]] = xor <16 x i8> {{%.+}}, <i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1>
+ // CHECK-LE: or <16 x i8> {{%.+}}, [[T1]]
+-// CHECK-PPC: error: call to undeclared function 'vec_orc'
++// CHECK-PPC: warning: call to undeclared function 'vec_orc'
+ 
+   res_vsc = vec_orc(vsc, vbc);
+ // CHECK: [[T1:%.+]] = xor <16 x i8> {{%.+}}, <i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1>
+@@ -1166,7 +1166,7 @@ void test1() {
+   res_vsll = vec_vbpermq(vuc, vuc);
+ // CHECK: llvm.ppc.altivec.vbpermq
+ // CHECK-LE: llvm.ppc.altivec.vbpermq
+-// CHECK-PPC: error: call to undeclared function 'vec_vbpermq'
++// CHECK-PPC: warning: call to undeclared function 'vec_vbpermq'
+ 
+   /* vec_vgbbd */
+   res_vsc = vec_vgbbd(vsc);
+@@ -1176,12 +1176,12 @@ void test1() {
+   res_vuc = vec_vgbbd(vuc);
+ // CHECK: llvm.ppc.altivec.vgbbd
+ // CHECK-LE: llvm.ppc.altivec.vgbbd
+-// CHECK-PPC: error: call to undeclared function 'vec_vgbbd'
++// CHECK-PPC: warning: call to undeclared function 'vec_vgbbd'
+ 
+   res_vuc = vec_gb(vuc);
+ // CHECK: llvm.ppc.altivec.vgbbd
+ // CHECK-LE: llvm.ppc.altivec.vgbbd
+-// CHECK-PPC: error: call to undeclared function 'vec_gb'
++// CHECK-PPC: warning: call to undeclared function 'vec_gb'
+ 
+   res_vsll = vec_gbb(vsll);
+ // CHECK: llvm.ppc.altivec.vgbbd
 diff --git a/clang/test/CodeGen/builtins-arm-msvc-compat-only.c b/clang/test/CodeGen/builtins-arm-msvc-compat-only.c
 index 42cc9d70a142..c2b021b31174 100644
 --- a/clang/test/CodeGen/builtins-arm-msvc-compat-only.c
