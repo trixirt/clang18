@@ -58,6 +58,11 @@ discover:
       url: https://src.fedoraproject.org/tests/llvm.git
       ref: main
       test: integration-test-suite
+    - name: redhat-rpm-config
+      how: fmf
+      url: https://src.fedoraproject.org/rpms/redhat-rpm-config.git
+      ref: rawhide
+      test: brp-llvm-compile-lto-elf
 execute:
     how: tmt
 provision:
