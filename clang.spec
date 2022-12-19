@@ -41,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -505,11 +505,11 @@ false
 
 %files libs
 %if %{without compat_build}
-%{_libdir}/clang/
+%{_libdir}/clang/%{version}/include/*
 %{_libdir}/*.so.*
 %else
 %{pkg_libdir}/*.so.*
-%{pkg_libdir}/clang/%{version}
+%{pkg_libdir}/clang/%{version}/include/*
 %endif
 
 %files devel
@@ -529,6 +529,7 @@ false
 %endif
 
 %files resource-filesystem
+%dir %{pkg_libdir}/clang/
 %dir %{pkg_libdir}/clang/%{version}/
 %dir %{pkg_libdir}/clang/%{version}/include/
 %dir %{pkg_libdir}/clang/%{version}/lib/
@@ -611,6 +612,9 @@ false
 
 %endif
 %changelog
+* Thu Jan 12 2022 Nikita Popov <npopov@redhat.com> - 15.0.6-5
+- Fix resource-filesystem ownership conflict
+
 * Mon Jan 09 2023 Tom Stellard <tstellar@redhat.com> - 15.0.6-4
 - Omit frame pointers when building
 
