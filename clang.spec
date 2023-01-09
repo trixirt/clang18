@@ -1,5 +1,9 @@
 %global toolchain clang
 
+# Opt out of https://fedoraproject.org/wiki/Changes/fno-omit-frame-pointer
+# https://bugzilla.redhat.com/show_bug.cgi?id=2158587
+%undefine _include_frame_pointers
+
 %bcond_with compat_build
 %bcond_without check
 
@@ -37,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -607,6 +611,9 @@ false
 
 %endif
 %changelog
+* Mon Jan 09 2023 Tom Stellard <tstellar@redhat.com> - 15.0.6-4
+- Omit frame pointers when building
+
 * Wed Dec 21 2022 Nikita Popov <npopov@redhat.com> - 15.0.6-3
 - Add clang-devel dep to python3-clang
 
