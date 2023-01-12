@@ -9,7 +9,7 @@
 
 %global maj_ver 15
 %global min_ver 0
-%global patch_ver 6
+%global patch_ver 7
 #global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
@@ -41,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	5%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	NCSA
@@ -612,7 +612,10 @@ false
 
 %endif
 %changelog
-* Thu Jan 12 2022 Nikita Popov <npopov@redhat.com> - 15.0.6-5
+* Thu Jan 12 2023 Nikita Popov <npopov@redhat.com> - 15.0.7-1
+- Update to LLVM 15.0.7
+
+* Thu Jan 12 2023 Nikita Popov <npopov@redhat.com> - 15.0.6-5
 - Fix resource-filesystem ownership conflict
 
 * Mon Jan 09 2023 Tom Stellard <tstellar@redhat.com> - 15.0.6-4
