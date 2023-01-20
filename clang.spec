@@ -64,6 +64,10 @@ Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
 Patch6:     0001-Take-into-account-Fedora-Specific-install-dir-for-li.patch
 
+# Make clangBasic and clangDriver depend on LLVMTargetParser
+# See https://reviews.llvm.org/D141581
+Patch7:     D141581.diff
+
 %if %{without compat_build}
 # Patches for clang-tools-extra
 # See https://reviews.llvm.org/D120301
