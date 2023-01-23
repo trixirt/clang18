@@ -67,6 +67,9 @@ Patch6:     0001-Take-into-account-Fedora-Specific-install-dir-for-li.patch
 # Make clangBasic and clangDriver depend on LLVMTargetParser
 # See https://reviews.llvm.org/D141581
 Patch7:     D141581.diff
+# clang/cmake: Use installed gtest libraries for stand-alone builds
+# See https://reviews.llvm.org/D138472
+Patch8:     D138472.diff
 
 %if %{without compat_build}
 # Patches for clang-tools-extra
