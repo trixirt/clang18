@@ -341,6 +341,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_LIT_ARGS="-vv" \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
+	-DLLVM_CMAKE_DIR=/usr/%{_lib}/cmake/llvm \
 %if 0%{?__isa_bits} == 64
 	-DLLVM_LIBDIR_SUFFIX=64 \
 %else
