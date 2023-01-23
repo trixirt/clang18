@@ -402,7 +402,7 @@ install -p -m644 bindings/python/clang/* %{buildroot}%{python3_sitelib}/clang/
 %py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/clang
 
 # install scanbuild-py to python sitelib.
-mv %{buildroot}%{_prefix}/lib/{libear,libscanbuild} %{buildroot}%{python3_sitelib}
+mv %{buildroot}%{_prefix}/%{_lib}/{libear,libscanbuild} %{buildroot}%{python3_sitelib}
 %py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/{libear,libscanbuild}
 
 # Fix permissions of scan-view scripts
