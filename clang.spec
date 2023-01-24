@@ -62,6 +62,7 @@ Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
 Patch1:     0003-PATCH-Make-funwind-tables-the-default-on-all-archs.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
+Patch4:     0001-cmake-Allow-shared-libraries-to-customize-the-soname.patch
 Patch6:     0001-Take-into-account-Fedora-Specific-install-dir-for-li.patch
 
 # Make clangBasic and clangDriver depend on LLVMTargetParser
