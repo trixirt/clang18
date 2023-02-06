@@ -7,10 +7,10 @@
 %bcond_with compat_build
 %bcond_without check
 
-%global maj_ver 15
+%global maj_ver 16
 %global min_ver 0
-%global patch_ver 7
-#global rc_ver 3
+%global patch_ver 0
+%global rc_ver 1
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %if %{with compat_build}
@@ -62,18 +62,7 @@ Patch0:     0001-PATCH-clang-Reorganize-gtest-integration.patch
 Patch1:     0003-PATCH-Make-funwind-tables-the-default-on-all-archs.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
-Patch5:     0010-PATCH-clang-Produce-DWARF4-by-default.patch
 Patch6:     0001-Take-into-account-Fedora-Specific-install-dir-for-li.patch
-
-# TODO: Can be dropped in LLVM 16: https://reviews.llvm.org/D133316
-Patch7:     0001-Mark-fopenmp-implicit-rpath-as-NoArgumentUnused.patch
-
-# TODO: Can be dropped in LLVM 16: https://reviews.llvm.org/D134362
-Patch8:     0001-clang-Fix-interaction-between-asm-labels-and-inline-.patch
-
-# TODO: Can be dropped in LLVM 16.
-Patch9:     0001-clang-MinGW-Improve-extend-the-gcc-sysroot-detection.patch
-Patch10:    0002-clang-MinGW-Improve-detection-of-libstdc-headers-on-.patch
 
 %if %{without compat_build}
 # Patches for clang-tools-extra
