@@ -10,7 +10,7 @@
 %global maj_ver 16
 %global min_ver 0
 %global patch_ver 0
-%global rc_ver 1
+%global rc_ver 3
 %global clang_version %{maj_ver}.%{min_ver}.%{patch_ver}
 
 %if %{with compat_build}
@@ -42,7 +42,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	3%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -611,6 +611,9 @@ false
 
 %endif
 %changelog
+* Thu Feb 23 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 16.0.0~rc3-1
+- Update to LLVM 16.0.0 RC3
+
 * Thu Jan 19 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 15.0.7-3
 - Update license to SPDX identifiers.
 - Include the Apache license adopted in 2019.
