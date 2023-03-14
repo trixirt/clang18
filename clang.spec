@@ -42,7 +42,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -611,6 +611,9 @@ false
 
 %endif
 %changelog
+* Tue Mar 14 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 16.0.0~rc3-2
+- Fix RPM macro clang_resource_dir
+
 * Thu Feb 23 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 16.0.0~rc3-1
 - Update to LLVM 16.0.0 RC3
 
