@@ -346,6 +346,7 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DCLANG_BUILD_TOOLS:BOOL=OFF \
 	-DCMAKE_INSTALL_PREFIX=%{install_prefix} \
 	-DCLANG_INCLUDE_TESTS:BOOL=OFF \
+	-DLLVM_CMAKE_DIR=%{install_libdir}/cmake/llvm \
 %else
 	-DCLANG_INCLUDE_TESTS:BOOL=ON \
 	-DLLVM_BUILD_UTILS:BOOL=ON \
@@ -353,7 +354,6 @@ sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
 	-DLLVM_EXTERNAL_LIT=%{_bindir}/lit \
 	-DLLVM_LIT_ARGS="-vv" \
 	-DLLVM_MAIN_SRC_DIR=%{_datadir}/llvm/src \
-	-DLLVM_CMAKE_DIR=/usr/%{_lib}/cmake/llvm \
 %if 0%{?__isa_bits} == 64
 	-DLLVM_LIBDIR_SUFFIX=64 \
 %else
