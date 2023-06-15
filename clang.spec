@@ -41,7 +41,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -608,6 +608,9 @@ false
 
 %endif
 %changelog
+* Thu Jun 15 2023 Python Maint <python-maint@redhat.com> - 16.0.5-2
+- Rebuilt for Python 3.12
+
 * Tue Jun 06 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 16.0.5-1
 - Update to LLVM 16.0.5
 
