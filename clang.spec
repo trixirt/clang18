@@ -23,14 +23,12 @@
 %global install_libdir %{install_prefix}/lib
 %global install_datadir %{install_prefix}/share
 
-%global pkg_bindir %{install_bindir}
 %global pkg_includedir %{install_includedir}
-%global pkg_libdir %{install_libdir}
 %else
 %global pkg_name clang
 %global install_prefix /usr
 %global install_datadir %{_datadir}
-%global pkg_libdir %{_libdir}
+%global install_libdir %{_libdir}
 %endif
 
 %ifarch ppc64le
@@ -469,7 +467,7 @@ chmod u-x %{buildroot}%{_mandir}/man1/scan-build.1*
 
 # Create sub-directories in the clang resource directory that will be
 # populated by other packages
-mkdir -p %{buildroot}%{pkg_libdir}/clang/%{maj_ver}/{include,lib,share}/
+mkdir -p %{buildroot}%{install_libdir}/clang/%{maj_ver}/{include,lib,share}/
 
 
 %if %{without compat_build}
@@ -516,8 +514,8 @@ false
 %{_libdir}/clang/%{maj_ver}/include/*
 %{_libdir}/*.so.*
 %else
-%{pkg_libdir}/*.so.*
-%{pkg_libdir}/clang/%{maj_ver}/include/*
+%{install_libdir}/*.so.*
+%{install_libdir}/clang/%{maj_ver}/include/*
 %endif
 
 %files devel
@@ -530,18 +528,18 @@ false
 %dir %{_datadir}/clang/
 %{_rpmmacrodir}/macros.%{name}
 %else
-%{pkg_libdir}/*.so
+%{install_libdir}/*.so
 %{pkg_includedir}/clang/
 %{pkg_includedir}/clang-c/
-%{pkg_libdir}/cmake/
+%{install_libdir}/cmake/
 %endif
 
 %files resource-filesystem
-%dir %{pkg_libdir}/clang/
-%dir %{pkg_libdir}/clang/%{maj_ver}/
-%dir %{pkg_libdir}/clang/%{maj_ver}/include/
-%dir %{pkg_libdir}/clang/%{maj_ver}/lib/
-%dir %{pkg_libdir}/clang/%{maj_ver}/share/
+%dir %{install_libdir}/clang/
+%dir %{install_libdir}/clang/%{maj_ver}/
+%dir %{install_libdir}/clang/%{maj_ver}/include/
+%dir %{install_libdir}/clang/%{maj_ver}/lib/
+%dir %{install_libdir}/clang/%{maj_ver}/share/
 
 %if %{without compat_build}
 %files analyzer
