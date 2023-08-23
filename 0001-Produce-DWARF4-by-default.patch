@@ -73,8 +73,8 @@ index 6d929b19e7e2..373905c2e0fc 100644
 --- a/clang/test/Driver/cl-options.c
 +++ b/clang/test/Driver/cl-options.c
 @@ -569,7 +569,7 @@
- // RUN: %clang_cl -gdwarf /Z7 /c -### -- %s 2>&1 | FileCheck -check-prefix=Z7_gdwarf %s
- // Z7_gdwarf-NOT: "-gcodeview"
+ // RUN: %clang_cl /Z7 -gdwarf /c -### -- %s 2>&1 | FileCheck -check-prefix=Z7_gdwarf %s
+ // Z7_gdwarf: "-gcodeview"
  // Z7_gdwarf: "-debug-info-kind=constructor"
 -// Z7_gdwarf: "-dwarf-version=
 +// Z7_gdwarf: "-dwarf-version=4
