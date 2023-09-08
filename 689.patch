@@ -1,0 +1,30 @@
+From b7d6e2b5308a7b53ce7b3bbfd6e8e38e28e036ec Mon Sep 17 00:00:00 2001
+From: Sam James <sam@gentoo.org>
+Date: Tue, 5 Sep 2023 16:02:04 +0100
+Subject: [PATCH] [Clang] Fix JIT test on 32-bit systems
+
+As reported by mgorny at https://reviews.llvm.org/D159115#4638037, the
+unsigned long long cast fails on 32-bit systems at least with GCC.
+
+It looks like a pointer provenance/aliasing issue rather than a bug in GCC.
+
+Acked by Vassil Vassilev on the original revision.
+
+(cherry picked from commit 3403686b72507e3fdbcd69f21fb9235ffa0ca169)
+---
+ clang/unittests/Interpreter/InterpreterTest.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/clang/unittests/Interpreter/InterpreterTest.cpp b/clang/unittests/Interpreter/InterpreterTest.cpp
+index abb8e6377aab..5f2911e9a7ad 100644
+--- a/clang/unittests/Interpreter/InterpreterTest.cpp
++++ b/clang/unittests/Interpreter/InterpreterTest.cpp
+@@ -244,7 +244,7 @@ TEST(IncrementalProcessing, FindMangledNameSymbol) {
+ 
+   // FIXME: Re-enable when we investigate the way we handle dllimports on Win.
+ #ifndef _WIN32
+-  EXPECT_EQ((unsigned long long)&printf, Addr->getValue());
++  EXPECT_EQ((uintptr_t)&printf, Addr->getValue());
+ #endif // _WIN32
+ }
+ 
