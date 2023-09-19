@@ -55,7 +55,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -554,7 +554,6 @@ false
 %{_libdir}/cmake/*
 %{_bindir}/clang-tblgen
 %dir %{_datadir}/clang/
-%{_rpmmacrodir}/macros.%{name}
 %else
 %{install_libdir}/*.so
 %{pkg_includedir}/clang/
@@ -569,8 +568,10 @@ false
 %dir %{install_prefix}/lib/clang/%{maj_ver}/include/
 %dir %{install_prefix}/lib/clang/%{maj_ver}/lib/
 %dir %{install_prefix}/lib/clang/%{maj_ver}/share/
-
 %if %{without compat_build}
+%{_rpmmacrodir}/macros.%{name}
+
+
 %files analyzer
 %{_bindir}/scan-view
 %{_bindir}/scan-build
@@ -645,6 +646,9 @@ false
 
 %endif
 %changelog
+* Tue Sep 19 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 17.0.0~rc4-3
+- Move macros.clang to resource-filesystem
+
 * Mon Sep 18 2023 Alessandro Astone <ales.astone@gmail.com> - 17.0.0~rc4-2
 - Fix resource-filesystem after https://fedoraproject.org/wiki/Changes/LLVM-17
 
