@@ -339,13 +339,6 @@ rm test/CodeGen/profile-filter.c
 %global _lto_cflags %nil
 %endif
 
-
-%if 0%{?__isa_bits} == 64
-sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@/64/g' test/lit.cfg.py
-%else
-sed -i 's/\@FEDORA_LLVM_LIB_SUFFIX\@//g' test/lit.cfg.py
-%endif
-
 %ifarch s390 s390x %{arm} aarch64 %ix86 ppc64le
 # Decrease debuginfo verbosity to reduce memory consumption during final library linking
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
