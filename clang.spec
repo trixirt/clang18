@@ -205,11 +205,6 @@ Recommends: libatomic%{?_isa}
 Recommends: libomp-devel%{_isa} = %{version}
 Recommends: libomp%{_isa} = %{version}
 
-# Use lld as the default linker on ARM due to rhbz#1918924
-%ifarch %{arm}
-Requires: lld
-%endif
-
 %description libs
 Runtime library for clang.
 
@@ -337,7 +332,7 @@ rm test/CodeGen/profile-filter.c
 %global _lto_cflags %nil
 %endif
 
-%ifarch s390 s390x %{arm} aarch64 %ix86 ppc64le
+%ifarch s390 s390x aarch64 %ix86 ppc64le
 # Decrease debuginfo verbosity to reduce memory consumption during final library linking
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
 %endif
@@ -359,7 +354,7 @@ rm test/CodeGen/profile-filter.c
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
 	-DPYTHON_EXECUTABLE=%{__python3} \
 	-DCMAKE_SKIP_RPATH:BOOL=ON \
-%ifarch s390 s390x %{arm} %ix86 ppc64le
+%ifarch s390 s390x %ix86 ppc64le
 	-DCMAKE_C_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
 	-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="%{optflags} -DNDEBUG" \
 %endif
@@ -409,9 +404,6 @@ rm test/CodeGen/profile-filter.c
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCLANG_REPOSITORY_STRING="%{?dist_vendor} %{version}-%{release}" \
 	-DCLANG_RESOURCE_DIR=../lib/clang/%{maj_ver} \
-%ifarch %{arm}
-	-DCLANG_DEFAULT_LINKER=lld \
-%endif
 	-DCLANG_DEFAULT_UNWINDLIB=libgcc
 
 %cmake_build
@@ -505,13 +497,7 @@ ln -s %{_datadir}/clang/clang-format-diff.py %{buildroot}%{_bindir}/clang-format
 %cmake_build --target clang-test-depends \
     ExtraToolsUnitTests ClangdUnitTests ClangIncludeCleanerUnitTests ClangPseudoUnitTests
 # requires lit.py from LLVM utilities
-# FIXME: Fix failing ARM tests
-LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %{__ninja} check-all -C %{__cmake_builddir} || \
-%ifarch %{arm}
-:
-%else
-false
-%endif
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %{__ninja} check-all -C %{__cmake_builddir}
 %endif
 %endif
 
