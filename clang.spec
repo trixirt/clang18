@@ -327,8 +327,6 @@ rm test/CodeGen/profile-filter.c
 
 %build
 
-# Use ThinLTO to limit build time.
-%define _lto_cflags -flto=thin
 # And disable LTO on AArch64 entirely.
 %ifarch aarch64
 %define _lto_cflags %{nil}
