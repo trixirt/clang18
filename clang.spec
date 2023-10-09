@@ -55,7 +55,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -88,6 +88,11 @@ Patch4:     0001-Produce-DWARF4-by-default.patch
 # Workaround a bug in ORC on ppc64le.
 # More info is available here: https://reviews.llvm.org/D159115#4641826
 Patch5:     0001-Workaround-a-bug-in-ORC-on-ppc64le.patch
+# Patches for https://issues.redhat.com/browse/RHEL-1650
+# Remove in clang 18.
+Patch6:     cfg.patch
+Patch7:     tsa.patch
+
 
 # RHEL specific patches
 # Avoid unwanted dependency on python-recommonmark
@@ -640,6 +645,9 @@ false
 %endif
 %changelog
 %{?llvm_snapshot_changelog_entry}
+
+* Mon Oct 09 2023 Timm Bäder <tbaeder@redhat.com> - 17.0.2-2
+- Backport upstream fixes for https://issues.redhat.com/browse/RHEL-1650
 
 * Wed Oct 04 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 17.0.2-1
 - Update to LLVM 17.0.2
