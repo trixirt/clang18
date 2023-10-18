@@ -15,7 +15,7 @@
 
 %global maj_ver 17
 %global min_ver 0
-%global patch_ver 2
+%global patch_ver 3
 #global rc_ver 4
 
 %if %{with snapshot_build}
@@ -55,7 +55,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	2%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -645,6 +645,9 @@ false
 %endif
 %changelog
 %{?llvm_snapshot_changelog_entry}
+
+* Tue Oct 17 2023 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 17.0.3-1
+- Update to LLVM 17.0.3
 
 * Mon Oct 09 2023 Timm Bäder <tbaeder@redhat.com> - 17.0.2-2
 - Backport upstream fixes for https://issues.redhat.com/browse/RHEL-1650
