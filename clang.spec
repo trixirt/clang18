@@ -55,7 +55,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -623,6 +623,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{_libdir} %{__ninja} check-all -C %{__cmake_buildd
 
 %endif
 %changelog
+* Tue Jan 23 2024 Fedora Release Engineering <releng@fedoraproject.org> - 17.0.6-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 %{?llvm_snapshot_changelog_entry}
 
 * Mon Jan 22 2024 Nikita Popov <npopov@redhat.com> - 17.0.6-4
