@@ -1,4 +1,4 @@
-From d68a5a7817dc0d43853d8b84c9185dc24338664f Mon Sep 17 00:00:00 2001
+From 03a4a6131a18c47a32a02a0c48f6d32358561920 Mon Sep 17 00:00:00 2001
 From: Tom Stellard <tstellar@redhat.com>
 Date: Wed, 6 Oct 2021 05:32:44 +0000
 Subject: [PATCH] Driver: Add a gcc equivalent triple to the list of triples to
@@ -15,10 +15,10 @@ Differential Revision: https://reviews.llvm.org/D111207
  1 file changed, 22 insertions(+)
 
 diff --git a/clang/lib/Driver/ToolChains/Gnu.cpp b/clang/lib/Driver/ToolChains/Gnu.cpp
-index fe5bda5c6605..fd4a7f72be14 100644
+index 16cf57072272..49084bd2ce25 100644
 --- a/clang/lib/Driver/ToolChains/Gnu.cpp
 +++ b/clang/lib/Driver/ToolChains/Gnu.cpp
-@@ -1884,6 +1884,18 @@ static llvm::StringRef getGCCToolchainDir(const ArgList &Args,
+@@ -2078,6 +2078,18 @@ static llvm::StringRef getGCCToolchainDir(const ArgList &Args,
    return GCC_INSTALL_PREFIX;
  }
  
@@ -37,7 +37,7 @@ index fe5bda5c6605..fd4a7f72be14 100644
  /// Initialize a GCCInstallationDetector from the driver.
  ///
  /// This performs all of the autodetection and sets up the various paths.
-@@ -1904,6 +1916,16 @@ void Generic_GCC::GCCInstallationDetector::init(
+@@ -2097,6 +2109,16 @@ void Generic_GCC::GCCInstallationDetector::init(
    // The compatible GCC triples for this particular architecture.
    SmallVector<StringRef, 16> CandidateTripleAliases;
    SmallVector<StringRef, 16> CandidateBiarchTripleAliases;
@@ -51,9 +51,9 @@ index fe5bda5c6605..fd4a7f72be14 100644
 +    CandidateBiarchTripleAliases.push_back(ConvertedTriple);
 +  }
 +
-   CollectLibDirsAndTriples(TargetTriple, BiarchVariantTriple, CandidateLibDirs,
-                            CandidateTripleAliases, CandidateBiarchLibDirs,
-                            CandidateBiarchTripleAliases);
+   // Add some triples that we want to check first.
+   CandidateTripleAliases.push_back(TargetTriple.str());
+   std::string TripleNoVendor = TargetTriple.getArchName().str() + "-" +
 -- 
-2.26.2
+2.42.0
 

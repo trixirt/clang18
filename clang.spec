@@ -81,28 +81,21 @@ Source4:	release-keys.asc
 %if %{without compat_build}
 Source5:	macros.%{name}
 %endif
+Source6:	clang.cfg
 
 # Patches for clang
 Patch1:     0001-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
 Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
-# Drop the following patch after debugedit adds support to DWARF-5:
-# https://sourceware.org/bugzilla/show_bug.cgi?id=28728
-Patch4:     0001-Produce-DWARF4-by-default.patch
 # Workaround a bug in ORC on ppc64le.
 # More info is available here: https://reviews.llvm.org/D159115#4641826
 Patch5:     0001-Workaround-a-bug-in-ORC-on-ppc64le.patch
-# Patches for https://issues.redhat.com/browse/RHEL-1650
-# Remove in clang 18.
-Patch6:     cfg.patch
-Patch7:     tsa.patch
 Patch8:     0001-Clang-Fix-build-with-GCC-14-on-ARM.patch
 Patch9:     0001-Clang-Defer-the-instantiation-of-explicit-specifier-.patch
 
-
 # RHEL specific patches
-# Avoid unwanted dependency on python-recommonmark
-Patch101:  0009-disable-recommonmark.patch
+# Avoid unwanted dependency on python-myst-parser
+Patch101:  0009-disable-myst-parser.patch
 
 # Patches for clang-tools-extra
 # See https://reviews.llvm.org/D120301
@@ -138,7 +131,7 @@ BuildRequires:	python3-lit
 
 BuildRequires:	python3-sphinx
 %if %{undefined rhel}
-BuildRequires:	python3-recommonmark
+BuildRequires:	python3-myst-parser
 %endif
 BuildRequires:	libatomic
 
@@ -399,6 +392,10 @@ rm test/CodeGen/profile-filter.c
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCLANG_REPOSITORY_STRING="%{?dist_vendor} %{version}-%{release}" \
 	-DCLANG_RESOURCE_DIR=../lib/clang/%{maj_ver} \
+	-DCLANG_CONFIG_FILE_SYSTEM_DIR=%{_sysconfdir}/%{name}/ \
+%ifarch %{arm}
+	-DCLANG_DEFAULT_LINKER=lld \
+%endif
 	-DCLANG_DEFAULT_UNWINDLIB=libgcc
 
 %cmake_build
@@ -494,6 +491,11 @@ rm -vf %{buildroot}%{install_datadir}/clang/bash-autocomplete.sh
 # populated by other packages
 mkdir -p %{buildroot}%{install_prefix}/lib/clang/%{maj_ver}/{bin,include,lib,share}/
 
+%if 0%{?fedora} == 38
+# Install config file
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
+mv %{SOURCE6} %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}.cfg
+%endif
 
 %check
 %if %{with check}
@@ -529,6 +531,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %files libs
 %{install_prefix}/lib/clang/%{maj_ver}/include/*
 %{install_libdir}/*.so.*
+%if 0%{?fedora} == 38
+%{_sysconfdir}/%{name}/%{_target_platform}.cfg
+%endif
 
 %files devel
 %{install_libdir}/*.so

@@ -4,7 +4,6 @@ Date: Tue, 24 Jan 2023 22:46:25 +0000
 Subject: [PATCH] clang-tools-extra: Make test dependency on LLVMHello optional
 
 This fixes clang + clang-tools-extra standalone build after
-36892727e4f19a60778e371d78f8fb09d8122c85.
 ---
  clang-tools-extra/test/CMakeLists.txt                  | 10 +++++++++-
  clang-tools-extra/test/clang-tidy/CTTestTidyModule.cpp |  2 +-
