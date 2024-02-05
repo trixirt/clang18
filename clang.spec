@@ -12,11 +12,19 @@
 
 %bcond_with compat_build
 %bcond_without check
+# Use lld to workaround memory limits on i686 and to fix bootstrap
+# issue where clang uses the wrong gold plugin version when the
+# LLVM compat package is present.
+%ifnarch s390x
+%bcond_without linker_lld
+%else
+%bcond_with linker_lld
+%endif
 
-%global maj_ver 17
-%global min_ver 0
-%global patch_ver 6
-#global rc_ver 4
+%global maj_ver 18
+%global min_ver 1
+%global patch_ver 0
+%global rc_ver 4
 
 %if %{with snapshot_build}
 %undefine rc_ver
@@ -56,12 +64,17 @@
 %global _smp_mflags -j8
 %endif
 
+# Try to limit memory use on i686.
+%ifarch %ix86
+%constrain_build -m 3072
+%endif
+
 %global clang_srcdir clang-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 %global clang_tools_srcdir clang-tools-extra-%{clang_version}%{?rc_ver:rc%{rc_ver}}.src
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	6%{?dist}
+Release:	1%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -81,17 +94,13 @@ Source4:	release-keys.asc
 %if %{without compat_build}
 Source5:	macros.%{name}
 %endif
-Source6:	clang.cfg
 
 # Patches for clang
 Patch1:     0001-PATCH-clang-Make-funwind-tables-the-default-on-all-a.patch
 Patch2:     0003-PATCH-clang-Don-t-install-static-libraries.patch
-Patch3:     0001-Driver-Add-a-gcc-equivalent-triple-to-the-list-of-tr.patch
 # Workaround a bug in ORC on ppc64le.
 # More info is available here: https://reviews.llvm.org/D159115#4641826
 Patch5:     0001-Workaround-a-bug-in-ORC-on-ppc64le.patch
-Patch8:     0001-Clang-Fix-build-with-GCC-14-on-ARM.patch
-Patch9:     0001-Clang-Defer-the-instantiation-of-explicit-specifier-.patch
 
 # RHEL specific patches
 # Avoid unwanted dependency on python-myst-parser
@@ -102,6 +111,9 @@ Patch101:  0009-disable-myst-parser.patch
 Patch201:   0001-clang-tools-extra-Make-test-dependency-on-LLVMHello-.patch
 
 BuildRequires:	clang
+%if %{with linker_lld}
+BuildRequires:	lld
+%endif
 BuildRequires:	cmake
 BuildRequires:	ninja-build
 
@@ -314,7 +326,9 @@ rm test/CodeGen/profile-filter.c
 %build
 
 # And disable LTO on AArch64 entirely.
-%ifarch aarch64
+# There is a miscompile with lto on x86_64 when using clang-17
+# Disable lto on i686 due to memory constraints.
+%ifarch aarch64 x86_64 %ix86
 %define _lto_cflags %{nil}
 %endif
 
@@ -326,6 +340,12 @@ rm test/CodeGen/profile-filter.c
 %ifarch s390 s390x aarch64 %ix86 ppc64le
 # Decrease debuginfo verbosity to reduce memory consumption during final library linking
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
+%endif
+
+%if %{with linker_lld}
+# TODO: Use LLVM_USE_LLD cmake option, but this doesn't seem to work with
+# standalone builds.
+%global build_ldflags %(echo %{build_ldflags} -fuse-ld=lld)
 %endif
 
 # Disable dwz on aarch64, because it takes a huge amount of time to decide not to optimize things.
@@ -468,6 +488,12 @@ ln -s ../../%{install_bindir}/clang++  %{buildroot}%{install_bindir}/clang++-%{m
 
 %endif
 
+# Install config file for clang
+%if %{maj_ver} >=18
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
+echo "--gcc-triple=%{_arch}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang.cfg
+%endif
+
 # Fix permissions of scan-view scripts
 chmod a+x %{buildroot}%{install_datadir}/scan-view/{Reporter.py,startfile.py}
 
@@ -516,6 +542,7 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %{install_bindir}/clang++-%{maj_ver}
 %{install_bindir}/clang-cl
 %{install_bindir}/clang-cpp
+%{_sysconfdir}/%{name}/clang.cfg
 %if %{without compat_build}
 %{_mandir}/man1/clang.1.gz
 %{_mandir}/man1/clang++.1.gz
@@ -679,6 +706,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Tue Feb 27 2024 Tom Stellard <tstellar@redhat.com> - 18.1.0~rc4-1
+- 18.0.1-rc4 Release
+
 * Fri Jan 26 2024 Kefu Chai <kefu.chai@scylladb.com> - 17.0.6-6
 - Fix the too-early instantiation of conditional "explict" by applying the patch
   of https://github.com/llvm/llvm-project/commit/128b3b61fe6768c724975fd1df2be0abec848cf6
