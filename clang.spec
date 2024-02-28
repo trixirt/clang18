@@ -74,7 +74,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -491,7 +491,7 @@ ln -s ../../%{install_bindir}/clang++  %{buildroot}%{install_bindir}/clang++-%{m
 # Install config file for clang
 %if %{maj_ver} >=18
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
-echo "--gcc-triple=%{_arch}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang.cfg
+echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang.cfg
 %endif
 
 # Fix permissions of scan-view scripts
@@ -706,6 +706,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Wed Feb 28 2024 Tom Stellard <tstellar@redhat.com> - 18.1.0~rc4-2
+- Fix gcc triple on i686
+
 * Tue Feb 27 2024 Tom Stellard <tstellar@redhat.com> - 18.1.0~rc4-1
 - 18.0.1-rc4 Release
 
