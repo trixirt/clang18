@@ -74,7 +74,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -226,14 +226,14 @@ Requires: %{name}-libs = %{version}-%{release}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # The clang CMake files reference tools from clang-tools-extra.
 Requires: %{name}-tools-extra%{?_isa} = %{version}-%{release}
-Provides: %{name}-devel(major) = %{maj_ver}
+Provides: clang-devel(major) = %{maj_ver}
 
 %description devel
 Development header files for clang.
 
 %package resource-filesystem
 Summary: Filesystem package that owns the clang resource directory
-Provides: %{name}-resource-filesystem(major) = %{maj_ver}
+Provides: clang-resource-filesystem(major) = %{maj_ver}
 BuildArch: noarch
 
 %description resource-filesystem
@@ -707,6 +707,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Thu Apr 04 2024 Tom Stellard <tstellar@redhat.com> - 18.1.2-2
+- Fix Provides for compat-packages
+
 * Thu Mar 21 2024 Tom Stellrd <tstellar@redhat.com> - 18.1.2-1
 - 18.1.2 Release
 
