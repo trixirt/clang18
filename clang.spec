@@ -74,7 +74,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -524,6 +524,10 @@ rm -vf %{buildroot}%{install_datadir}/clang/bash-autocomplete.sh
 # populated by other packages
 mkdir -p %{buildroot}%{install_prefix}/lib/clang/%{maj_ver}/{bin,include,lib,share}/
 
+#Add versioned resource directory macro
+mkdir -p %{buildroot}%{_rpmmacrodir}/
+echo "%%clang%{maj_ver}_resource_dir %%{_prefix}/lib/clang/%{maj_ver}" >> %{buildroot}%{_rpmmacrodir}/macros.%{name}
+
 %check
 %if %{with check}
 # Build test dependencies separately, to prevent invocations of host clang from being affected
@@ -578,9 +582,7 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %dir %{install_prefix}/lib/clang/%{maj_ver}/include/
 %dir %{install_prefix}/lib/clang/%{maj_ver}/lib/
 %dir %{install_prefix}/lib/clang/%{maj_ver}/share/
-%if %{without compat_build}
 %{_rpmmacrodir}/macros.%{name}
-%endif
 
 
 %files analyzer
@@ -704,6 +706,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Thu Apr 04 2024 Tom Stellard <tstellar@redhat.com> - 18.1.2-3
+- Add a versioned clang_resource_dir macro
+
 * Thu Apr 04 2024 Tom Stellard <tstellar@redhat.com> - 18.1.2-2
 - Fix Provides for compat-packages
 
