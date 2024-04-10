@@ -489,10 +489,16 @@ ln -s ../../%{install_bindir}/clang++  %{buildroot}%{install_bindir}/clang++-%{m
 
 %endif
 
+%if 0%{?fedora} == 38
+# Install config file
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
+mv %{SOURCE6} %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}.cfg
+%endif
+
 # Install config file for clang
 %if %{maj_ver} >=18
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
-echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang.cfg
+echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}.cfg
 %endif
 
 # Fix permissions of scan-view scripts
@@ -518,12 +524,6 @@ rm -vf %{buildroot}%{install_datadir}/clang/bash-autocomplete.sh
 # populated by other packages
 mkdir -p %{buildroot}%{install_prefix}/lib/clang/%{maj_ver}/{bin,include,lib,share}/
 
-%if 0%{?fedora} == 38
-# Install config file
-mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
-mv %{SOURCE6} %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}.cfg
-%endif
-
 %check
 %if %{with check}
 # Build test dependencies separately, to prevent invocations of host clang from being affected
@@ -543,7 +543,6 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %{install_bindir}/clang++-%{maj_ver}
 %{install_bindir}/clang-cl
 %{install_bindir}/clang-cpp
-%{_sysconfdir}/%{name}/clang.cfg
 %if %{without compat_build}
 %{_mandir}/man1/clang.1.gz
 %{_mandir}/man1/clang++.1.gz
@@ -559,9 +558,7 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %files libs
 %{install_prefix}/lib/clang/%{maj_ver}/include/*
 %{install_libdir}/*.so.*
-%if 0%{?fedora} == 38
 %{_sysconfdir}/%{name}/%{_target_platform}.cfg
-%endif
 
 %files devel
 %{install_libdir}/*.so
