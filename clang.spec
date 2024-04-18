@@ -74,7 +74,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -498,7 +498,8 @@ mv %{SOURCE6} %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}.cfg
 # Install config file for clang
 %if %{maj_ver} >=18
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
-echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}.cfg
+echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang.cfg
+echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang++.cfg
 %endif
 
 # Fix permissions of scan-view scripts
@@ -563,6 +564,8 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %{install_prefix}/lib/clang/%{maj_ver}/include/*
 %{install_libdir}/*.so.*
 %{_sysconfdir}/%{name}/%{_target_platform}.cfg
+%{_sysconfdir}/%{name}/clang.cfg
+%{_sysconfdir}/%{name}/clang++.cfg
 
 %files devel
 %{install_libdir}/*.so
@@ -706,6 +709,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Thu Apr 18 2024 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 18.1.3-2
+- Split config files
+
 * Tue Apr 16 2024 Tom Stellard <tstellar@redhat.com> - 18.1.3-1
 - 18.1.3 Release
 
