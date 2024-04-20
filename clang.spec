@@ -563,7 +563,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %files libs
 %{install_prefix}/lib/clang/%{maj_ver}/include/*
 %{install_libdir}/*.so.*
+%if 0%{?fedora} == 38
 %{_sysconfdir}/%{name}/%{_target_platform}.cfg
+%endif
 %{_sysconfdir}/%{name}/clang.cfg
 %{_sysconfdir}/%{name}/clang++.cfg
 
