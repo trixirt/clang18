@@ -23,7 +23,7 @@
 
 %global maj_ver 18
 %global min_ver 1
-%global patch_ver 3
+%global patch_ver 4
 #global rc_ver 4
 
 %if %{with snapshot_build}
@@ -711,6 +711,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Thu May 2 2024 Tom Stellard <tstellar@redhat.com> - 18.1.4
+- 18.1.4 Release
+
 * Thu Apr 18 2024 Tulio Magno Quites Machado Filho <tuliom@redhat.com> - 18.1.3-2
 - Split config files
 
