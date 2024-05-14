@@ -74,7 +74,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -498,8 +498,8 @@ mv %{SOURCE6} %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}.cfg
 # Install config file for clang
 %if %{maj_ver} >=18
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}/
-echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang.cfg
-echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/clang++.cfg
+echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}-clang.cfg
+echo "--gcc-triple=%{_target_cpu}-redhat-linux" >> %{buildroot}%{_sysconfdir}/%{name}/%{_target_platform}-clang++.cfg
 %endif
 
 # Fix permissions of scan-view scripts
@@ -566,8 +566,8 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 %if 0%{?fedora} == 38
 %{_sysconfdir}/%{name}/%{_target_platform}.cfg
 %endif
-%{_sysconfdir}/%{name}/clang.cfg
-%{_sysconfdir}/%{name}/clang++.cfg
+%{_sysconfdir}/%{name}/%{_target_platform}-clang.cfg
+%{_sysconfdir}/%{name}/%{_target_platform}-clang++.cfg
 
 %files devel
 %{install_libdir}/*.so
@@ -711,6 +711,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Tue May 14 2024 Tom Stellard <tstellar@redhat.com> - 18.1.4-3
+- Add triple prefix to clang config files
+
 * Thu May 2 2024 Tom Stellard <tstellar@redhat.com> - 18.1.4
 - 18.1.4 Release
 
