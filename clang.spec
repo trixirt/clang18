@@ -23,7 +23,7 @@
 
 %global maj_ver 18
 %global min_ver 1
-%global patch_ver 4
+%global patch_ver 6
 #global rc_ver 4
 
 %if %{with snapshot_build}
@@ -711,6 +711,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Mon May 20 2024 Tom Stellard <tstellar@redhat.com> - 18.1.6-1
+- 18.1.6 Release
+
 * Tue May 14 2024 Tom Stellard <tstellar@redhat.com> - 18.1.4-3
 - Add triple prefix to clang config files
 
