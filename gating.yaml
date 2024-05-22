@@ -1,12 +1,18 @@
+# Gating config for bodhi updates for clang. Plans are reported separately in
+# resultsdb hence test cases are named after them:
+# https://docs.fedoraproject.org/en-US/ci/gating/#_using_multiple_plans
 --- !Policy
 product_versions:
   - fedora-*
-decision_context: bodhi_update_push_testing
+decision_contexts:
+  - bodhi_update_push_testing
+  - bodhi_update_push_stable
 rules:
-  - !PassingTestCaseRule {test_case_name: fedora-ci.koji-build.tier0.functional}
+  - !PassingTestCaseRule {test_case_name: fedora-ci.koji-build./tests/build-gating.functional}
 --- !Policy
 product_versions:
-  - fedora-*
-decision_context: bodhi_update_push_stable
+  - fedora-rawhide
+decision_contexts:
+  - bodhi_update_push_stable
 rules:
-  - !PassingTestCaseRule {test_case_name: fedora-ci.koji-build.tier0.functional}
+  - !PassingTestCaseRule {test_case_name: fedora-ci.koji-build./tests/kernel-ark-build.functional}
