@@ -74,7 +74,7 @@
 
 Name:		%pkg_name
 Version:	%{clang_version}%{?rc_ver:~rc%{rc_ver}}%{?llvm_snapshot_version_suffix:~%{llvm_snapshot_version_suffix}}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	A C language family front-end for LLVM
 
 License:	Apache-2.0 WITH LLVM-exception OR NCSA
@@ -711,6 +711,9 @@ LD_LIBRARY_PATH=%{buildroot}/%{install_libdir} %{__ninja} check-all -C %{__cmake
 
 %endif
 %changelog
+* Sun Jun 09 2024 Python Maint <python-maint@redhat.com> - 18.1.6-4
+- Rebuilt for Python 3.13
+
 * Mon May 20 2024 Tom Stellard <tstellar@redhat.com> - 18.1.6-1
 - 18.1.6 Release
 
