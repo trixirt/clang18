@@ -12,6 +12,7 @@
 
 %bcond_without compat_build
 %bcond_without check
+%bcond_without old_clang
 
 %ifarch aarch64
 # Use lld on aarch64, becuase ld.bfd will occasionally fail with the error:
@@ -19,6 +20,10 @@
 %bcond_without linker_lld
 %else
 %bcond_with linker_lld
+%endif
+
+%if %{with old_clang}
+%global last_maj_ver 17
 %endif
 
 %global maj_ver 18
@@ -113,9 +118,16 @@ Patch101:  0009-disable-myst-parser.patch
 # See https://reviews.llvm.org/D120301
 Patch201:   0001-clang-tools-extra-Make-test-dependency-on-LLVMHello-.patch
 
-BuildRequires:	clang
+%if %{with old_clang}
+BuildRequires:	clang%{last_maj_ver}
 %if %{with linker_lld}
-BuildRequires:	lld
+BuildRequires:	lld%{last_maj_ver}
+%endif
+%else
+BuildRequires:	clang%{last_maj_ver}
+%if %{with linker_lld}
+BuildRequires:	lld%{last_maj_ver}
+%endif
 %endif
 BuildRequires:	cmake
 BuildRequires:	ninja-build
@@ -338,6 +350,10 @@ rm test/CodeGen/profile-filter.c
 %global _lto_cflags %nil
 %endif
 
+%if %{with old_clang}
+%global _lto_cflags %nil
+%endif
+
 %ifarch s390 s390x aarch64 %ix86 ppc64le
 # Decrease debuginfo verbosity to reduce memory consumption during final library linking
 %global optflags %(echo %{optflags} | sed 's/-g /-g1 /')
@@ -353,6 +369,9 @@ rm test/CodeGen/profile-filter.c
 %ifarch aarch64
 %define _find_debuginfo_dwz_opts %{nil}
 %endif
+
+export CC=%{_libdir}/llvm%{last_maj_ver}/bin/clang
+export CXX=%{_libdir}/llvm%{last_maj_ver}/bin/clang++
 
 # We set CLANG_DEFAULT_PIE_ON_LINUX=OFF and PPC_LINUX_DEFAULT_IEEELONGDOUBLE=ON to match the
 # defaults used by Fedora's GCC.
